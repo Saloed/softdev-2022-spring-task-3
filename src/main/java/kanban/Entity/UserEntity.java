@@ -12,7 +12,7 @@ public class UserEntity {
     private String username;
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "users")
+    @ManyToMany(mappedBy = "users")
     private List<BoardEntity> boards;
 
     public UserEntity(){

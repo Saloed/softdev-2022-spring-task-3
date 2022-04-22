@@ -3,7 +3,6 @@ package kanban.Service;
 import kanban.Entity.UserEntity;
 import kanban.Exception.UserAlreadyExistException;
 import kanban.Exception.UserNotFoundException;
-import kanban.Model.User;
 import kanban.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,12 +20,12 @@ public class UserService {
         return userRepo.save(user);
     }
 
-    public User getOne(Long id) throws UserNotFoundException {
+    public UserEntity getOne(Long id) throws UserNotFoundException {
         UserEntity user = userRepo.findById(id).get();
         if(user == null){
             throw new UserNotFoundException("Пользователь не найден");
         }
-        return User.toModel(user);
+        return user;
     }
 
     public Long deleteUser(Long id){
