@@ -3,7 +3,6 @@ package kanban.Service;
 import kanban.Entity.BoardEntity;
 import kanban.Entity.UserEntity;
 import kanban.Exception.BoardNotFoundException;
-import kanban.Exception.UserNotFoundException;
 import kanban.Repository.BoardRepo;
 import kanban.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;

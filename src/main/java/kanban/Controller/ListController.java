@@ -24,8 +24,8 @@ public class ListController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity getOneList(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity getOneList(@PathVariable Long id){
         try{
             return ResponseEntity.ok(listService.getOne(id));
         }catch (Exception e){

@@ -25,8 +25,8 @@ public class BoardController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity getOneBoard(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity getOneBoard(@PathVariable Long id){
         try{
             return ResponseEntity.ok(boardService.getOne(id));
         }catch (Exception e){
@@ -34,8 +34,8 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/users")
-    public ResponseEntity getUsers(@RequestParam Long id){
+    @GetMapping("/{id}/users")
+    public ResponseEntity getUsers(@PathVariable Long id){
         try {
             return ResponseEntity.ok(boardService.getUsers(id));
         }catch (BoardNotFoundException e){

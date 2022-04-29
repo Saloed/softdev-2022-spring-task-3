@@ -3,10 +3,8 @@ package kanban.Service;
 import kanban.Entity.BoardEntity;
 import kanban.Entity.CardEntity;
 import kanban.Entity.UserEntity;
-import kanban.Exception.BoardNotFoundException;
 import kanban.Repository.BoardRepo;
 import kanban.Repository.CardRepo;
-import kanban.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

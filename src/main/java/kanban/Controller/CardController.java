@@ -24,8 +24,8 @@ public class CardController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity getOneCard(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity getOneCard(@PathVariable Long id){
         try{
             return ResponseEntity.ok(cardService.getOne(id));
         }catch (Exception e){
@@ -33,8 +33,8 @@ public class CardController {
         }
     }
 
-    @GetMapping("/users")
-    public ResponseEntity getUsers(@RequestParam Long id){
+    @GetMapping("/{id}/users")
+    public ResponseEntity getUsers(@PathVariable Long id){
         try {
             return ResponseEntity.ok(cardService.getUsers(id));
         }catch (Exception e){
