@@ -2,10 +2,8 @@ package javafx;
 
 import core.Logic;
 import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -55,7 +53,7 @@ public class Square extends Button {
                 normalState();
             }
         };
-        fadeTimer.schedule(fadeTask,time * 1000L);
+        fadeTimer.schedule(fadeTask, time * 1000L);
         setOnMouseReleased(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 setStyle(glowingSquareStyle);

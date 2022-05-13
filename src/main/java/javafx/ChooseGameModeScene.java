@@ -1,32 +1,27 @@
 package javafx;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import static javafx.Menu.ui.createRadioButton;
 
 public class ChooseGameModeScene {
     private boolean speedChange;
     private boolean stageChange;
-    private AnchorPane pane;
-    private Scene scene;
-    private Stage stage;
+    private final Stage stage;
 
     public ChooseGameModeScene() {
-        this.pane = new AnchorPane();
+        AnchorPane pane = new AnchorPane();
         int width = 300;
         int height = 300;
-        this.scene = new Scene(pane, width, height);
+        Scene scene = new Scene(pane, width, height);
         this.stage = new Stage();
         stage.setScene(scene);
         stage.show();
@@ -41,6 +36,8 @@ public class ChooseGameModeScene {
         speedChangeTrue.setToggleGroup(speedGroup);
         stageChangeFalse.setToggleGroup(stageGroup);
         stageChangeTrue.setToggleGroup(stageGroup);
+        speedChangeFalse.setSelected(true);
+        stageChangeFalse.setSelected(true);
         Button start = Menu.ui.createButton("Start game!", 55, 245);
         start.setOnAction(event -> {
             stage.close();
@@ -64,13 +61,5 @@ public class ChooseGameModeScene {
                 if (Objects.equals(rb.getText(), "Yes")) stageChange = true;
             }
         });
-    }
-
-    public boolean getStageOption() {
-        return stageChange;
-    }
-
-    public boolean getSpeedOption() {
-        return speedChange;
     }
 }

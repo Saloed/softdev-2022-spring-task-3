@@ -1,10 +1,8 @@
 package javafx;
 
-import core.Logic;
 import javafx.Menu.ui;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -19,7 +17,7 @@ public class GameEndScene {
     Scene scene;
     Stage stage;
 
-    public GameEndScene(Logic logic) {
+    public GameEndScene(ViewManager viewManager) {
         this.pane = new AnchorPane();
         int width = 300;
         int height = 300;
@@ -28,10 +26,13 @@ public class GameEndScene {
         stage.setScene(scene);
         stage.show();
         pane.setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, new CornerRadii(0), new Insets(0))));
-        Label results = Menu.ui.createLabel("" + logic.getScore(), 140, 130);
-        results.setText("" + logic.getScore());
+        Label results = Menu.ui.createLabel("" + viewManager.getScore(), 140, 130);
+        results.setText("" + viewManager.getScore());
         Button exit = ui.createButton("Exit", 55, 200);
-        exit.setOnAction(event -> logic.close());
+        exit.setOnAction(event -> {
+            viewManager.close();
+            System.exit(0);
+        });
         pane.getChildren().add(results);
         pane.getChildren().add(exit);
     }

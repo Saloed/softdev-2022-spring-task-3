@@ -1,7 +1,5 @@
 package javafx;
 
-import core.Logic;
-import javafx.GameEndScene;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -11,14 +9,14 @@ import java.util.TimerTask;
 
 public class LifeBar {
     private long life;
-    private final Logic logic;
+    private final ViewManager viewManager;
     private int burn;
     private Double healthPercentage;
     private Rectangle healthBar;
     private Timer lifeTimer;
 
-    public LifeBar(Logic logic) {
-        this.logic = logic;
+    public LifeBar(ViewManager viewManager) {
+        this.viewManager = viewManager;
         this.life = 100;
         burn = 1;
         activate();
@@ -28,7 +26,7 @@ public class LifeBar {
         healthBar = new Rectangle(100.0, 20.0);
         healthPercentage = 1.0;
         healthBar.setFill(Color.CYAN);
-        logic.getPane().getChildren().add(healthBar);
+        viewManager.getPane().getChildren().add(healthBar);
         this.lifeTimer = new Timer();
         TimerTask lifeTask = new TimerTask() {
             @Override
@@ -38,9 +36,9 @@ public class LifeBar {
                 healthBar.setWidth(100.0 * healthPercentage);
                 if (life <= 0) {
                     Platform.runLater(() -> {
-                        GameEndScene scene = new GameEndScene(logic);
+                        viewManager.close();
+                        new GameEndScene(viewManager);
                         lifeTimer.cancel();
-                        logic.getViewManager().close();
                     });
                 }
             }
@@ -63,15 +61,8 @@ public class LifeBar {
         lifeTimer.cancel();
     }
 
-    public void increaseBurn() {
-        burn += 1;
-    }
-
-    public int getBurn() {
-        return burn;
-    }
-
     public void setBurn(int setBurn) {
         burn = setBurn;
     }
+
 }

@@ -1,6 +1,5 @@
 package javafx;
 
-import core.Logic;
 import javafx.scene.SubScene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -10,11 +9,11 @@ public class Combo {
     private int size;
     private SubScene scene;
     private Label counter;
-    private Logic logic;
+    private final ViewManager viewManager;
 
-    public Combo(Logic logic) {
+    public Combo(ViewManager viewManager) {
         size = 0;
-        this.logic = logic;
+        this.viewManager = viewManager;
     }
 
     public void increase() {
@@ -23,10 +22,6 @@ public class Combo {
 
     public void nullify() {
         size = 0;
-    }
-
-    public SubScene getScene() {
-        return scene;
     }
 
     public int getCombo() {
@@ -41,13 +36,13 @@ public class Combo {
         scene = new SubScene(new AnchorPane(), 100, 50);
         scene.prefHeight(100);
         scene.prefWidth(50);
-        scene.setLayoutX((logic.getPane().getWidth() - 100) / 2);
-        scene.getRoot().setLayoutX((logic.getPane().getWidth() - 100) / 2);
-        counter = Menu.ui.createLabel("0   " + size + "X",(logic.getPane().getWidth() - 100) / 2 + 30, 0 );
+        scene.setLayoutX((viewManager.getPane().getWidth() - 100) / 2);
+        scene.getRoot().setLayoutX((viewManager.getPane().getWidth() - 100) / 2);
+        counter = Menu.ui.createLabel("0   " + size + "X",(viewManager.getPane().getWidth() - 100) / 2 + 30, 0 );
         counter.setPrefSize(100, 50);
         counter.setText("0   " + size + "X");
         counter.setWrapText(true);
-        counter.setLayoutX((logic.getPane().getWidth() - 100) / 2 + 30);
+        counter.setLayoutX((viewManager.getPane().getWidth() - 100) / 2 + 30);
         scene.setFill(Color.AQUAMARINE);
         gamePane.getChildren().add(scene);
         gamePane.getChildren().add(counter);
