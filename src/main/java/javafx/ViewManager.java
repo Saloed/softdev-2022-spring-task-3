@@ -1,5 +1,6 @@
 package javafx;
 
+import controller.GameListener;
 import core.Logic;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -17,31 +18,33 @@ public class ViewManager {
     private Scene gameScene;
     private Stage gameStage;
     private int squareCount;
-    private int activationTime;
-    private final Logic logic;
     LifeBar lifeBar;
     Combo combo;
     private final int glowTime;
     private Timer glowTimer;
     private Square[] squares;
+    private GameListener listener;
 
-    public ViewManager(boolean speedChange, boolean stageChange) {
+    public ViewManager() {
         this.gamePane = new AnchorPane();
         this.gameScene = new Scene(gamePane, width, height);
         this.gameStage = new Stage();
         this.lifeBar = new LifeBar(this);
         this.combo = new Combo(this);
-        this.logic = new Logic(this, speedChange, stageChange);
         gameStage.setScene(gameScene);
         gameStage.show();
         squareCount = 3;
         glowTime = 1;
-        activationTime = 500;
-        createSquares(squareCount);
         combo.activateCombo(gamePane);
     }
 
+    public void assignListener(GameListener listener) {
+        this.listener = listener;
+        createSquares(squareCount, 100);
+    }
+
     public void nextStage() {
+        stopGlow();
         gameStage.close();
         this.gamePane = new AnchorPane();
         width += 98;
@@ -55,17 +58,17 @@ public class ViewManager {
         glowTimer.cancel();
         gameStage.show();
         squareCount += 1;
-        createSquares(squareCount);
+        createSquares(squareCount, 300);
     }
 
-    public void createSquares(int squareCount) {
+    public void createSquares(int squareCount, int delay) {
         double x = 55 + 15 * (squareCount - 3);
         double y = 55;
         this.squares = new Square[squareCount * squareCount];
         int count = 0;
         for (int k = 1; k <= squareCount; k++) {
             for (int i = 1; i <= squareCount; i++) {
-                squares[count] = new Square(x, y, logic);
+                squares[count] = new Square(x, y, listener);
                 gamePane.getChildren().add(squares[count]);
                 x += 70;
                 count += 1;
@@ -73,7 +76,7 @@ public class ViewManager {
             x = 55 + 15 * (squareCount - 3);
             y += 70;
         }
-        activateGlow(squares);
+        activateGlow(squares, delay);
     }
 
     public void click(int score) {
@@ -95,17 +98,15 @@ public class ViewManager {
 
     public void miss(int score) {
         combo.nullify();
-        activationTime = 500;
         Platform.runLater(() -> combo.getText().setText(score + "   " + "0X"));
     }
 
     public void increaseSpeed() {
-        activationTime -= 50;
         glowTimer.cancel();
-        activateGlow(squares);
+        activateGlow(squares, 0);
     }
 
-    public void activateGlow(Square[] squares) {
+    public void activateGlow(Square[] squares, int delay) {
         TimerTask glowTask = new TimerTask() {
             @Override
             public void run() {
@@ -113,14 +114,20 @@ public class ViewManager {
             }
         };
         glowTimer = new Timer();
-        glowTimer.schedule(glowTask, 0, activationTime);
+        glowTimer.schedule(glowTask, delay, listener.getActivationTime());
     }
 
     public int getScore() {
-        return logic.getScore();
+        return listener.getScore();
     }
 
     public Combo getCombo() {
         return combo;
+    }
+
+    public void stopGlow() {
+        for (int i = 0; i <= squareCount * squareCount - 1; i++) {
+            squares[i].normalState();
+        }
     }
 }

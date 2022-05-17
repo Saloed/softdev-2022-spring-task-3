@@ -1,5 +1,6 @@
 package javafx;
 
+import controller.GameListener;
 import core.Logic;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
@@ -12,11 +13,11 @@ public class Square extends Button {
     private final String clickedSquareStyle = "-fx-background-color: transparent; -fx-background-image: url(file:src/main/java/resources/clickedSquare.png);";
     private final String glowingSquareStyle = "-fx-background-color: transparent; -fx-background-image: url(file:src/main/java/resources/glowingSquare.png);";
     private final String clickedGlowingSquareStyle = "-fx-background-color: transparent; -fx-background-image: url(file:src/main/java/resources/clickedGlowingSquare.png);";
-    private final Logic logic;
     private Timer fadeTimer;
+    private GameListener listener;
 
-    public Square(double x, double y, Logic logic) {
-        this.logic = logic;
+    public Square(double x, double y, GameListener listener) {
+        this.listener = listener;
         setPrefSize(49, 49);
         setLayoutX(x);
         setLayoutY(y);
@@ -24,14 +25,15 @@ public class Square extends Button {
         normalState();
     }
 
-    private void normalState() {
+    public void normalState() {
+        if (fadeTimer != null) fadeTimer.cancel();
         setStyle(squareStyle);
         setOnMousePressed(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 setStyle(clickedSquareStyle);
                 setPrefHeight(45);
                 setLayoutY(getLayoutY() + 4);
-                logic.miss();
+                listener.miss();
             }
         });
         setOnMouseReleased(event -> {
@@ -49,7 +51,7 @@ public class Square extends Button {
         TimerTask fadeTask = new TimerTask() {
             @Override
             public void run() {
-                logic.miss();
+                listener.miss();
                 normalState();
             }
         };
@@ -66,9 +68,8 @@ public class Square extends Button {
                 setStyle(clickedGlowingSquareStyle);
                 setPrefHeight(45);
                 setLayoutY(getLayoutY() + 4);
-                logic.click();
+                listener.click();
                 normalState();
-                fadeTimer.cancel();
             }
         });
     }

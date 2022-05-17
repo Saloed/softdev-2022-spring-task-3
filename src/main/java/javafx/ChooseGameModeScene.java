@@ -1,5 +1,7 @@
 package javafx;
 
+import controller.GameListener;
+import core.Logic;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -41,7 +43,10 @@ public class ChooseGameModeScene {
         Button start = Menu.ui.createButton("Start game!", 55, 245);
         start.setOnAction(event -> {
             stage.close();
-            new ViewManager(speedChange, stageChange);
+            ViewManager viewManager = new ViewManager();
+            Logic logic = new Logic(speedChange, stageChange);
+            GameListener listener = new GameListener(viewManager, logic);
+            viewManager.assignListener(listener);
         });
         Label speedLabel1 = Menu.ui.createLabel("Do you want to scale the square speed", 3, 15);
         Label speedLabel2 = Menu.ui.createLabel("with combo?", 105, 30);
