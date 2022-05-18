@@ -1,4 +1,5 @@
 class BlackCheckers {
+
     val image = "/b_ch.png"
     val queenImage = "/b_q.png"
     val coordinates = listOf(
