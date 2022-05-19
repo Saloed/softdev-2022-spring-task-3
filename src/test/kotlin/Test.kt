@@ -12,7 +12,7 @@ class Test {
 
     @Test
     fun testAllowedCells() {
-        val loc = (WhiteCheckers().coordinates + BlackCheckers().coordinates).toMutableList()
+        val loc = (coordinatesW + coordinatesB).toMutableList()
         val ind = loc.indexOf("D6")
         loc.removeAt(ind)
         loc.add(ind, "F4")
@@ -23,7 +23,7 @@ class Test {
 
     @Test
     fun testEat() {
-        val loc = (WhiteCheckers().coordinates + BlackCheckers().coordinates).toMutableList()
+        val loc = (coordinatesW + coordinatesB).toMutableList()
         val ind = loc.indexOf("D6")
         loc.removeAt(ind)
         loc.add(ind, "F4")
