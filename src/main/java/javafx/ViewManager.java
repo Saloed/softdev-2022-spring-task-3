@@ -17,11 +17,9 @@ public class ViewManager {
     private AnchorPane gamePane;
     private Scene gameScene;
     private Stage gameStage;
-    private int squareCount;
     LifeBar lifeBar;
     Combo combo;
     private final int glowTime;
-    private Timer glowTimer;
     private Square[] squares;
     private GameListener listener;
 
@@ -33,18 +31,16 @@ public class ViewManager {
         this.combo = new Combo(this);
         gameStage.setScene(gameScene);
         gameStage.show();
-        squareCount = 3;
         glowTime = 1;
         combo.activateCombo(gamePane);
     }
 
     public void assignListener(GameListener listener) {
         this.listener = listener;
-        createSquares(squareCount, 100);
+        createSquares(listener.getSquareCount(), 100);
     }
 
     public void nextStage() {
-        stopGlow();
         gameStage.close();
         this.gamePane = new AnchorPane();
         width += 98;
@@ -55,10 +51,8 @@ public class ViewManager {
         combo.activateCombo(gamePane);
         lifeBar.deactivate();
         lifeBar.activate();
-        glowTimer.cancel();
         gameStage.show();
-        squareCount += 1;
-        createSquares(squareCount, 300);
+        createSquares(listener.getSquareCount(), 300);
     }
 
     public void createSquares(int squareCount, int delay) {
@@ -76,7 +70,7 @@ public class ViewManager {
             x = 55 + 15 * (squareCount - 3);
             y += 70;
         }
-        activateGlow(squares, delay);
+        listener.startGame();
     }
 
     public void click(int score) {
@@ -101,20 +95,8 @@ public class ViewManager {
         Platform.runLater(() -> combo.getText().setText(score + "   " + "0X"));
     }
 
-    public void increaseSpeed() {
-        glowTimer.cancel();
-        activateGlow(squares, 0);
-    }
-
-    public void activateGlow(Square[] squares, int delay) {
-        TimerTask glowTask = new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> squares[Logic.random(squares)].glow(glowTime));
-            }
-        };
-        glowTimer = new Timer();
-        glowTimer.schedule(glowTask, delay, listener.getActivationTime());
+    public void activateGlow(int squareNumber) {
+        squares[squareNumber].glow(glowTime);
     }
 
     public int getScore() {
@@ -126,8 +108,10 @@ public class ViewManager {
     }
 
     public void stopGlow() {
-        for (int i = 0; i <= squareCount * squareCount - 1; i++) {
+        for (int i = 0; i <= listener.getSquareCount() * listener.getSquareCount() - 1; i++) {
             squares[i].normalState();
         }
     }
+
+
 }

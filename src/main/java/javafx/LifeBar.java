@@ -10,15 +10,14 @@ import java.util.TimerTask;
 public class LifeBar {
     private long life;
     private final ViewManager viewManager;
-    private int burn;
     private Double healthPercentage;
     private Rectangle healthBar;
     private Timer lifeTimer;
+    private int burn;
 
     public LifeBar(ViewManager viewManager) {
         this.viewManager = viewManager;
         this.life = 100;
-        burn = 1;
         activate();
     }
 

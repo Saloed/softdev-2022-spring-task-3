@@ -46,6 +46,7 @@ public class ChooseGameModeScene {
             ViewManager viewManager = new ViewManager();
             Logic logic = new Logic(speedChange, stageChange);
             GameListener listener = new GameListener(viewManager, logic);
+            logic.assignListener(listener);
             viewManager.assignListener(listener);
         });
         Label speedLabel1 = Menu.ui.createLabel("Do you want to scale the square speed", 3, 15);

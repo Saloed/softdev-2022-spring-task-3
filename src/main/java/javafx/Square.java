@@ -14,7 +14,7 @@ public class Square extends Button {
     private final String glowingSquareStyle = "-fx-background-color: transparent; -fx-background-image: url(file:src/main/java/resources/glowingSquare.png);";
     private final String clickedGlowingSquareStyle = "-fx-background-color: transparent; -fx-background-image: url(file:src/main/java/resources/clickedGlowingSquare.png);";
     private Timer fadeTimer;
-    private GameListener listener;
+    private final GameListener listener;
 
     public Square(double x, double y, GameListener listener) {
         this.listener = listener;
