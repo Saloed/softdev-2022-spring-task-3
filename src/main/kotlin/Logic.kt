@@ -3,10 +3,9 @@ import kotlin.math.roundToInt
 
 val listOfNumbers = listOf("8", "7", "6", "5", "4", "3", "2", "1")
 val listOfLetters = listOf("A", "B", "C", "D", "E", "F", "G", "H")
-var turn = mutableListOf("black")
-var delete = mutableSetOf<String>()
+val turn = mutableListOf("black")
 val listOfOccupiedCells: MutableList<String> =
-    (WhiteCheckers().coordinates + BlackCheckers().coordinates).toMutableList()
+    (coordinatesW + coordinatesB).toMutableList()
 
 fun checkOccupiedCells(old: Pair<Double, Double>, new: Pair<Double, Double>, queen: Boolean): MutableList<String> {
     val letterOld = listOfLetters[(old.first / 70).roundToInt()]
@@ -24,88 +23,19 @@ fun isQueen(white: String, y: Double): Boolean {
 }
 
 fun resetCoordinates(cord: String, loc: List<String>): Pair<Double, Double> {
-    val ind = (WhiteCheckers().coordinates + BlackCheckers().coordinates).indexOf(cord)
+    val ind = (coordinatesW + coordinatesB).indexOf(cord)
     val x = Cell(loc[ind]).centerX
     val y = Cell(loc[ind]).centerY
     return Pair(x, y)
 }
 
-fun update(oldCordX: Double, oldCordY: Double, x: Double, y:Double, queen: Boolean, white: String, cord:String) {
-    val ind = location.indexOf(
-        checkOccupiedCells(
-            Pair(oldCordX, oldCordY),
-            Pair(x, y),
-            queen
-        )[0]
-    )
-    location.add(
-        ind,
-        checkOccupiedCells(
-            Pair(oldCordX, oldCordY),
-            Pair(x, y),
-            queen
-        )[1]
-    )
-    location.remove(
-        checkOccupiedCells(
-            Pair(oldCordX, oldCordY),
-            Pair(x, y),
-            queen
-        )[0]
-    )
-    var old = ""
-    var new = ""
-    if (!queen) {
-        old = eat(oldCordX, oldCordY, x, y, location, white).first
-        new = eat(oldCordX, oldCordY, x, y, location, white).second
-    } else {
-        old = eatForQueen(oldCordX, oldCordY, x, y, location, white).first
-        new = eatForQueen(oldCordX, oldCordY, x, y, location, white).second
-    }
-    val index = location.indexOf(new)
-    delete += old
-    if (index != -1) location.add(index, "")
-    location.remove(new)
-    val c = if (turnWhite.size > 1) turnWhite[1]
-    else turnWhite[0]
-    if (cord in activeCh) active = cord
-    activeCh = checkDelete(location, c, active, queen)
-    if (activeCh.isNotEmpty()) {
-        if ("p" !in turnWhite) turnWhite.add(0, "p")
-        if (cord !in activeCh) {
-            if (turnWhite[1] == "white") turnWhite.add("black")
-            if (turnWhite[1] == "black") turnWhite.add("white")
-            turnWhite.removeAt(1)
-        }
-    } else {
-        active = ""
-        if ("p" in turnWhite) turnWhite.remove("p")
-        if (turnWhite[0] == "white") turnWhite.add("black")
-        if (turnWhite[0] == "black") turnWhite.add("white")
-        turnWhite.removeAt(0)
-    }
-    if (!queen) {
-        if (isQueen(white, y)) {
-            val i =
-                (WhiteCheckers().coordinates + BlackCheckers().coordinates).indexOf(cord)
-            val temp = location[ind]
-            location[i] = temp + "q"
-        }
-    }
-    val t = gameOver(location)
-    if (t != "") {
-        openDialog.value = true
-        text = t
-    }
-}
-
 fun checkDelete(loc: List<String>, turn: String, active: String, queen: Boolean): Set<String> {
     val result = mutableSetOf<String>()
     if (active != "") {
-        val ind = (WhiteCheckers().coordinates + BlackCheckers().coordinates).indexOf(active)
+        val ind = (coordinatesW + coordinatesB).indexOf(active)
         val x = Cell(loc[ind]).centerX
         val y = Cell(loc[ind]).centerY
-        val wh = if (active in WhiteCheckers().coordinates) "white" else "black"
+        val wh = if (active in coordinatesW) "white" else "black"
         val list = allowedCells(Pair(x, y), wh, loc, queen)
         if (hasDeleted(list, x)) {
             result.add(active)
@@ -120,7 +50,7 @@ fun checkDelete(loc: List<String>, turn: String, active: String, queen: Boolean)
                     val y = Cell(it).centerY
                     val list = allowedCells(Pair(x, y), wh, loc, it.contains("q"))
                     if (hasDeleted(list, x)) {
-                        result.add((WhiteCheckers().coordinates + BlackCheckers().coordinates)[index])
+                        result.add((coordinatesW + coordinatesB)[index])
                     }
                 }
             }
@@ -145,38 +75,33 @@ fun allowedStep(cord: String, set: Set<String>): Boolean {
     return cord in set
 }
 
+fun repeat(letter: String, number: String, loc: List<String>): Pair<String, String> {
+    var ind = loc.indexOf(letter + number)
+    if (ind == -1) ind = loc.indexOf(letter + number + "q")
+    val new = if (loc[ind].contains("q")) letter + number + "q" else letter + number
+    return Pair((coordinatesW + coordinatesB)[ind], new)
+}
+
 fun eatForQueen(oldPosX: Double, oldPosY: Double, posX: Double, posY: Double, loc: List<String>, white: String): Pair<String, String> {
     if (posX - oldPosX > 80 && posY - oldPosY > 80) {
         val letter = listOfLetters[((posX - 70.0) / 70).roundToInt()]
         val number = listOfNumbers[((posY - 70.0) / 70).roundToInt()]
-        var ind = loc.indexOf(letter + number)
-        if (ind == -1) ind = loc.indexOf(letter + number + "q")
-        val new = if (loc[ind].contains("q")) letter + number + "q" else letter + number
-        return Pair((WhiteCheckers().coordinates + BlackCheckers().coordinates)[ind], new)
+        return repeat(letter, number, loc)
     }
     if (posX - oldPosX < -80 && posY - oldPosY > 80) {
         val letter = listOfLetters[((posX + 70.0) / 70).roundToInt()]
         val number = listOfNumbers[((posY - 70.0) / 70).roundToInt()]
-        var ind = loc.indexOf(letter + number)
-        if (ind == -1) ind = loc.indexOf(letter + number + "q")
-        val new = if (loc[ind].contains("q")) letter + number + "q" else letter + number
-        return Pair((WhiteCheckers().coordinates + BlackCheckers().coordinates)[ind], new)
+        return repeat(letter, number, loc)
     }
     if (posX - oldPosX > 80 && posY - oldPosY < -80) {
         val letter = listOfLetters[((posX - 70.0) / 70).roundToInt()]
         val number = listOfNumbers[((posY + 70.0) / 70).roundToInt()]
-        var ind = loc.indexOf(letter + number)
-        if (ind == -1) ind = loc.indexOf(letter + number + "q")
-        val new = if (loc[ind].contains("q")) letter + number + "q" else letter + number
-        return Pair((WhiteCheckers().coordinates + BlackCheckers().coordinates)[ind], new)
+        return repeat(letter, number, loc)
     }
     if (posX - oldPosX < -80 && posY - oldPosY < -80) {
         val letter = listOfLetters[((posX + 70.0) / 70).roundToInt()]
         val number = listOfNumbers[((posY + 70.0) / 70).roundToInt()]
-        var ind = loc.indexOf(letter + number)
-        if (ind == -1) ind = loc.indexOf(letter + number + "q")
-        val new = if (loc[ind].contains("q")) letter + number + "q" else letter + number
-        return Pair((WhiteCheckers().coordinates + BlackCheckers().coordinates)[ind], new)
+        return repeat(letter, number, loc)
     }
     return Pair("", "")
 }
@@ -201,10 +126,10 @@ fun gameOver(loc: List<String>): String {
 }
 
 fun restart() {
-    activeCh = setOf()
-    location = (WhiteCheckers().coordinates + BlackCheckers().coordinates).toMutableList()
-    delete = mutableSetOf()
-    turnWhite = mutableListOf("black")
+    activeCh.value = setOf()
+    location.value = (coordinatesW + coordinatesB).toMutableList()
+    delete.value = mutableSetOf()
+    turnWhite.value = mutableListOf("black")
     restart.value = true
 }
 
@@ -220,36 +145,24 @@ fun eat(
         if (posX - oldPosX > 80) {
             val letter = listOfLetters[((posX - 70.0) / 70).roundToInt()]
             val number = listOfNumbers[((posY + 70.0) / 70).roundToInt()]
-            var ind = loc.indexOf(letter + number)
-            if (ind == -1) ind = loc.indexOf(letter + number + "q")
-            val new = if (loc[ind].contains("q")) letter + number + "q" else letter + number
-            return Pair((WhiteCheckers().coordinates + BlackCheckers().coordinates)[ind], new)
+            return repeat(letter, number, loc)
         }
         if (posX - oldPosX < -80) {
             val letter = listOfLetters[((posX + 70.0) / 70).roundToInt()]
             val number = listOfNumbers[((posY + 70.0) / 70).roundToInt()]
-            var ind = loc.indexOf(letter + number)
-            if (ind == -1) ind = loc.indexOf(letter + number + "q")
-            val new = if (loc[ind].contains("q")) letter + number + "q" else letter + number
-            return Pair((WhiteCheckers().coordinates + BlackCheckers().coordinates)[ind], new)
+            return repeat(letter, number, loc)
         }
     }
     if (white == "black") {
         if (posX - oldPosX > 80) {
             val letter = listOfLetters[((posX - 70.0) / 70).roundToInt()]
             val number = listOfNumbers[((posY - 70.0) / 70).roundToInt()]
-            var ind = loc.indexOf(letter + number)
-            if (ind == -1) ind = loc.indexOf(letter + number + "q")
-            val new = if (loc[ind].contains("q")) letter + number + "q" else letter + number
-            return Pair((WhiteCheckers().coordinates + BlackCheckers().coordinates)[ind], new)
+            return repeat(letter, number, loc)
         }
         if (posX - oldPosX < -80) {
             val letter = listOfLetters[((posX + 70.0) / 70).roundToInt()]
             val number = listOfNumbers[((posY - 70.0) / 70).roundToInt()]
-            var ind = loc.indexOf(letter + number)
-            if (ind == -1) ind = loc.indexOf(letter + number + "q")
-            val new = if (loc[ind].contains("q")) letter + number + "q" else letter + number
-            return Pair((WhiteCheckers().coordinates + BlackCheckers().coordinates)[ind], new)
+            return repeat(letter, number, loc)
         }
     }
     return Pair("", "")
