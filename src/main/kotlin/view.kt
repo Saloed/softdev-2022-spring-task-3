@@ -179,13 +179,14 @@ fun menu() {
 @Composable
 fun setCh() {
     if (restart.value) restart.value = false
-    for (elem in coordinatesB + coordinatesW) {
+    for (elem in listOfOccupiedCells) {
         buildCheckers(elem, delete.value.contains(elem))
     }
 }
 
 val openDialog = mutableStateOf(false)
 val text = mutableStateOf("")
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun dialog() {
@@ -210,25 +211,31 @@ fun dialog() {
         )
     }
 }
+
 val turnWhite = mutableStateOf(turn)
-val activeCh = mutableStateOf(setOf<String>())
-val delete = mutableStateOf(mutableSetOf<String>())
-val location = mutableStateOf(listOfOccupiedCells)
+val activeCh = mutableStateOf(setOf<Coordinates>())
+val delete = mutableStateOf(mutableSetOf<Coordinates>())
+val location = mutableStateOf(listOfOccupiedCells.toMutableList())
+val listOfQueen = mutableStateOf(mutableSetOf<Coordinates>())
+
+enum class Turn {
+    White, Black, P
+}
+
 @Composable
-fun buildCheckers(cord: String, del: Boolean): List<String> {
-    val white = if (cord in coordinatesW) "white" else "black"
+fun buildCheckers(cord: Coordinates, del: Boolean): List<String> {
+    val white = if (listOfOccupiedCells.indexOf(cord) < 12) Turn.White else Turn.Black
     if (!del) {
         var queen by remember { mutableStateOf(false) }
         val result by remember { mutableStateOf(listOf<String>()) }
         var xOffset by remember { mutableStateOf(Cell(cord).centerX) }
         var yOffset by remember { mutableStateOf(Cell(cord).centerY) }
         val x = resetCoordinates(cord, location.value)
-        var active = ""
         xOffset = x.first
         yOffset = x.second
         var focused by remember { mutableStateOf(false) }
-        var list = setOf<String>()
-        val img = if (white == "white") {
+        var list = setOf<Coordinates>()
+        val img = if (white == Turn.White) {
             if (!queen) imageW else queenImageW
         } else {
             if (!queen) imageB else queenImageB
@@ -245,7 +252,7 @@ fun buildCheckers(cord: String, del: Boolean): List<String> {
                 var oldCordY = yOffset
                 detectDragGestures(
                     onDragStart = {
-                        list = allowedCells(Pair(xOffset, yOffset), white, location.value, queen)
+                        list = allowedCells(getCoordinates(Pair(xOffset, yOffset)), white, location.value, queen)
                     },
                     onDrag = { _, distance ->
                         if (turnWhite.value[0] == white || cord in activeCh.value) {
@@ -257,76 +264,22 @@ fun buildCheckers(cord: String, del: Boolean): List<String> {
                     onDragEnd = {
                         if (turnWhite.value[0] == white || cord in activeCh.value) {
                             focused = false
-                            val coordinate = getCord(xOffset, yOffset)
-                            if (allowedStep(coordinate, list)) {
+                            val coordinate = magnet(xOffset, yOffset)
+                            if (coordinate in list) {
                                 xOffset = Cell(coordinate).centerX
                                 yOffset = Cell(coordinate).centerY
-                                val ind = location.value.indexOf(
-                                    checkOccupiedCells(
-                                        Pair(oldCordX, oldCordY),
-                                        Pair(xOffset, yOffset),
-                                        queen
-                                    )[0]
+                                update(
+                                    getCoordinates(Pair(xOffset, yOffset)),
+                                    queen,
+                                    getCoordinates(Pair(oldCordX, oldCordY)),
+                                    white,
+                                    cord
                                 )
-                                location.value.add(
-                                    ind,
-                                    checkOccupiedCells(
-                                        Pair(oldCordX, oldCordY),
-                                        Pair(xOffset, yOffset),
-                                        queen
-                                    )[1]
-                                )
-                                location.value.remove(
-                                    checkOccupiedCells(
-                                        Pair(oldCordX, oldCordY),
-                                        Pair(xOffset, yOffset),
-                                        queen
-                                    )[0]
-                                )
-                                var old = ""
-                                var new = ""
                                 if (!queen) {
-                                    old = eat(oldCordX, oldCordY, xOffset, yOffset, location.value, white).first
-                                    new = eat(oldCordX, oldCordY, xOffset, yOffset, location.value, white).second
-                                } else {
-                                    old = eatForQueen(oldCordX, oldCordY, xOffset, yOffset, location.value, white).first
-                                    new = eatForQueen(oldCordX, oldCordY, xOffset, yOffset, location.value, white).second
-                                }
-                                val index = location.value.indexOf(new)
-                                delete.value += old
-                                if (index != -1) location.value.add(index, "")
-                                location.value.remove(new)
-                                val c = if (turnWhite.value.size > 1) turnWhite.value[1]
-                                else turnWhite.value[0]
-                                if (cord in activeCh.value) active = cord
-                                activeCh.value = checkDelete(location.value, c, active, queen)
-                                if (activeCh.value.isNotEmpty()) {
-                                    if ("p" !in turnWhite.value) turnWhite.value.add(0, "p")
-                                    if (cord !in activeCh.value) {
-                                        if (turnWhite.value[1] == "white") turnWhite.value.add("black")
-                                        if (turnWhite.value[1] == "black") turnWhite.value.add("white")
-                                        turnWhite.value.removeAt(1)
+                                    if (isQueen(white, getCoordinates(Pair(xOffset, yOffset)))) {
+                                        listOfQueen.value.add(cord)
                                     }
-                                } else {
-                                    active = ""
-                                    if ("p" in turnWhite.value) turnWhite.value.remove("p")
-                                    if (turnWhite.value[0] == "white") turnWhite.value.add("black")
-                                    if (turnWhite.value[0] == "black") turnWhite.value.add("white")
-                                    turnWhite.value.removeAt(0)
-                                }
-                                if (!queen) {
-                                    if (isQueen(white, yOffset)) {
-                                        val i =
-                                            (coordinatesW + coordinatesB).indexOf(cord)
-                                        val temp = location.value[ind]
-                                        location.value[i] = temp + "q"
-                                    }
-                                    queen = isQueen(white, yOffset)
-                                }
-                                val t = gameOver(location.value)
-                                if (t != "") {
-                                    openDialog.value = true
-                                    text.value = t
+                                    queen = isQueen(white, getCoordinates(Pair(xOffset, yOffset)))
                                 }
                             } else {
                                 xOffset = oldCordX
@@ -342,6 +295,33 @@ fun buildCheckers(cord: String, del: Boolean): List<String> {
         return result
     }
     return listOf()
+}
+
+fun magnet(posX: Double, posY: Double): Coordinates {
+    if (posX > 0 && posX < 530 && posY > 0 && posY < 540) {
+        val x = listOfLetters1[((posX - 20) / 70).roundToInt()]
+        val y = listOfNumbers1[((posY - 20) / 70).roundToInt()]
+        val res = try {
+            Coordinates.valueOf(x.toString() + y.toString())
+        } catch (e: IllegalArgumentException) {
+            Coordinates.No
+        }
+        return res
+    }
+    return Coordinates.No
+}
+
+fun getCoordinates(cord: Pair<Double, Double>): Coordinates {
+    val x = listOfLetters1[(cord.first / 70).roundToInt()]
+    val y = listOfNumbers1[(cord.second / 70).roundToInt()]
+    return Coordinates.valueOf(x.toString() + y.toString())
+}
+
+fun resetCoordinates(cord: Coordinates, loc: List<Coordinates>): Pair<Double, Double> {
+    val ind = listOfOccupiedCells.indexOf(cord)
+    val x = Cell(loc[ind]).centerX
+    val y = Cell(loc[ind]).centerY
+    return Pair(x, y)
 }
 
 private fun getColor(column: Int): Color {

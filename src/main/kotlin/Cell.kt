@@ -1,4 +1,4 @@
-class Cell(cord: String) {
-    var centerX = listOfLetters.indexOf(cord[0].toString()) * 70.0 + 22
-    var centerY = listOfNumbers.indexOf(cord[1].toString()) * 70.0 + 22
+class Cell(cord: Coordinates) {
+    var centerX = listOfLetters1.indexOf(Letters.valueOf(cord.toString()[0].toString())) * 70.0 + 22
+    var centerY = listOfNumbers1.indexOf(cord.toString()[1].digitToInt()) * 70.0 + 22
 }
