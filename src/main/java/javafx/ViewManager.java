@@ -1,14 +1,10 @@
 package javafx;
 
 import controller.GameListener;
-import core.Logic;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ViewManager {
 
@@ -22,6 +18,10 @@ public class ViewManager {
     private final int glowTime;
     private Square[] squares;
     private GameListener listener;
+    private final static int xOffset = 55;
+    private final static int yOffset = 55;
+    private final static int newStageOffset = 15;
+    private final static int distanceBetweenSquares = 70;
 
     public ViewManager() {
         this.gamePane = new AnchorPane();
@@ -37,7 +37,7 @@ public class ViewManager {
 
     public void assignListener(GameListener listener) {
         this.listener = listener;
-        createSquares(listener.getSquareCount(), 100);
+        createSquares(listener.getSquareCount());
     }
 
     public void nextStage() {
@@ -49,33 +49,31 @@ public class ViewManager {
         gameStage = new Stage();
         gameStage.setScene(gameScene);
         combo.activateCombo(gamePane);
-        lifeBar.deactivate();
         lifeBar.activate();
         gameStage.show();
-        createSquares(listener.getSquareCount(), 300);
+        createSquares(listener.getSquareCount());
     }
 
-    public void createSquares(int squareCount, int delay) {
-        double x = 55 + 15 * (squareCount - 3);
-        double y = 55;
+    public void createSquares(int squareCount) {
+        double x = xOffset + newStageOffset * (squareCount - 3);
+        double y = yOffset;
         this.squares = new Square[squareCount * squareCount];
         int count = 0;
         for (int k = 1; k <= squareCount; k++) {
             for (int i = 1; i <= squareCount; i++) {
                 squares[count] = new Square(x, y, listener);
                 gamePane.getChildren().add(squares[count]);
-                x += 70;
+                x += distanceBetweenSquares;
                 count += 1;
             }
-            x = 55 + 15 * (squareCount - 3);
-            y += 70;
+            x = xOffset + newStageOffset * (squareCount - 3);
+            y += distanceBetweenSquares;
         }
         listener.startGame();
     }
 
     public void click(int score) {
         combo.getText().setText(score + "   " + combo.getCombo() + "X");
-        lifeBar.increase();
     }
 
     public AnchorPane getPane() {
@@ -84,10 +82,6 @@ public class ViewManager {
 
     public void close() {
         gameStage.close();
-    }
-
-    public void setBurn(int burn) {
-        lifeBar.setBurn(burn);
     }
 
     public void miss(int score) {
@@ -114,4 +108,7 @@ public class ViewManager {
     }
 
 
+    public void setLife(int life) {
+        lifeBar.setHealth(life);
+    }
 }

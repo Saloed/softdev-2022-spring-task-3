@@ -19,6 +19,8 @@ public class Logic {
     private GameListener listener;
     private int squareCount;
     private Timer glowTimer;
+    private int life;
+    private Timer lifeTimer;
 
     public Logic(boolean speedChange, boolean stageChange) {
         this.speedChange = speedChange;
@@ -30,31 +32,30 @@ public class Logic {
         difMultiplier = 1;
         stageLevel = 1;
         burn = 1;
+        life = 100;
     }
 
     public void assignListener(GameListener listener) {
         this.listener = listener;
-        listener.setBurn(burn);
     }
 
     public void click() {
         combo += 1;
         score += combo;
+        increaseLife();
         if (score > difMultiplier * 300) {
             difMultiplier += 1;
             if (burn < 17) {
                 burn += 1;
-                if (listener != null) listener.setBurn(burn);
             }
             if (burn >= 19) {
                 burn = 20;
-                if (listener != null) listener.setBurn(burn);
             }
         }
         if (combo % 10 == 0 && activationTime > 100 && speedChange) {
             activationTime -= 50;
-            glowTimer.cancel();
-            activateGlow();
+            if (glowTimer != null) glowTimer.cancel();
+            activateGlow(0);
         }
         if (score > stageLevel * 500 && stageLevel < 3 && stageChange) {
             if (listener != null) listener.stopGlow();
@@ -71,6 +72,8 @@ public class Logic {
     public void miss() {
         combo = 0;
         activationTime = 500;
+        if (glowTimer != null) glowTimer.cancel();
+        activateGlow(100);
     }
 
 
@@ -78,16 +81,45 @@ public class Logic {
         return new Random().nextInt(array.length);
     }
 
-    public void activateGlow() {
+    public void activateGlow(int delay) {
         Integer[] squares = new Integer[squareCount * squareCount];
         TimerTask glowTask = new TimerTask() {
             @Override
             public void run() {
-                listener.activateGLow(random(squares));
+                if (listener != null) listener.activateGLow(random(squares));
             }
         };
         glowTimer = new Timer();
-        glowTimer.schedule(glowTask, 300, activationTime);
+        glowTimer.schedule(glowTask, delay, activationTime);
+        if (lifeTimer == null) activateLife();
+    }
+
+    public void activateLife() {
+        if (lifeTimer != null) lifeTimer.cancel();
+        this.lifeTimer = new Timer();
+        TimerTask lifeTask = new TimerTask() {
+            @Override
+            public void run() {
+                life -= burn;
+                listener.setLifeBar(life);
+                if (life <= 0) {
+                    lifeTimer.cancel();
+                    Platform.runLater(() -> listener.endGame());
+                }
+            }
+        };
+        lifeTimer.schedule(lifeTask, 1000, 100);
+    }
+
+    public void increaseLife() {
+        if (life > 90) {
+            life = 100;
+        }
+        else {
+            life += 10;
+        }
+
+        if (listener != null) listener.setLifeBar(life);
     }
 
     public int getScore() {
@@ -130,4 +162,11 @@ public class Logic {
         return squareCount;
     }
 
+    public int getLife() {
+        return life;
+    }
+
+    public void setLife(int life) {
+        this.life = life;
+    }
 }

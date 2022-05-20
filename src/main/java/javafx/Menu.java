@@ -1,5 +1,6 @@
 package javafx;
 
+import com.sun.javafx.font.FontResource;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -10,13 +11,14 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 
 public class Menu {
     public static class ui {
-        private static final String buttonPressedStyle = "-fx-background-color: transparent; -fx-background-image: url(file:src/main/java/resources/PressedButton.png);";
-        private static final String buttonStyle = "-fx-background-color: transparent; -fx-background-image: url(file:src/main/java/resources/Button.png);";
-        private static final String fontPath = "src/main/java/resources/kenvector_future.ttf";
+        private static final String buttonPressedStyle = "-fx-background-color: transparent; -fx-background-image: url('PressedButton.png');";
+        private static final String buttonStyle = "-fx-background-color: transparent; -fx-background-image: url('Button.png');";
+        private static final String fontPath = "kenvector_future.ttf";
 
         public static Button createButton(String text, double x, double y) {
             Button button = new Button(text);
@@ -26,8 +28,10 @@ public class Menu {
             button.setFocusTraversable(false);
             button.setStyle(buttonStyle);
             try {
-                button.setFont(Font.loadFont(new FileInputStream(fontPath), 15));
-            } catch (FileNotFoundException e) {
+                ClassLoader loader = ui.class.getClassLoader();
+                InputStream fontStream = loader.getResourceAsStream(fontPath);
+                button.setFont(Font.loadFont(fontStream, 15));
+            } catch (NullPointerException e) {
                 button.setFont(Font.font("Verdana", 15));
             }
             button.setOnMousePressed(event -> {
@@ -52,9 +56,11 @@ public class Menu {
             label.setLayoutY(y);
             label.setText(text);
             try {
-                label.setFont(Font.loadFont(new FileInputStream(fontPath), 11));
-            } catch (FileNotFoundException e) {
-                label.setFont(Font.font("Verdana", 8));
+                ClassLoader loader = ui.class.getClassLoader();
+                InputStream fontStream = loader.getResourceAsStream(fontPath);
+                label.setFont(Font.loadFont(fontStream, 11));
+            } catch (NullPointerException e) {
+                label.setFont(Font.font("Verdana", 11));
             }
             return label;
         }
@@ -64,9 +70,11 @@ public class Menu {
             button.setLayoutX(x);
             button.setLayoutY(y);
             try {
-                button.setFont(Font.loadFont(new FileInputStream(fontPath), 11));
-            } catch (FileNotFoundException e) {
-                button.setFont(Font.font("Verdana", 8));
+                ClassLoader loader = ui.class.getClassLoader();
+                InputStream fontStream = loader.getResourceAsStream(fontPath);
+                button.setFont(Font.loadFont(fontStream, 11));
+            } catch (NullPointerException e) {
+                button.setFont(Font.font("Verdana", 11));
             }
             return button;
         }
@@ -83,7 +91,7 @@ public class Menu {
         });
         start.setOnAction(event -> {
             stage.close();
-            ChooseGameModeScene scene = new ChooseGameModeScene();
+            new ChooseGameModeScene();
         });
         root.getChildren().add(start);
         root.getChildren().add(rules);

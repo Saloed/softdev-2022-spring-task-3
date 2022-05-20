@@ -17,12 +17,15 @@ public class GameEndScene {
     Scene scene;
     Stage stage;
 
-    public GameEndScene(ViewManager viewManager) {
+    public GameEndScene() {
         this.pane = new AnchorPane();
         int width = 300;
         int height = 300;
         this.scene = new Scene(pane, width, height);
         this.stage = new Stage();
+
+    }
+    public void activate(ViewManager viewManager) {
         stage.setScene(scene);
         stage.show();
         pane.setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, new CornerRadii(0), new Insets(0))));
@@ -30,7 +33,7 @@ public class GameEndScene {
         results.setText("" + viewManager.getScore());
         Button exit = ui.createButton("Exit", 55, 200);
         exit.setOnAction(event -> {
-            viewManager.close();
+            stage.close();
             System.exit(0);
         });
         pane.getChildren().add(results);

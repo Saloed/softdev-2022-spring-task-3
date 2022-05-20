@@ -1,6 +1,7 @@
 package controller;
 
 import core.Logic;
+import javafx.GameEndScene;
 import javafx.ViewManager;
 
 public class GameListener {
@@ -32,10 +33,6 @@ public class GameListener {
         viewManager.activateGlow(squareNumber);
     }
 
-    public void setBurn(int burn) {
-        viewManager.setBurn(burn);
-    }
-
 
     public int getScore() {
         return logic.getScore();
@@ -46,10 +43,20 @@ public class GameListener {
     }
 
     public void startGame() {
-        logic.activateGlow();
+        logic.activateGlow(500);
     }
 
     public void stopGlow() {
         viewManager.stopGlow();
+    }
+
+    public void endGame() {
+        viewManager.close();
+        GameEndScene endScene = new GameEndScene();
+        endScene.activate(viewManager);
+    }
+
+    public void setLifeBar(int life) {
+        viewManager.setLife(life);
     }
 }

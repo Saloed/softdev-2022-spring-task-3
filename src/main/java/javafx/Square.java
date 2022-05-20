@@ -9,10 +9,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Square extends Button {
-    private final String squareStyle = "-fx-background-color: transparent; -fx-background-image: url(file:src/main/java/resources/Square.png);";
-    private final String clickedSquareStyle = "-fx-background-color: transparent; -fx-background-image: url(file:src/main/java/resources/clickedSquare.png);";
-    private final String glowingSquareStyle = "-fx-background-color: transparent; -fx-background-image: url(file:src/main/java/resources/glowingSquare.png);";
-    private final String clickedGlowingSquareStyle = "-fx-background-color: transparent; -fx-background-image: url(file:src/main/java/resources/clickedGlowingSquare.png);";
+    private final String squareStyle = "-fx-background-color: transparent; -fx-background-image: url('/Square.png');";
+    private final String clickedSquareStyle = "-fx-background-color: transparent; -fx-background-image: url('/clickedSquare.png');";
+    private final String glowingSquareStyle = "-fx-background-color: transparent; -fx-background-image: url('/glowingSquare.png');";
+    private final String clickedGlowingSquareStyle = "-fx-background-color: transparent; -fx-background-image: url('/clickedGlowingSquare.png');";
     private Timer fadeTimer;
     private final GameListener listener;
 

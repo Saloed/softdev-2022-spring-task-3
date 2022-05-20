@@ -40,4 +40,15 @@ public class LogicTest {
         logic.nextStage();
         assertEquals(2, logic.getStageLevel());
     }
+    @Test
+    public void increaseLife() {
+        Logic logic = new Logic(true, true);
+        assertEquals(100, logic.getLife());
+        logic.setLife(85);
+        assertEquals(85, logic.getLife());
+        logic.increaseLife();
+        assertEquals(95, logic.getLife());
+        logic.increaseLife();
+        assertEquals(100, logic.getLife());
+    }
 }
