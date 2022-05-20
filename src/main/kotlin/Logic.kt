@@ -1,7 +1,5 @@
 import kotlin.math.abs
 
-val listOfNumbers = listOf("8", "7", "6", "5", "4", "3", "2", "1")
-val listOfLetters = listOf("A", "B", "C", "D", "E", "F", "G", "H")
 val turn = mutableListOf(Turn.Black)
 val listOfNumbers1 = listOf(8, 7, 6, 5, 4, 3, 2, 1)
 enum class Letters {
@@ -120,27 +118,27 @@ fun eatForQueen(oldCord: Coordinates, newCord: Coordinates, loc: List<Coordinate
     val oldY = listOfNumbers1.indexOf(oldCord.toString()[1].digitToInt())
     if (newX - oldX > 1 && newY - oldY < -1) {
         val letter = listOfLetters1[newX - 1].toString()
-        val number = listOfNumbers[newY + 1]
+        val number = listOfNumbers1[newY + 1]
         println(letter + number)
-        return repeat(letter, number, loc)
+        return repeat(letter, number.toString(), loc)
     }
     if (newX - oldX < -1 && newY - oldY < -1) {
         val letter = listOfLetters1[newX + 1].toString()
-        val number = listOfNumbers[newY + 1]
+        val number = listOfNumbers1[newY + 1]
         println(letter + number)
-        return repeat(letter, number, loc)
+        return repeat(letter, number.toString(), loc)
     }
     if (newX - oldX > 1 && newY - oldY > 1) {
         val letter = listOfLetters1[newX - 1].toString()
-        val number = listOfNumbers[newY - 1]
+        val number = listOfNumbers1[newY - 1]
         println(letter + number)
-        return repeat(letter, number, loc)
+        return repeat(letter, number.toString(), loc)
     }
     if (newX - oldX < -1 && newY - oldY > 1) {
         val letter = listOfLetters1[newX + 1].toString()
-        val number = listOfNumbers[newY - 1]
+        val number = listOfNumbers1[newY - 1]
         println(letter + number)
-        return repeat(letter, number, loc)
+        return repeat(letter, number.toString(), loc)
     }
     return Pair(Coordinates.No, Coordinates.No)
 }
@@ -182,6 +180,7 @@ fun restart() {
     delete.value = mutableSetOf()
     turnWhite.value = mutableListOf(Turn.Black)
     restart.value = true
+    listOfQueen.value = mutableSetOf()
 }
 
 fun eat(
@@ -196,25 +195,25 @@ fun eat(
     if (white == Turn.White) {
         if (newX - oldX > 1) {
             val letter = listOfLetters1[newX - 1].toString()
-            val number = listOfNumbers[newY + 1]
-            return repeat(letter, number, loc)
+            val number = listOfNumbers1[newY + 1]
+            return repeat(letter, number.toString(), loc)
         }
         if (newX - oldX < -1) {
             val letter = listOfLetters1[newX + 1].toString()
-            val number = listOfNumbers[newY + 1]
-            return repeat(letter, number, loc)
+            val number = listOfNumbers1[newY + 1]
+            return repeat(letter, number.toString(), loc)
         }
     }
     if (white == Turn.Black) {
         if (newX - oldX > 1) {
             val letter = listOfLetters1[newX - 1].toString()
-            val number = listOfNumbers[newY - 1]
-            return repeat(letter, number, loc)
+            val number = listOfNumbers1[newY - 1]
+            return repeat(letter, number.toString(), loc)
         }
         if (newX - oldX < -1) {
             val letter = listOfLetters1[newX + 1].toString()
-            val number = listOfNumbers[newY - 1]
-            return repeat(letter, number, loc)
+            val number = listOfNumbers1[newY - 1]
+            return repeat(letter, number.toString(), loc)
         }
     }
     return Pair(Coordinates.No, Coordinates.No)

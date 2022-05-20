@@ -85,6 +85,8 @@ fun grid() {
     }
 }
 
+val listOfNumbers = listOf("8", "7", "6", "5", "4", "3", "2", "1")
+val listOfLetters = listOf("A", "B", "C", "D", "E", "F", "G", "H")
 @Composable
 fun buildFrame() {
     LazyColumn(
