@@ -4,10 +4,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -23,6 +20,7 @@ import java.io.FileNotFoundException;
 
 public class Main extends Application {
 
+    private Integer size;
     private File file;
     private Button button;
     private ToggleGroup pics;
@@ -58,6 +56,11 @@ public class Main extends Application {
     }
 
     public void setSize(int size) {
+        this.size = size;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     public void setField(ToggleGroup field) {
@@ -66,18 +69,16 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        VBox r = size();
+        VBox fieldSize = size();
         BorderPane title = title();
         VBox pic = pic(stage);
         HBox root = new HBox();
-        root.getChildren().addAll(r, title, pic);
+        root.getChildren().addAll(fieldSize, title, pic);
         Scene scene = new Scene(root);
         root.setStyle("-fx-background: rgb(0,230,0);-fx-background-repeat: no-repeat;" +
                 "-fx-background-size: 500 500; -fx-background-position: center center;");
         stage.setTitle("Tag");
         stage.getIcons().add(new Image("file:res/icon.png"));
-        stage.setWidth(530);
-        stage.setHeight(530);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
@@ -88,6 +89,14 @@ public class Main extends Application {
                 if (getFile() != null) setImg(new ImageView(new Image(new FileInputStream(getFile()))));
                 else {
                     RadioButton button1 = (RadioButton) pics.getSelectedToggle();
+                    if (button1.getGraphic() == null) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Warning!");
+                        alert.setHeaderText("Image not selected");
+                        alert.setContentText("Please, choose your image or suggested one.");
+                        alert.showAndWait();
+
+                    }
                     setImg((ImageView) button1.getGraphic());
                 }
             } catch (FileNotFoundException fileNotFoundException) {
@@ -95,6 +104,10 @@ public class Main extends Application {
             }
             RadioButton button = (RadioButton) field.getSelectedToggle();
             setSize(Integer.parseInt(button.getId()));
+            stage.close();
+            getImg().setFitHeight(512);
+            getImg().setFitWidth(512);
+            NewGame start = new NewGame(getSize(), getImg().snapshot(null, null));
         });
     }
 
@@ -103,25 +116,25 @@ public class Main extends Application {
         final ToggleGroup group = new ToggleGroup();
         RadioButton rb1 = new RadioButton("3*3");
         rb1.setToggleGroup(group);
-        rb1.setId("9");
+        rb1.setId("3");
         rb1.setFont(new Font(20));
         rb1.setSelected(true);
         RadioButton rb2 = new RadioButton("4*4");
         rb2.setToggleGroup(group);
-        rb2.setId("16");
+        rb2.setId("4");
         rb2.setFont(new Font(20));
         RadioButton rb3 = new RadioButton("5*5");
         rb3.setToggleGroup(group);
-        rb3.setId("25");
+        rb3.setId("5");
         rb3.setFont(new Font(20));
         Label field = new Label("Choose field size");
         field.setFont(new Font(18));
-        VBox r = new VBox();
-        r.getChildren().addAll(field, rb1, rb2, rb3);
-        r.setSpacing(20);
-        r.setPadding(new Insets(230, 0, 0, 0));
+        VBox fieldSize = new VBox();
+        fieldSize.getChildren().addAll(field, rb1, rb2, rb3);
+        fieldSize.setSpacing(20);
+        fieldSize.setPadding(new Insets(230, 0, 0, 0));
         setField(group);
-        return r;
+        return fieldSize;
     }
 
     public BorderPane title() {
@@ -165,16 +178,25 @@ public class Main extends Application {
         RadioButton jpg1 = new RadioButton("");
         RadioButton jpg2 = new RadioButton("");
         RadioButton jpg3 = new RadioButton("");
-        Image standart = new Image("file:res/standart.png", 55, 55, false, false);
-        jpg1.setGraphic(new ImageView(standart));
+        Image standart = new Image("file:res/standart.png");
+        ImageView jpg12 = new ImageView(standart);
+        jpg12.setFitHeight(55);
+        jpg12.setFitWidth(55);
+        jpg1.setGraphic(jpg12);
         jpg1.setToggleGroup(images);
         jpg1.setSelected(true);
-        Image salo = new Image("file:res/salo.jpg", 55, 55, false, false);
-        jpg2.setGraphic(new ImageView(salo));
+        Image salo = new Image("file:res/salo.jpg");
+        jpg12 = new ImageView(salo);
+        jpg12.setFitHeight(55);
+        jpg12.setFitWidth(55);
+        jpg2.setGraphic(jpg12);
         jpg2.setToggleGroup(images);
-        Image loli = new Image("file:res/loli.jpg", 55, 55, false, false);
+        Image loli = new Image("file:res/loli.jpg");
+        jpg12 = new ImageView(loli);
+        jpg12.setFitHeight(55);
+        jpg12.setFitWidth(55);
         jpg3.setToggleGroup(images);
-        jpg3.setGraphic(new ImageView(loli));
+        jpg3.setGraphic(jpg12);
         HBox pics = new HBox(jpg1, jpg2, jpg3);
         VBox pic = new VBox(name, pics, chosen);
         pic.setPadding(new Insets(225, 0, 0, 0));
