@@ -4,4 +4,5 @@ module Test {
     requires javafx.fxml;
 
     opens graph;
+    opens logic;
 }
