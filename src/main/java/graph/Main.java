@@ -86,8 +86,10 @@ public class Main extends Application {
 
         getButton().setOnAction((final ActionEvent e) -> {
             try {
-                if (getFile() != null) setImg(new ImageView(new Image(new FileInputStream(getFile()))));
-                else {
+                if (getFile() != null) {
+                    setImg(new ImageView(new Image(new FileInputStream(getFile()))));
+                    proceedToTheGame(stage);
+                } else {
                     RadioButton button1 = (RadioButton) pics.getSelectedToggle();
                     if (button1.getGraphic() == null) {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -96,19 +98,24 @@ public class Main extends Application {
                         alert.setContentText("Please, choose your image or suggested one.");
                         alert.showAndWait();
 
+                    } else {
+                        setImg((ImageView) button1.getGraphic());
+                        proceedToTheGame(stage);
                     }
-                    setImg((ImageView) button1.getGraphic());
                 }
             } catch (FileNotFoundException fileNotFoundException) {
                 fileNotFoundException.printStackTrace();
             }
-            RadioButton button = (RadioButton) field.getSelectedToggle();
-            setSize(Integer.parseInt(button.getId()));
-            stage.close();
-            getImg().setFitHeight(512);
-            getImg().setFitWidth(512);
-            NewGame start = new NewGame(getSize(), getImg().snapshot(null, null));
         });
+    }
+
+    private void proceedToTheGame(Stage stage) {
+        RadioButton button = (RadioButton) field.getSelectedToggle();
+        setSize(Integer.parseInt(button.getId()));
+        stage.close();
+        getImg().setFitHeight(NewGame.STAGE_SIZE);
+        getImg().setFitWidth(NewGame.STAGE_SIZE);
+        NewGame start = new NewGame(getSize(), getImg().snapshot(null, null));
     }
 
 
@@ -178,8 +185,8 @@ public class Main extends Application {
         RadioButton jpg1 = new RadioButton("");
         RadioButton jpg2 = new RadioButton("");
         RadioButton jpg3 = new RadioButton("");
-        Image standart = new Image("file:res/standart.png");
-        ImageView jpg12 = new ImageView(standart);
+        Image colors = new Image("file:res/colors.jpg");
+        ImageView jpg12 = new ImageView(colors);
         jpg12.setFitHeight(55);
         jpg12.setFitWidth(55);
         jpg1.setGraphic(jpg12);
