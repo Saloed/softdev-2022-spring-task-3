@@ -1,3 +1,5 @@
+package logicTest;
+
 import logic.Logic;
 import org.junit.jupiter.api.Test;
 
