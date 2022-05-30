@@ -11,7 +11,7 @@ version '1.0'
 repositories {
     mavenCentral()
 }
-
+mainClassName = 'graph.Main'
 javafx {
     version = "17.0.1"
     modules = [ 'javafx.controls', 'javafx.fxml' ]
@@ -25,5 +25,14 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes "Main-Class": "graph.Main"
+    }
 
-mainClassName = 'graph.Main'
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+

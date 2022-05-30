@@ -113,9 +113,9 @@ public class Main extends Application {
         RadioButton button = (RadioButton) field.getSelectedToggle();
         setSize(Integer.parseInt(button.getId()));
         stage.close();
-        getImg().setFitHeight(NewGame.STAGE_SIZE);
-        getImg().setFitWidth(NewGame.STAGE_SIZE);
-        NewGame start = new NewGame(getSize(), getImg().snapshot(null, null));
+        getImg().setFitHeight(Game.STAGE_SIZE);
+        getImg().setFitWidth(Game.STAGE_SIZE);
+        Game start = new Game(getSize(), getImg().snapshot(null, null));
     }
 
 

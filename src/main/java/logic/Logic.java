@@ -1,6 +1,6 @@
 package logic;
 
-import graph.NewGame;
+import graph.Game;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -44,7 +44,7 @@ public class Logic {
         }
     }
 
-    private boolean isSolvable() {
+    public boolean isSolvable() {
         int countInversions = 0;
 
         for (int i = 0; i < nbTiles; i++) {
@@ -71,7 +71,7 @@ public class Logic {
 
 
     public void onClick(int x, int y) {
-        int gridSize = NewGame.STAGE_SIZE;
+        int gridSize = Game.STAGE_SIZE;
         int tileSize = gridSize / size;
         if (x < 0 || x > gridSize || y < 0 || y > gridSize)
             return;
