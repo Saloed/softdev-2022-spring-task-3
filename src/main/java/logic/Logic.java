@@ -1,8 +1,11 @@
 package logic;
 
+import graph.NewGame;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Logic {
+
     public int[] getTiles() {
         return tiles;
     }
@@ -10,14 +13,16 @@ public class Logic {
     private final int[] tiles;
     private final int nbTiles;
     private int blankPos;
+    private int size;
 
     public Logic(int size) {
         nbTiles = size * size - 1;
         tiles = new int[size * size];
         for (int i = 0; i < tiles.length; i++) {
-            tiles[i] = (i + 1) % tiles.length;
+            tiles[i] = i;
         }
         blankPos = tiles.length - 1;
+        this.size = size;
     }
 
     public void newGame() {
@@ -52,12 +57,12 @@ public class Logic {
         return countInversions % 2 == 0;
     }
 
-    private boolean isSolved() {
-        if (tiles[tiles.length - 1] != 0)
+    public boolean isSolved() {
+        if (tiles[tiles.length - 1] != size * size - 1)
             return false;
 
         for (int i = nbTiles - 1; i >= 0; i--) {
-            if (tiles[i] != i + 1)
+            if (tiles[i] != i)
                 return false;
         }
 
@@ -65,44 +70,28 @@ public class Logic {
     }
 
 
-//    public void onClick(int x, int y, int gridSize, int tileSize){
-//        // get position of the click
-//        int ex = x - margin;
-//        int ey = y - margin;
-//
-//// click in the grid ?
-//        if (ex < 0 || ex > gridSize  || ey < 0  || ey > gridSize)
-//            return;
-//
-//// get position in the grid
-//        int c1 = ex / tileSize;
-//        int r1 = ey / tileSize;
-//
-//// get position of the blank cell
-//        int c2 = blankPos % size;
-//        int r2 = blankPos / size;
-//
-//// we convert in the 1D coord
-//        int clickPos = r1 * size + c1;
-//
-//        int dir = 0;
-//
-//// we search direction for multiple tileView moves at once
-//        if (c1 == c2  &&  Math.abs(r1 - r2) > 0)
-//            dir = (r1 - r2) > 0 ? size : -size;
-//        else if (r1 == r2 && Math.abs(c1 - c2) > 0)
-//            dir = (c1 - c2) > 0 ? 1 : -1;
-//
-//        if (dir != 0) {
-//            // we move tiles in the direction
-//            do {
-//                int newBlankPos = blankPos + dir;
-//                tiles[blankPos] = tiles[newBlankPos];
-//                blankPos = newBlankPos;
-//            } while(blankPos != clickPos);
-//
-//            tiles[blankPos] = 0;
-//    }
-//
-//
+    public void onClick(int x, int y) {
+        int gridSize = NewGame.STAGE_SIZE;
+        int tileSize = gridSize / size;
+        if (x < 0 || x > gridSize || y < 0 || y > gridSize)
+            return;
+        int c1 = x / tileSize;
+        int r1 = y / tileSize;
+        int c2 = blankPos % size;
+        int r2 = blankPos / size;
+        int clickPos = r1 * size + c1;
+        int dir = 0;
+        if (c1 == c2 && Math.abs(r1 - r2) == 1)
+            dir = (r1 - r2) > 0 ? size : -size;
+        else if (r1 == r2 && Math.abs(c1 - c2) == 1)
+            dir = (c1 - c2) > 0 ? 1 : -1;
+        if (dir != 0) {
+            do {
+                int newBlankPos = blankPos + dir;
+                tiles[blankPos] = tiles[newBlankPos];
+                blankPos = newBlankPos;
+            } while (blankPos != clickPos);
+            tiles[blankPos] = size * size - 1;
+        }
+    }
 }
