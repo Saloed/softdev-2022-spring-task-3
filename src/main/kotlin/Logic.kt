@@ -1,18 +1,41 @@
 import kotlin.math.abs
 
-val turn = mutableListOf(Turn.Black)
-val listOfNumbers1 = listOf(8, 7, 6, 5, 4, 3, 2, 1)
-enum class Letters {
-    A, B, C, D, E, F, G, H
+enum class Turn {
+    White, Black, P
 }
-val listOfLetters1 = listOf(Letters.A, Letters.B, Letters.C, Letters.D, Letters.E, Letters.F, Letters.G, Letters.H)
+
 enum class Coordinates {
-    A1, C1, E1, G1, B2, D2, F2, H2, A3, C3, E3, G3,
-    B8, D8, F8, H8, A7, C7, E7, G7, B6, D6, F6, H6,
-    B4, D4, F4, H4, A5, C5, E5, G5,
+    B8, D8, F8, H8,
+    A7, C7, E7, G7,
+    B6, D6, F6, H6,
+    A5, C5, E5, G5,
+    B4, D4, F4, H4,
+    A3, C3, E3, G3,
+    B2, D2, F2, H2,
+    A1, C1, E1, G1,
     No
 }
-val listOfOccupiedCells: List<Coordinates> = listOf(
+
+fun coordinatesOfAllCells(): Map<Coordinates, Pair<Double, Double>> {
+    val result = mutableMapOf<Coordinates, Pair<Double, Double>>()
+    Coordinates.values().forEach {
+        if (it != Coordinates.No) {
+            val ordinal = it.ordinal
+            val x = if (((ordinal / 4) % 8 % 2) == 1) {
+                if (ordinal % 4 > 0) (ordinal % 4 * 2) * 70.0 + 22 else (ordinal % 4) * 70.0 + 22
+            } else {
+                if (ordinal % 4 > 0) (ordinal % 4 * 2) * 70.0 + 70 + 22 else (ordinal % 4) * 70.0 + 70 + 22
+            }
+            val y = ((ordinal / 4) % 8) * 70.0 + 22
+            result[it] = x to y
+        }
+    }
+    return result
+}
+
+val setOfAllCoordinates = coordinatesOfAllCells()
+
+val listOfOccupiedCells: MutableList<Coordinates> = mutableListOf(
     Coordinates.A1, Coordinates.C1, Coordinates.E1, Coordinates.G1,
     Coordinates.B2, Coordinates.D2, Coordinates.F2, Coordinates.H2,
     Coordinates.A3, Coordinates.C3, Coordinates.E3, Coordinates.G3,
@@ -21,72 +44,115 @@ val listOfOccupiedCells: List<Coordinates> = listOf(
     Coordinates.B6, Coordinates.D6, Coordinates.F6, Coordinates.H6,
 )
 
-fun update(cord: Coordinates, queen: Boolean, oldCord: Coordinates, white: Turn, defCord: Coordinates) {
-    var active = Coordinates.No
-    val ind = location.value.indexOf(oldCord)
-    location.value.removeAt(ind)
-    location.value.add(ind, cord)
-    val old: Coordinates
-    val new: Coordinates
-    if (!queen) {
-        old = eat(oldCord, cord, location.value, white).first
-        new = eat(oldCord, cord, location.value, white).second
-    } else {
-        old = eatForQueen(oldCord, cord, location.value).first
-        new = eatForQueen(oldCord, cord, location.value).second
+fun makeLocation(): Map<Coordinates, Coordinates> {
+    val loc = mutableMapOf<Coordinates, Coordinates>()
+    listOfOccupiedCells.forEach {
+        loc[it] = it
     }
-    val index = location.value.indexOf(new)
-    delete.value += old
-    if (index != -1) location.value.add(index, Coordinates.No)
-    location.value.remove(new)
-    val c = if (turnWhite.value.size > 1) turnWhite.value[1]
-    else turnWhite.value[0]
-    if (defCord in activeCh.value) active = defCord
-    activeCh.value = checkDelete(location.value, c, active, listOfQueen.value, queen)
-    if (activeCh.value.isNotEmpty()) {
-        if (Turn.P !in turnWhite.value) turnWhite.value.add(0, Turn.P)
-        if (defCord !in activeCh.value) {
-            if (turnWhite.value[1] == Turn.White) turnWhite.value.add(Turn.Black)
-            if (turnWhite.value[1] == Turn.Black) turnWhite.value.add(Turn.White)
-            turnWhite.value.removeAt(1)
+    return loc
+}
+
+fun step(newCord: Coordinates, oldCord: Coordinates, cord: Coordinates, loc: Map<Coordinates, Coordinates>): Map<Coordinates, Coordinates> {
+    val l = loc.toMutableMap()
+    l.remove(oldCord)
+    l[newCord] = cord
+    return l
+}
+
+fun eatenChecker(
+    cord: Coordinates,
+    oldCord: Coordinates,
+    loc: Map<Coordinates, Coordinates>,
+    white: Turn,
+    queen: Boolean
+): Pair<Coordinates, Coordinates> {
+    return eat(oldCord, cord, loc, white, queen)
+}
+
+fun removeEaten(
+    cord: Coordinates,
+    oldCord: Coordinates,
+    loc: Map<Coordinates, Coordinates>,
+    white: Turn,
+    queen: Boolean
+): Map<Coordinates, Coordinates> {
+    val l = loc.toMutableMap()
+    val new = eatenChecker(cord, oldCord, loc, white, queen).second
+    if (l.keys.contains(new)) {
+        l.remove(new)
+    }
+    return l
+}
+
+fun getActiveCh(
+    turn: List<Turn>,
+    actives: Set<Coordinates>,
+    active: Coordinates,
+    queen: Boolean,
+    listOfQueen: Set<Coordinates>,
+    loc: Map<Coordinates, Coordinates>
+): Set<Coordinates> {
+    var a = active
+    val c = if (turn.size > 1) turn.last()
+    else turn.first()
+    if (loc.containsKey(a)) {
+        a = if (loc[a]!! !in actives) Coordinates.No else a
+    }
+    return checkDelete(loc, c, a, listOfQueen, queen)
+}
+
+fun changeTurn(actives: Set<Coordinates>, turn: List<Turn>, defCord: Coordinates): List<Turn> {
+    val newTurn = turn.toMutableList()
+    if (actives.isNotEmpty()) {
+        if (Turn.P !in newTurn) newTurn.add(0, Turn.P)
+        if (defCord !in actives) {
+            if (newTurn[1] == Turn.White) newTurn.add(Turn.Black)
+            if (newTurn[1] == Turn.Black) newTurn.add(Turn.White)
+            newTurn.removeAt(1)
         }
     } else {
-        active = Coordinates.No
-        if (Turn.P in turnWhite.value) turnWhite.value.remove(Turn.P)
-        if (turnWhite.value[0] == Turn.White) turnWhite.value.add(Turn.Black)
-        if (turnWhite.value[0] == Turn.Black) turnWhite.value.add(Turn.White)
-        turnWhite.value.removeAt(0)
+        if (Turn.P in newTurn) newTurn.remove(Turn.P)
+        if (newTurn[0] == Turn.White) newTurn.add(Turn.Black)
+        if (newTurn[0] == Turn.Black) newTurn.add(Turn.White)
+        newTurn.removeAt(0)
     }
-    val t = gameOver(location.value)
+    return newTurn
+}
+
+fun checkGameOver(loc: Map<Coordinates, Coordinates>, listOfQueen: Set<Coordinates>, updateOpen: (Boolean) -> Unit, updateText: (String) -> Unit) {
+    val t = gameOver(loc, listOfQueen)
     if (t != "") {
-        openDialog.value = true
-        text.value = t
+        updateOpen(true)
+        updateText(t)
     }
 }
 
 fun isQueen(white: Turn, y: Coordinates) =
-    (white == Turn.White && y.toString()[1] == '8') || (white == Turn.Black && y.toString()[1] == '1')
+    (white == Turn.White && y.ordinal < 4) || (white == Turn.Black && y.ordinal in 28..31)
 
-fun checkDelete(loc: List<Coordinates>, turn: Turn, active: Coordinates, queenList: Set<Coordinates>, queen: Boolean): Set<Coordinates> {
+fun checkDelete(
+    loc: Map<Coordinates, Coordinates>,
+    turn: Turn,
+    active: Coordinates,
+    queenList: Set<Coordinates>,
+    queen: Boolean
+): Set<Coordinates> {
     val result = mutableSetOf<Coordinates>()
     if (active != Coordinates.No) {
-        val ind = (listOfOccupiedCells).indexOf(active)
-        val wh = if (ind < 12) Turn.White else Turn.Black
-        val list = allowedCells(loc[ind], wh, loc, queen)
-        if (hasDeleted(list, loc[ind])) {
+        val wh = if (loc[active] in listOfWhite) Turn.White else Turn.Black
+        val list = allowedCells(active, wh, loc, queen)
+        if (hasDeleted(list, active)) {
             result.add(active)
         }
     }
     if (result.isEmpty()) {
-        loc.forEachIndexed { index, it ->
+        loc.keys.forEachIndexed { _, it ->
             if (it != Coordinates.No) {
-                val wh = if (index in 0..11) Turn.White else Turn.Black
+                val wh = if (loc[it]!! in listOfWhite) Turn.White else Turn.Black
                 if (wh != turn) {
-                    println(it)
-                    println(queenList.contains(it))
-                    val list = allowedCells(it, wh, loc, queenList.contains(listOfOccupiedCells[index]))
+                    val list = allowedCells(it, wh, loc, queenList.contains(loc[it]))
                     if (hasDeleted(list, it)) {
-                        result.add(listOfOccupiedCells[index])
+                        result.add(loc[it]!!)
                     }
                 }
             }
@@ -96,75 +162,36 @@ fun checkDelete(loc: List<Coordinates>, turn: Turn, active: Coordinates, queenLi
 }
 
 fun hasDeleted(list: Set<Coordinates>, x: Coordinates): Boolean {
-    val indX = listOfLetters1.indexOf(Letters.valueOf(x.toString()[0].toString()))
+    val cordX = setOfAllCoordinates[x]!!.first
     list.forEach {
-        val indNew = listOfLetters1.indexOf(Letters.valueOf(it.toString()[0].toString()))
-        if (abs(indX - indNew) > 1) return true
+        val newCordX = setOfAllCoordinates[it]!!.first
+        if (abs(cordX - newCordX) > 70) return true
     }
     return false
 }
 
-fun repeat(letter: String, number: String, loc: List<Coordinates>): Pair<Coordinates, Coordinates> {
-    val ind = loc.indexOf(Coordinates.valueOf(letter + number))
-    println(Coordinates.valueOf(letter + number))
-    val new = Coordinates.valueOf(letter + number)
-    return Pair((listOfOccupiedCells)[ind], new)
-}
-
-fun eatForQueen(oldCord: Coordinates, newCord: Coordinates, loc: List<Coordinates>): Pair<Coordinates, Coordinates> {
-    val oldX = listOfLetters1.indexOf(Letters.valueOf(oldCord.toString()[0].toString()))
-    val newX = listOfLetters1.indexOf(Letters.valueOf(newCord.toString()[0].toString()))
-    val newY = listOfNumbers1.indexOf(newCord.toString()[1].digitToInt())
-    val oldY = listOfNumbers1.indexOf(oldCord.toString()[1].digitToInt())
-    if (newX - oldX > 1 && newY - oldY < -1) {
-        val letter = listOfLetters1[newX - 1].toString()
-        val number = listOfNumbers1[newY + 1]
-        println(letter + number)
-        return repeat(letter, number.toString(), loc)
-    }
-    if (newX - oldX < -1 && newY - oldY < -1) {
-        val letter = listOfLetters1[newX + 1].toString()
-        val number = listOfNumbers1[newY + 1]
-        println(letter + number)
-        return repeat(letter, number.toString(), loc)
-    }
-    if (newX - oldX > 1 && newY - oldY > 1) {
-        val letter = listOfLetters1[newX - 1].toString()
-        val number = listOfNumbers1[newY - 1]
-        println(letter + number)
-        return repeat(letter, number.toString(), loc)
-    }
-    if (newX - oldX < -1 && newY - oldY > 1) {
-        val letter = listOfLetters1[newX + 1].toString()
-        val number = listOfNumbers1[newY - 1]
-        println(letter + number)
-        return repeat(letter, number.toString(), loc)
-    }
-    return Pair(Coordinates.No, Coordinates.No)
-}
-
-fun gameOver(loc: List<Coordinates>): String {
+fun gameOver(loc: Map<Coordinates, Coordinates>, listOfQueen: Set<Coordinates>): String {
     var alert = ""
     var countB = 0
     var countW = 0
     var countStepB = 0
     var countStepW = 0
-    loc.forEachIndexed { index, s ->
-        if (index < 12 && s != Coordinates.No) countW++
-        if (index > 11 && s != Coordinates.No) countB++
-        if (index < 12 && s != Coordinates.No && allowedCells(
+    loc.keys.forEachIndexed { _, s ->
+        if (loc[s]!! in listOfWhite && s != Coordinates.No) countW++
+        if (loc[s]!! in listOfBlack && s != Coordinates.No) countB++
+        if (loc[s]!! in listOfWhite && s != Coordinates.No && allowedCells(
                 s,
                 Turn.White,
                 loc,
-                listOfQueen.value.contains(listOfOccupiedCells[index])
+                listOfQueen.contains(loc[s]!!)
             ).isNotEmpty()
         )
             countStepW++
-        if (index > 11 && s != Coordinates.No && allowedCells(
+        if (loc[s]!! in listOfBlack && s != Coordinates.No && allowedCells(
                 s,
                 Turn.Black,
                 loc,
-                listOfQueen.value.contains(listOfOccupiedCells[index])
+                listOfQueen.contains(loc[s]!!)
             ).isNotEmpty()
         )
             countStepB++
@@ -174,46 +201,39 @@ fun gameOver(loc: List<Coordinates>): String {
     return alert
 }
 
-fun restart() {
-    activeCh.value = setOf()
-    location.value = (listOfOccupiedCells).toMutableList()
-    delete.value = mutableSetOf()
-    turnWhite.value = mutableListOf(Turn.Black)
-    restart.value = true
-    listOfQueen.value = mutableSetOf()
-}
-
 fun eat(
     oldCord: Coordinates,
     newCord: Coordinates,
-    loc: List<Coordinates>,
+    loc: Map<Coordinates, Coordinates>,
     white: Turn,
+    queen: Boolean
 ): Pair<Coordinates, Coordinates> {
-    val oldX = listOfLetters1.indexOf(Letters.valueOf(oldCord.toString()[0].toString()))
-    val newX = listOfLetters1.indexOf(Letters.valueOf(newCord.toString()[0].toString()))
-    val newY = listOfNumbers1.indexOf(newCord.toString()[1].digitToInt())
-    if (white == Turn.White) {
-        if (newX - oldX > 1) {
-            val letter = listOfLetters1[newX - 1].toString()
-            val number = listOfNumbers1[newY + 1]
-            return repeat(letter, number.toString(), loc)
+    val oldX = oldCord.ordinal % 4
+    val newX = newCord.ordinal % 4
+    val oldY = oldCord.ordinal / 4
+    val newY = newCord.ordinal / 4
+    if (white == Turn.White && newY - oldY < -1 || queen && newY - oldY < -1) {
+        if (newX - oldX >= 1) {
+            val ordNew = if (newY % 2 == 0) newCord.ordinal + 4 else newCord.ordinal + 3
+            val new = setOfAllCoordinates.keys.toList()[ordNew]
+            return Pair(loc[new]!!, new)
         }
-        if (newX - oldX < -1) {
-            val letter = listOfLetters1[newX + 1].toString()
-            val number = listOfNumbers1[newY + 1]
-            return repeat(letter, number.toString(), loc)
+        if (newX - oldX <= -1) {
+            val ordNew = if (newY % 2 == 0) newCord.ordinal + 5 else newCord.ordinal + 4
+            val new = setOfAllCoordinates.keys.toList()[ordNew]
+            return Pair(loc[new]!!, new)
         }
     }
-    if (white == Turn.Black) {
-        if (newX - oldX > 1) {
-            val letter = listOfLetters1[newX - 1].toString()
-            val number = listOfNumbers1[newY - 1]
-            return repeat(letter, number.toString(), loc)
+    if (white == Turn.Black && newY - oldY > 1 || queen && newY - oldY > 1) {
+        if (newX - oldX >= 1) {
+            val ordNew = if (newY % 2 == 0) newCord.ordinal - 4 else newCord.ordinal - 5
+            val new = setOfAllCoordinates.keys.toList()[ordNew]
+            return Pair(loc[new]!!, new)
         }
-        if (newX - oldX < -1) {
-            val letter = listOfLetters1[newX + 1].toString()
-            val number = listOfNumbers1[newY - 1]
-            return repeat(letter, number.toString(), loc)
+        if (newX - oldX <= -1) {
+            val ordNew = if (newY % 2 == 0) newCord.ordinal - 3 else newCord.ordinal - 4
+            val new = setOfAllCoordinates.keys.toList()[ordNew]
+            return Pair(loc[new]!!, new)
         }
     }
     return Pair(Coordinates.No, Coordinates.No)
@@ -221,114 +241,97 @@ fun eat(
 
 fun getNextStep(cord: Coordinates, white: Turn, queen: Boolean): Set<Coordinates> {
     val result = mutableSetOf<Coordinates>()
-    if (white == Turn.White || queen) {
-        if (cord.toString()[0] != 'H' && cord.toString()[0] != 'A' && cord.toString()[1] != '8') {
-            val i = listOfLetters1.indexOf(Letters.valueOf(cord.toString()[0].toString()))
-            val nextStepX1 = listOfLetters1[i + 1]
-            val nextStepX2 = listOfLetters1[i - 1]
-            val nextStepY = cord.toString()[1].digitToInt() + 1 // +1?
-            val cord1 = Coordinates.valueOf(nextStepX1.toString() + nextStepY.toString())
-            val cord2 = Coordinates.valueOf(nextStepX2.toString() + nextStepY.toString())
-            result.addAll(setOf(cord1, cord2))
+    if (white == Turn.White || queen && cord != Coordinates.No) {
+        val ord = cord.ordinal
+        val cordY = ord / 4
+        if ((ord % 4 != 3 || cordY % 2 != 0) && (ord % 4 != 0 || cordY % 2 == 0) && ord / 4 != 0) {
+            val nextStepX1: Coordinates
+            val nextStepX2: Coordinates
+            if (cordY % 2 == 0) {
+                nextStepX1 = setOfAllCoordinates.keys.toList()[ord - 3]
+                nextStepX2 = setOfAllCoordinates.keys.toList()[ord - 4]
+            } else {
+                nextStepX1 = setOfAllCoordinates.keys.toList()[ord - 4]
+                nextStepX2 = setOfAllCoordinates.keys.toList()[ord - 5]
+            }
+            result.addAll(setOf(nextStepX1, nextStepX2))
         }
-        if (cord.toString()[0] == 'H' && cord.toString()[1] != '8') {
-            val i = listOfLetters1.indexOf(Letters.valueOf(cord.toString()[0].toString()))
-            val x = listOfLetters1[i - 1]
-            val y = cord.toString()[1].digitToInt() + 1 // +1?
-            val cor =
-                Coordinates.valueOf(x.toString() + y.toString())
-            result.addAll(setOf(cor))
+        if ((ord % 4 != 3 || cordY % 2 != 0) && ord / 4 != 0) {
+            val nextStep = setOfAllCoordinates.keys.toList()[ord - 4]
+            result.addAll(setOf(nextStep))
         }
-        if (cord.toString()[0] == 'A' && cord.toString()[1] != '8') {
-            val i = listOfLetters1.indexOf(Letters.valueOf(cord.toString()[0].toString()))
-            val x = listOfLetters1[i + 1]
-            val y = cord.toString()[1].digitToInt() + 1 // +1?
-            val cor =
-                Coordinates.valueOf(x.toString() + y.toString())
-            result.addAll(setOf(cor))
+        if ((ord % 4 != 0 || cordY % 2 == 0) && ord / 4 != 0) {
+            val nextStep = setOfAllCoordinates.keys.toList()[ord - 4]
+            result.addAll(setOf(nextStep))
         }
     }
-    if (white == Turn.Black || queen) {
-        if (cord.toString()[0] != 'H' && cord.toString()[0] != 'A' && cord.toString()[1] != '1') {
-            val i = listOfLetters1.indexOf(Letters.valueOf(cord.toString()[0].toString()))
-            val nextStepX1 = listOfLetters1[i + 1]
-            val nextStepX2 = listOfLetters1[i - 1]
-            val nextStepY = cord.toString()[1].digitToInt() - 1 // -1?
-            val cord1 = Coordinates.valueOf(nextStepX1.toString() + nextStepY.toString())
-            val cord2 = Coordinates.valueOf(nextStepX2.toString() + nextStepY.toString())
-            result.addAll(setOf(cord1, cord2))
+    if (white == Turn.Black || queen && cord != Coordinates.No) {
+        val ord = cord.ordinal
+        val cordY = ord / 4
+        if ((ord % 4 != 3 || cordY % 2 != 0) && (ord % 4 != 0 || cordY % 2 == 0) && ord / 4 != 7) {
+            val nextStepX1: Coordinates
+            val nextStepX2: Coordinates
+            if (cordY % 2 == 0) {
+                nextStepX1 = setOfAllCoordinates.keys.toList()[ord + 4]
+                nextStepX2 = setOfAllCoordinates.keys.toList()[ord + 5]
+            } else {
+                nextStepX1 = setOfAllCoordinates.keys.toList()[ord + 3]
+                nextStepX2 = setOfAllCoordinates.keys.toList()[ord + 4]
+            }
+            result.addAll(setOf(nextStepX1, nextStepX2))
         }
-        if (cord.toString()[0] == 'H' && cord.toString()[1] != '1') {
-            val i = listOfLetters1.indexOf(Letters.valueOf(cord.toString()[0].toString()))
-            val x = listOfLetters1[i - 1]
-            val y = cord.toString()[1].digitToInt() - 1 // -1?
-            val cor =
-                Coordinates.valueOf(x.toString() + y.toString())
-            result.addAll(setOf(cor))
+        if ((ord % 4 != 3 || cordY % 2 != 0) && ord / 4 != 7) {
+            val nextStep = setOfAllCoordinates.keys.toList()[ord + 4]
+            result.addAll(setOf(nextStep))
         }
-        if (cord.toString()[0] == 'A' && cord.toString()[1] != '1') {
-            val i = listOfLetters1.indexOf(Letters.valueOf(cord.toString()[0].toString()))
-            val x = listOfLetters1[i + 1]
-            val y = cord.toString()[1].digitToInt() - 1 // -1?
-            val cor =
-                Coordinates.valueOf(x.toString() + y.toString())
-            result.addAll(setOf(cor))
+        if ((ord % 4 != 0 || cordY % 2 == 0) && ord / 4 != 7) {
+            val nextStep = setOfAllCoordinates.keys.toList()[ord + 4]
+            result.addAll(setOf(nextStep))
         }
     }
     return result
 }
 
-fun allowedCells(cord: Coordinates, white: Turn, loc: List<Coordinates>, queen: Boolean): Set<Coordinates> {
+fun allowedCells(cord: Coordinates, white: Turn, loc: Map<Coordinates, Coordinates>, queen: Boolean): Set<Coordinates> {
     val allowed = mutableSetOf<Coordinates>()
     val result = getNextStep(cord, white, queen)
     result.forEach {
-        val index = loc.indexOf(it)
-        if (index != -1) {
-            if ((white == Turn.White && index > 11) || (white == Turn.Black && queen && index < 12)) {
-                val futureCord1: Coordinates
-                val futureCord2: Coordinates
-                if (cord.toString()[0] != 'G' && cord.toString()[0] != 'H' && cord.toString()[1] != '7' && cord.toString()[1] != '8') {
-                    val i = listOfLetters1.indexOf(Letters.valueOf(it.toString()[0].toString()))
-                    val x = listOfLetters1[i + 1]
-                    val y = it.toString()[1].digitToInt() + 1 // -1?
-                    futureCord1 = Coordinates.valueOf(x.toString() + y.toString())
-                    val iOld = listOfLetters1.indexOf(Letters.valueOf(cord.toString()[0].toString()))
-                    if (iOld < i && !loc.contains(futureCord1) /*&& !loc.contains(futureCord1 + "q") && Cell(futureCord1).centerX < 560 && cord.second > Cell(futureCord1).centerY*/) allowed.add(
-                        futureCord1
+        if (it in loc) {
+            if ((white == Turn.White && loc[it]!! in listOfBlack && cord.ordinal / 4 > it.ordinal / 4)
+                || (white == Turn.Black && queen && cord.ordinal / 4 > it.ordinal / 4 && loc[it]!! in listOfWhite)) {
+                val ordCord = cord.ordinal
+                val ordIt = it.ordinal
+                if (ordCord % 4 != 3 && ordCord / 4 > 1) {
+                    val i = if ((ordIt / 4) % 2 == 0) ordIt - 3 else ordIt - 4
+                    val newCord = setOfAllCoordinates.keys.toList()[i]
+                    if (ordCord % 4 < newCord.ordinal % 4 && !loc.keys.contains(newCord)) allowed.add(
+                        newCord
                     )
                 }
-                if (cord.toString()[0] != 'A' && cord.toString()[0] != 'B' && cord.toString()[1] != '7' && cord.toString()[1] != '8') {
-                    val i = listOfLetters1.indexOf(Letters.valueOf(it.toString()[0].toString()))
-                    val x = listOfLetters1[i - 1]
-                    val y = it.toString()[1].digitToInt() + 1 // -1?
-                    futureCord2 = Coordinates.valueOf(x.toString() + y.toString())
-                    val iOld = listOfLetters1.indexOf(Letters.valueOf(cord.toString()[0].toString()))
-                    if (iOld > i && !loc.contains(futureCord2) /*&& !loc.contains(futureCord1 + "q") && Cell(futureCord1).centerX < 560 && cord.second > Cell(futureCord1).centerY*/) allowed.add(
-                        futureCord2
+                if (ordCord % 4 != 0 && ordCord / 4 > 1) {
+                    val i = if ((ordIt / 4) % 2 == 0) ordIt - 4 else ordIt - 5
+                    val newCord = setOfAllCoordinates.keys.toList()[i]
+                    if (ordCord % 4 > newCord.ordinal % 4 && !loc.contains(newCord)) allowed.add(
+                        newCord
                     )
                 }
             }
-            if ((white == Turn.Black && index < 12) || (white == Turn.White && queen && index > 11)) {
-                val futureCord1: Coordinates
-                val futureCord2: Coordinates
-                if (cord.toString()[0] != 'G' && cord.toString()[0] != 'H' && cord.toString()[1] != '1' && cord.toString()[1] != '2') {
-                    val i = listOfLetters1.indexOf(Letters.valueOf(it.toString()[0].toString()))
-                    val x = listOfLetters1[i + 1]
-                    val y = it.toString()[1].digitToInt() - 1 // -1?
-                    futureCord1 = Coordinates.valueOf(x.toString() + y.toString())
-                    val iOld = listOfLetters1.indexOf(Letters.valueOf(cord.toString()[0].toString()))
-                    if (iOld < i && !loc.contains(futureCord1) /*&& !loc.contains(futureCord1 + "q") && Cell(futureCord1).centerX < 560 && cord.second > Cell(futureCord1).centerY*/) allowed.add(
-                        futureCord1
+            if ((white == Turn.Black && loc[it]!! in listOfWhite && cord.ordinal / 4 < it.ordinal / 4)
+                || (white == Turn.White && queen && cord.ordinal / 4 < it.ordinal / 4 && loc[it]!! in listOfBlack)) {
+                val ordCord = cord.ordinal
+                val ordIt = it.ordinal
+                if (ordCord % 4 != 3 && ordCord / 4 < 6) {
+                    val i = if ((ordIt / 4) % 2 == 0) ordIt + 5 else ordIt + 4
+                    val newCord = setOfAllCoordinates.keys.toList()[i]
+                    if (ordCord % 4 < newCord.ordinal % 4 && !loc.contains(newCord)) allowed.add(
+                        newCord
                     )
                 }
-                if (cord.toString()[0] != 'A' && cord.toString()[0] != 'B' && cord.toString()[1] != '1' && cord.toString()[1] != '2') {
-                    val i = listOfLetters1.indexOf(Letters.valueOf(it.toString()[0].toString()))
-                    val x = listOfLetters1[i - 1]
-                    val y = it.toString()[1].digitToInt() - 1 // -1?
-                    futureCord2 = Coordinates.valueOf(x.toString() + y.toString())
-                    val iOld = listOfLetters1.indexOf(Letters.valueOf(cord.toString()[0].toString()))
-                    if (iOld > i && !loc.contains(futureCord2) /*&& !loc.contains(futureCord1 + "q") && Cell(futureCord1).centerX < 560 && cord.second > Cell(futureCord1).centerY*/) allowed.add(
-                        futureCord2
+                if (ordCord % 4 != 0 && ordCord / 4 < 6) {
+                    val i = if ((ordIt / 4) % 2 == 0) ordIt + 4 else ordIt + 3
+                    val newCord = setOfAllCoordinates.keys.toList()[i]
+                    if (ordCord % 4 > newCord.ordinal % 4 && !loc.contains(newCord)) allowed.add(
+                        newCord
                     )
                 }
             }
@@ -336,7 +339,7 @@ fun allowedCells(cord: Coordinates, white: Turn, loc: List<Coordinates>, queen: 
     }
     if (allowed.isEmpty()) {
         result.forEach {
-            if (it !in loc) allowed.add(it)
+            if (it !in loc.keys) allowed.add(it)
         }
     }
     return allowed

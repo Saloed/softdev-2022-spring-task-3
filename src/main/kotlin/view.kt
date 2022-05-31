@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import androidx.compose.ui.zIndex
+import kotlin.math.floor
 
 fun main() = application {
     Window(
@@ -49,44 +50,50 @@ fun main() = application {
 @Composable
 fun comp() {
     grid()
-    if (restart.value) {
-        setCh()
-    } else {
-        setCh()
-    }
     buildFrame()
-    menu()
-    dialog()
+    checking()
 }
 
-val restart = mutableStateOf(false)
 val lightCellColor = Color(222, 184, 135, 255)
-var startColor = lightCellColor
+private fun getColor(column: Int, startColor: Color): Color {
+    var oldColor = startColor
+    if (startColor == Color.Black && column != 7) {
+        oldColor = lightCellColor
+    } else if (startColor == lightCellColor && column != 7) {
+        oldColor = Color.Black
+    }
+    return oldColor
+}
+
 const val fieldSize = 64
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun grid() {
     var count = -1
+    var oldColor = Color.Black
     LazyVerticalGrid(
         cells = GridCells.Fixed(8),
         modifier = Modifier
             .padding(horizontal = 19.dp, vertical = 19.dp)
     ) {
         items(fieldSize) {
+            oldColor = getColor(column = count % 8, oldColor)
             count++
             Card(
                 modifier = Modifier
                     .height(70.dp),
-                backgroundColor = getColor(column = count % 8),
+                backgroundColor = oldColor,
                 shape = RectangleShape
-            ) {}
+            )
+            {}
         }
     }
 }
 
 val listOfNumbers = listOf("8", "7", "6", "5", "4", "3", "2", "1")
 val listOfLetters = listOf("A", "B", "C", "D", "E", "F", "G", "H")
+
 @Composable
 fun buildFrame() {
     LazyColumn(
@@ -152,7 +159,7 @@ fun buildFrame() {
 }
 
 @Composable
-fun menu() {
+fun menu(updateRestart: (Boolean) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     Box {
         IconButton(
@@ -170,7 +177,7 @@ fun menu() {
                 "Начать заново",
                 fontSize = 18.sp,
                 modifier = Modifier.padding(horizontal = 10.dp).clickable(onClick = {
-                    restart()
+                    updateRestart(true)
                     expanded = false
                 })
             )
@@ -179,19 +186,39 @@ fun menu() {
 }
 
 @Composable
-fun setCh() {
-    if (restart.value) restart.value = false
+fun setCh(
+    updateOpen: (Boolean) -> Unit,
+    updateText: (String) -> Unit,
+    restart: Boolean,
+    updateRestart: (Boolean) -> Unit
+) {
+    val turnWhite = mutableStateOf(listOf(Turn.Black))
+    val location = mutableStateOf(makeLocation())
+    val activeCh = mutableSetOf<Coordinates>()
+    val delete = mutableSetOf<Coordinates>()
+    val listOfQueen = mutableSetOf<Coordinates>()
+    if (restart) updateRestart(false)
     for (elem in listOfOccupiedCells) {
-        buildCheckers(elem, delete.value.contains(elem))
+        buildCheckers(
+            elem,
+            turnWhite,
+            activeCh,
+            location,
+            delete,
+            listOfQueen,
+            updateOpen,
+            updateText,
+            restart,
+            updateRestart)
     }
 }
 
-val openDialog = mutableStateOf(false)
-val text = mutableStateOf("")
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun dialog() {
+fun checking() {
+    val restart = remember { mutableStateOf(false) }
+    val openDialog = remember { mutableStateOf(false) }
+    val text = remember { mutableStateOf("") }
     if (openDialog.value) {
         AlertDialog(
             onDismissRequest = { },
@@ -200,7 +227,7 @@ fun dialog() {
                 Button(
                     onClick = {
                         openDialog.value = false
-                        restart()
+                        restart.value = true
                     },
                     modifier = Modifier.padding(horizontal = 30.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(101, 67, 33, 255))
@@ -212,29 +239,40 @@ fun dialog() {
             backgroundColor = Color.Gray
         )
     }
-}
-
-val turnWhite = mutableStateOf(turn)
-val activeCh = mutableStateOf(setOf<Coordinates>())
-val delete = mutableStateOf(mutableSetOf<Coordinates>())
-val location = mutableStateOf(listOfOccupiedCells.toMutableList())
-val listOfQueen = mutableStateOf(mutableSetOf<Coordinates>())
-
-enum class Turn {
-    White, Black, P
+    if (restart.value) {
+        setCh(
+            updateOpen = { newCount -> openDialog.value = newCount },
+            updateText = { newText -> text.value = newText },
+            restart = restart.value,
+            updateRestart = { newRes -> restart.value = newRes }
+        )
+    } else {
+        setCh(
+            updateOpen = { newCount -> openDialog.value = newCount },
+            updateText = { newText -> text.value = newText },
+            restart = restart.value,
+            updateRestart = { newRes -> restart.value = newRes }
+        )
+    }
+    menu(updateRestart = { newRes -> restart.value = newRes })
 }
 
 @Composable
-fun buildCheckers(cord: Coordinates, del: Boolean): List<String> {
+fun buildCheckers(
+    cord: Coordinates, turnWhite: MutableState<List<Turn>>, actives: MutableSet<Coordinates>,
+    location: MutableState<Map<Coordinates, Coordinates>>, d: MutableSet<Coordinates>, listOfQ: MutableSet<Coordinates>,
+    updateOpen: (Boolean) -> Unit, updateText: (String) -> Unit, restart: Boolean, updateRestart: (Boolean) -> Unit
+): List<String> {
     val white = if (listOfOccupiedCells.indexOf(cord) < 12) Turn.White else Turn.Black
-    if (!del) {
+    val delete by remember { mutableStateOf(d) }
+    if (!delete.contains(cord)) {
+        var active = Coordinates.No
+        val listOfQueen by remember { mutableStateOf(listOfQ) }
+        val activeCh by remember { mutableStateOf(actives) }
         var queen by remember { mutableStateOf(false) }
         val result by remember { mutableStateOf(listOf<String>()) }
         var xOffset by remember { mutableStateOf(Cell(cord).centerX) }
         var yOffset by remember { mutableStateOf(Cell(cord).centerY) }
-        val x = resetCoordinates(cord, location.value)
-        xOffset = x.first
-        yOffset = x.second
         var focused by remember { mutableStateOf(false) }
         var list = setOf<Coordinates>()
         val img = if (white == Turn.White) {
@@ -248,40 +286,78 @@ fun buildCheckers(cord: Coordinates, del: Boolean): List<String> {
             .size(63.dp)
             .clip(shape = CircleShape)
             .zIndex(if (focused) 1f else 0f)
-            .background(if (cord in activeCh.value) Color.Green else Color.Transparent)
+            .background(if (cord in activeCh) Color.Green else Color.Transparent)
             .pointerInput(Unit) {
                 var oldCordX = xOffset
                 var oldCordY = yOffset
                 detectDragGestures(
                     onDragStart = {
-                        list = allowedCells(getCoordinates(Pair(xOffset, yOffset)), white, location.value, queen)
+                        list = allowedCells(
+                            getCoordinates(Pair(xOffset, yOffset)),
+                            white,
+                            location.value,
+                            queen
+                        )
                     },
                     onDrag = { _, distance ->
-                        if (turnWhite.value[0] == white || cord in activeCh.value) {
+                        if (turnWhite.value.first() == white || cord in activeCh) {
                             xOffset += distance.x
                             yOffset += distance.y
                             focused = true
                         }
                     },
                     onDragEnd = {
-                        if (turnWhite.value[0] == white || cord in activeCh.value) {
+                        if (turnWhite.value.first() == white || cord in activeCh) {
                             focused = false
                             val coordinate = magnet(xOffset, yOffset)
                             if (coordinate in list) {
                                 xOffset = Cell(coordinate).centerX
                                 yOffset = Cell(coordinate).centerY
-                                update(
-                                    getCoordinates(Pair(xOffset, yOffset)),
-                                    queen,
-                                    getCoordinates(Pair(oldCordX, oldCordY)),
-                                    white,
+                                val newCord = getCoordinates(Pair(xOffset, yOffset))
+                                val oldCord = getCoordinates(Pair(oldCordX, oldCordY))
+                                location.value = step(newCord, oldCord, cord, location.value)
+                                delete += eatenChecker(newCord, oldCord, location.value, white, queen).first
+                                location.value = removeEaten(newCord, oldCord, location.value, white, queen)
+                                active = if (activeCh.contains(cord)) {
                                     cord
+                                } else Coordinates.No
+                                if (!hasDeleted(
+                                        allowedCells(newCord, white, location.value, queen),
+                                        newCord
+                                    )
+                                ) activeCh.clear()
+                                else {
+                                    activeCh.clear()
+                                    if (active != Coordinates.No) {
+                                        activeCh.add(active)
+                                        active = newCord
+                                    }
+                                }
+                                activeCh.addAll(
+                                    getActiveCh(
+                                        turnWhite.value,
+                                        activeCh,
+                                        active,
+                                        queen,
+                                        listOfQueen,
+                                        location.value
+                                    )
                                 )
+                                turnWhite.value = changeTurn(activeCh, turnWhite.value, cord)
                                 if (!queen) {
                                     if (isQueen(white, getCoordinates(Pair(xOffset, yOffset)))) {
-                                        listOfQueen.value.add(cord)
+                                        listOfQueen.add(cord)
                                     }
                                     queen = isQueen(white, getCoordinates(Pair(xOffset, yOffset)))
+                                }
+                                checkGameOver(location.value, listOfQueen, updateOpen, updateText)
+                                if (restart) {
+                                    location.value = makeLocation()
+                                    listOfQueen.clear()
+                                    activeCh.clear()
+                                    delete.clear()
+                                    turnWhite.value = mutableListOf(Turn.Black)
+                                    updateRestart(true)
                                 }
                             } else {
                                 xOffset = oldCordX
@@ -301,37 +377,15 @@ fun buildCheckers(cord: Coordinates, del: Boolean): List<String> {
 
 fun magnet(posX: Double, posY: Double): Coordinates {
     if (posX > 0 && posX < 530 && posY > 0 && posY < 540) {
-        val x = listOfLetters1[((posX - 20) / 70).roundToInt()]
-        val y = listOfNumbers1[((posY - 20) / 70).roundToInt()]
-        val res = try {
-            Coordinates.valueOf(x.toString() + y.toString())
-        } catch (e: IllegalArgumentException) {
-            Coordinates.No
-        }
-        return res
+        val y = ((posY - 20) / 70).roundToInt()
+        val x = if (y % 2 != 0) ((posX - 20) / 70 / 2).roundToInt() else floor((posX - 20) / 70 / 2).toInt()
+        if (y * 4 + x in 0..31) return setOfAllCoordinates.keys.toList()[y * 4 + x]
     }
     return Coordinates.No
 }
 
 fun getCoordinates(cord: Pair<Double, Double>): Coordinates {
-    val x = listOfLetters1[(cord.first / 70).roundToInt()]
-    val y = listOfNumbers1[(cord.second / 70).roundToInt()]
-    return Coordinates.valueOf(x.toString() + y.toString())
-}
-
-fun resetCoordinates(cord: Coordinates, loc: List<Coordinates>): Pair<Double, Double> {
-    val ind = listOfOccupiedCells.indexOf(cord)
-    val x = Cell(loc[ind]).centerX
-    val y = Cell(loc[ind]).centerY
-    return Pair(x, y)
-}
-
-private fun getColor(column: Int): Color {
-    val oldColor = startColor
-    if (startColor == Color.Black && column != 7) {
-        startColor = lightCellColor
-    } else if (startColor == lightCellColor && column != 7) {
-        startColor = Color.Black
-    }
-    return oldColor
+    val y = (cord.second / 70).roundToInt()
+    val x = if (y % 2 != 0) (cord.first / 70 / 2).roundToInt() else floor(cord.first / 70 / 2).toInt()
+    return setOfAllCoordinates.keys.toList()[y * 4 + x]
 }
