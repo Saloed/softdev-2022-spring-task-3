@@ -490,10 +490,10 @@ fun activeBackground(coordinates: String, activeList: List<Pair<Double, Double>>
 
 fun optional(offset: Double, white: Boolean): Boolean {
     if (white) {
-        if (offset == 808.0) return true
+        if (offset == 38.0) return true
     }
     if (!white) {
-        if (offset == 38.0) return true
+        if (offset == 808.0) return true
     }
     return false
 }
