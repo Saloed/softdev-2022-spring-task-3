@@ -12,10 +12,8 @@ class Test {
 
     @Test
     fun testAllowedCells() {
-        val loc = (listOfOccupiedCells).toMutableList()
-        val ind = loc.indexOf(Coordinates.D6)
-        loc.removeAt(ind)
-        loc.add(ind, Coordinates.F4)
+        val loc = makeLocation().toMutableMap()
+        loc[Coordinates.F4] = Coordinates.D6
         val res = setOf(Coordinates.E5, Coordinates.G5)
         val s = allowedCells(Coordinates.F4, Turn.White, loc, false)
         assertEquals(res, s)
@@ -23,14 +21,12 @@ class Test {
 
     @Test
     fun testEat() {
-        val loc = (listOfOccupiedCells).toMutableList()
-        val ind = loc.indexOf(Coordinates.D6)
-        loc.removeAt(ind)
-        loc.add(ind, Coordinates.F4)
+        val loc = makeLocation().toMutableMap()
+        loc[Coordinates.F4] = Coordinates.D6
         val res = Pair(Coordinates.D6, Coordinates.F4)
         val oldPos = Coordinates.G3
         val pos = Coordinates.E5
-        val s = eat(oldPos, pos, loc, Turn.White)
+        val s = eat(oldPos, pos, loc, Turn.White, false)
         assertEquals(res, s)
     }
 }
