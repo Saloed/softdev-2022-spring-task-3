@@ -70,7 +70,7 @@ public class Logic {
     }
 
 
-    public void onClick(int x, int y) {
+    public void action(int x, int y) {
         int gridSize = Game.STAGE_SIZE;
         int tileSize = gridSize / size;
         if (x < 0 || x > gridSize || y < 0 || y > gridSize)

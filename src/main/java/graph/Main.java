@@ -116,6 +116,7 @@ public class Main extends Application {
         getImg().setFitHeight(Game.STAGE_SIZE);
         getImg().setFitWidth(Game.STAGE_SIZE);
         Game start = new Game(getSize(), getImg().snapshot(null, null));
+        start.init();
     }
 
 
@@ -165,15 +166,10 @@ public class Main extends Application {
         RadioButton chosen = new RadioButton("browse");
         chosen.setFont(new Font(18));
         FileChooser.ExtensionFilter extFilterJPG
-                = new FileChooser.ExtensionFilter("JPG files (*.JPG)", "*.JPG");
-        FileChooser.ExtensionFilter extFilterjpg
-                = new FileChooser.ExtensionFilter("jpg files (*.jpg)", "*.jpg");
-        FileChooser.ExtensionFilter extFilterPNG
-                = new FileChooser.ExtensionFilter("PNG files (*.PNG)", "*.PNG");
-        FileChooser.ExtensionFilter extFilterpng
-                = new FileChooser.ExtensionFilter("png files (*.png)", "*.png");
+                = new FileChooser.ExtensionFilter("Standard images extensions",
+                "*.JPG", "*.jpg", "*.PNG", "*.png");
         fileChooser.getExtensionFilters()
-                .addAll(extFilterJPG, extFilterjpg, extFilterPNG, extFilterpng);
+                .add(extFilterJPG);
         chosen.setOnAction(
                 (final ActionEvent e) -> setFile(fileChooser.showOpenDialog(stage)));
 
@@ -186,30 +182,26 @@ public class Main extends Application {
         RadioButton jpg2 = new RadioButton("");
         RadioButton jpg3 = new RadioButton("");
         Image colors = new Image("file:res/colors.jpg");
-        ImageView jpg12 = new ImageView(colors);
-        jpg12.setFitHeight(55);
-        jpg12.setFitWidth(55);
-        jpg1.setGraphic(jpg12);
-        jpg1.setToggleGroup(images);
+        setRadioButtonPic(colors, images, jpg1);
         jpg1.setSelected(true);
         Image salo = new Image("file:res/salo.jpg");
-        jpg12 = new ImageView(salo);
-        jpg12.setFitHeight(55);
-        jpg12.setFitWidth(55);
-        jpg2.setGraphic(jpg12);
-        jpg2.setToggleGroup(images);
+        setRadioButtonPic(salo, images, jpg2);
         Image loli = new Image("file:res/loli.jpg");
-        jpg12 = new ImageView(loli);
-        jpg12.setFitHeight(55);
-        jpg12.setFitWidth(55);
-        jpg3.setToggleGroup(images);
-        jpg3.setGraphic(jpg12);
+        setRadioButtonPic(loli, images, jpg3);
         HBox pics = new HBox(jpg1, jpg2, jpg3);
         VBox pic = new VBox(name, pics, chosen);
         pic.setPadding(new Insets(225, 0, 0, 0));
         pic.setSpacing(20);
         setPics(images);
         return pic;
+    }
+
+    private void setRadioButtonPic(Image img, ToggleGroup images, RadioButton button) {
+        ImageView pic = new ImageView(img);
+        pic.setFitHeight(55);
+        pic.setFitWidth(55);
+        button.setGraphic(pic);
+        button.setToggleGroup(images);
     }
 
 

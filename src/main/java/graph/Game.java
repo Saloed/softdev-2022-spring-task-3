@@ -18,18 +18,35 @@ public class Game {
     TileView[] tileViews;
     private Group tileGroup;
     private final int size;
+    private Logic logic;
+    private Image img;
 
     public Game(int size, Image img) {
+        this.img = img;
         this.size = size;
         stage = new Stage();
+        idImages = new IdImage[size * size];
+        tileViews = new TileView[size * size];
+        logic = new Logic(size);
+    }
+
+
+    private void update(Logic logic) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                int pos = i * size + j;
+                tileViews[pos].setIdImage(idImages[logic.getTiles()[pos]]);
+
+            }
+        }
+    }
+
+    public void init() {
         stage.setTitle("Tag");
         stage.getIcons().add(new Image("file:res/icon.png"));
         stage.setMinWidth(STAGE_SIZE);
         stage.setResizable(false);
-        idImages = new IdImage[size * size];
-        tileViews = new TileView[size * size];
         int step = STAGE_SIZE / size;
-        Logic logic = new Logic(size);
         logic.newGame();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -46,7 +63,7 @@ public class Game {
                 int pos = i * size + j;
                 tileViews[pos] = new TileView(pos, j * step, i * step, step, idImages[logic.getTiles()[pos]]);
                 tileViews[pos].addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                    logic.onClick((int) event.getX(), (int) event.getY());
+                    logic.action((int) event.getX(), (int) event.getY());
                     update(logic);
                     if (logic.isSolved()) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -65,15 +82,5 @@ public class Game {
         stage.setScene(scene);
         stage.setMinHeight(STAGE_SIZE);
         stage.show();
-    }
-
-    private void update(Logic logic) {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                int pos = i * size + j;
-                tileViews[pos].setIdImage(idImages[logic.getTiles()[pos]]);
-
-            }
-        }
     }
 }

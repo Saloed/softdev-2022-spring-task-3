@@ -27,17 +27,17 @@ public class LogicTest {
     @Test
     public void clickTest() {
         Logic logic3 = new Logic(3);
-        logic3.onClick(400, 200);
+        logic3.action(400, 200);
         int[] expected3 = {0, 1, 2, 3, 4, 8, 6, 7, 5};
         assertArrayEquals(expected3, logic3.getTiles());
 
         Logic logic4 = new Logic(4);
-        logic4.onClick(400, 300);
+        logic4.action(400, 300);
         int[] expected4 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 12, 13, 14, 11};
         assertArrayEquals(expected4, logic4.getTiles());
 
         Logic logic5 = new Logic(5);
-        logic5.onClick(420, 350);
+        logic5.action(420, 350);
         int[] expected5 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 24, 20, 21, 22, 23, 19};
         assertArrayEquals(expected5, logic5.getTiles());
     }
