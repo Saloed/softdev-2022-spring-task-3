@@ -12,6 +12,7 @@ val direction: MutableState<Direction?> = mutableStateOf(null)
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() = application {
+
     if (show.value == 0) Window(
         onCloseRequest = ::exitApplication,
         title = "2048 Compose",
@@ -22,7 +23,7 @@ fun main() = application {
         title = "2048 Compose",
         state = rememberWindowState(width = 800.dp, height = 800.dp),
         onKeyEvent = {
-             when {
+            when {
                 (it.type == KeyEventType.KeyUp && it.key == Key.W) -> {
                     direction.value = Direction.UP
                     true
@@ -82,6 +83,6 @@ fun main() = application {
                 })
             }
         }
-        GameWindow(GameLogic(show.value, Random)).Board()
+        GameWindow(GameLogic(show.value, Random), direction).Board()
     }
 }

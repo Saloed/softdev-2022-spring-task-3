@@ -8,7 +8,7 @@ class Tests {
 
     @Test
     fun boardTest() {
-        val gameBoard = createGameBoard(3)
+        val gameBoard = BoardCondition.gameBoard(3)
 
         gameBoard[CellCondition(1, 1)] = 2
         gameBoard[CellCondition(3, 2)] = null

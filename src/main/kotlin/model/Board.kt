@@ -11,6 +11,7 @@ data class CellCondition(override val i: Int, override val j: Int): Cell
 
 interface Board {
    val size: Int
+   val cells : MutableList<MutableList<Cell>>
 
    operator fun get(cell: Cell): Int?
 
@@ -20,7 +21,7 @@ interface Board {
 
     fun getAllCells(): List<Cell>
 
-    fun addNewValue(init: Init)
+    fun addNewValue(init: BoardInit)
 
     fun moveRowOrColumn(rowOrColumn: List<Cell>): Boolean
 

@@ -1,8 +1,7 @@
 package model
 
-class BoardCondition(override val size: Int): Board {
-    var cells : MutableList<MutableList<Cell>> = mutableListOf(mutableListOf())
-    val cellValues = mutableMapOf<Cell, Int?>()
+class BoardCondition(override val size: Int, override val cells: MutableList<MutableList<Cell>>): Board {
+    private val cellValues = mutableMapOf<Cell, Int?>()
 
     private fun getRow(i: Int, jRange: IntProgression): List<Cell> = jRange.map { j -> getCellOrNull(i, j)!! }.toList()
 
@@ -69,23 +68,21 @@ class BoardCondition(override val size: Int): Board {
         return valuesMoved
     }
 
-    override fun addNewValue(init: Init) {
+    override fun addNewValue(init: BoardInit) {
         val nextValue = init.nextValue(this)
         nextValue?.let { this.getAllCells().filter { it == nextValue.first }.forEach { this[it] = nextValue.second } }
     }
-}
 
-fun createGameBoard(size: Int): Board {
-    val board = mutableListOf<MutableList<Cell>>()
-    for (i in 1..size) {
-        val listOfCells = mutableListOf<Cell>()
-        for (j in 1..size)
-            listOfCells.add(CellCondition(i, j))
-        board.add(listOfCells)
+    companion object {
+        fun gameBoard(size: Int): BoardCondition {
+            val board = mutableListOf<MutableList<Cell>>()
+            for (i in 1..size) {
+                val listOfCells = mutableListOf<Cell>()
+                for (j in 1..size)
+                    listOfCells.add(CellCondition(i, j))
+                board.add(listOfCells)
+            }
+            return BoardCondition(size, board)
+        }
     }
-    val gameBoard = BoardCondition(size)
-    gameBoard.cells = board
-    gameBoard.cells.forEach { it.forEach { cell -> gameBoard.cellValues[cell] = null } }
-
-    return gameBoard
 }

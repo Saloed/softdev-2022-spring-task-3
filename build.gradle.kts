@@ -41,7 +41,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>() {
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
+        mainClass = "view.MainKt"
         nativeDistributions {
             targetFormats(
             org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg,

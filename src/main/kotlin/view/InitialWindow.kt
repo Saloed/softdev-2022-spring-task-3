@@ -24,6 +24,8 @@ import java.io.File
 
 
 class InitialWindow {
+
+
     @Composable
     fun InitialView() {
         if (show.value == 0) {

@@ -1,7 +1,7 @@
 package model
 
-class GameLogic(private val size: Int, private val init: Init) : Game {
-    val board = createGameBoard(size)
+class GameLogic(private val size: Int, private val init: BoardInit): Game {
+    val board = BoardCondition.gameBoard(size)
     private val numToWin = when (size) {
         3 -> 32
         4 -> 2048

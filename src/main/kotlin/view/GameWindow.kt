@@ -1,6 +1,7 @@
 package view
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,7 +23,7 @@ import model.Game
 
 
 @OptIn(ExperimentalMaterialApi::class)
-class GameWindow(private val game: Game) {
+class GameWindow(private val game: Game, private val direction: MutableState<Direction?>) {
     private val sizes = listOf(245.dp, 185.dp, 147.dp, 123.dp)
     private val isWinOpen = mutableStateOf(true)
     private val isLossOpen = mutableStateOf(true)
@@ -35,6 +36,7 @@ class GameWindow(private val game: Game) {
         else if (!isWin.value && !game.hasLost() && game.canMove(direction.value!!)) {
             game.processMove(direction.value!!)
             direction.value = Direction.STATIC
+
         }
         if (game.hasWon() && isWinOpen.value) AlertDialog(
             onDismissRequest = { isWinOpen.value = false },
@@ -42,8 +44,8 @@ class GameWindow(private val game: Game) {
             text = { Text("Congratulations!\nYou've won!", fontSize = 45.sp, textAlign = TextAlign.Center)},
             buttons = {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                    FormattedAlertButton("CONTINUE", Color.Green)
-                    FormattedAlertButton("THAT'S ENOUGH", Color.Red)
+                    FormattedAlertButton("CONTINUE", Color.Green, 1)
+                    FormattedAlertButton("THAT'S ENOUGH", Color.Red, 2)
                 }
             }
         )
@@ -53,8 +55,8 @@ class GameWindow(private val game: Game) {
             text = { Text("Meritoriously! Try again?", fontSize = 45.sp, textAlign = TextAlign.Center)},
             buttons = {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                    FormattedAlertButton("RESTART", Color.Green)
-                    FormattedAlertButton("  EXIT  ", Color.Red)
+                    FormattedAlertButton("RESTART", Color.Green, 3)
+                    FormattedAlertButton("  EXIT  ", Color.Red, 4)
                 }
             }
         )
@@ -124,30 +126,32 @@ class GameWindow(private val game: Game) {
         }
     }
 
+    private fun action(num: Int) {
+        when (num) {
+            1 -> {
+                isWin.value = false
+                isWinOpen.value = false
+            }
+            2 -> {
+                show.value = 0
+                direction.value = null
+            }
+            3 -> {
+                show.value = 0
+                direction.value = null
+                show.value = currentValue
+            }
+            4 -> {
+                show.value = 0
+                direction.value = null
+            }
+        }
+    }
+
     @Composable
-    fun FormattedAlertButton(text: String, color: Color) {
+    fun FormattedAlertButton(text: String, color: Color, num: Int) {
         Button(
-            onClick = {
-                when (text) {
-                    "CONTINUE" -> {
-                        isWin.value = false
-                        isWinOpen.value = false
-                    }
-                    "THAT'S ENOUGH" -> {
-                        show.value = 0
-                        direction.value = null
-                    }
-                    "RESTART" -> {
-                        show.value = 0
-                        direction.value = null
-                        show.value = currentValue
-                    }
-                    "  EXIT  " -> {
-                        show.value = 0
-                        direction.value = null
-                    }
-                }
-            },
+            onClick = { action(num) },
             shape = AbsoluteRoundedCornerShape(3.dp),
             border = BorderStroke(5.dp, Color.DarkGray),
             colors = ButtonDefaults.buttonColors(backgroundColor = color)
