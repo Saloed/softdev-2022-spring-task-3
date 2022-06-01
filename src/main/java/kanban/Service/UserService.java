@@ -16,7 +16,7 @@ public class UserService {
 
     public UserEntity registration(UserEntity user) throws UserAlreadyExistException {
         if (userRepo.findByUsername(user.getUsername()) != null) {
-            throw new UserAlreadyExistException("Пользователь с таким именем существует");
+            throw new UserAlreadyExistException("User already exist");
         }
         return userRepo.save(user);
     }
@@ -24,7 +24,7 @@ public class UserService {
     public UserEntity getOne(Long id) throws UserNotFoundException {
         UserEntity user = userRepo.findById(id).get();
         if(user == null){
-            throw new UserNotFoundException("Пользователь не найден");
+            throw new UserNotFoundException("User not found");
         }
         return user;
     }
@@ -32,7 +32,7 @@ public class UserService {
     public UserEntity findByUsername(String username) throws UserNotFoundException {
         UserEntity user = userRepo.findByUsername(username);
         if(user == null){
-            throw new UserNotFoundException("Пользователь не найден");
+            throw new UserNotFoundException("User not found");
         }
         return user;
     }
@@ -40,7 +40,7 @@ public class UserService {
     public UserEntity addBoard(BoardEntity board, Long id) throws UserNotFoundException{
         UserEntity user = userRepo.findById(id).get();
         if(user == null){
-            throw new UserNotFoundException("Пользователь не найден");
+            throw new UserNotFoundException("User not found");
         }
         user.addBoard(board);
         return userRepo.save(user);

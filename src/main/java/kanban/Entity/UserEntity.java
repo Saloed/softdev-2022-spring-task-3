@@ -12,7 +12,7 @@ public class UserEntity {
     private String username;
     private String password;
 
-    @ManyToMany(mappedBy = "users")
+    @OneToMany
     private List<BoardEntity> boards;
 
     public UserEntity(){
@@ -53,6 +53,10 @@ public class UserEntity {
 
     public List<BoardEntity> getBoards() {
         return boards;
+    }
+
+    public void setBoards(List<BoardEntity> boards) {
+        this.boards = boards;
     }
 
     public void addBoard(BoardEntity boards) {

@@ -11,6 +11,10 @@ public class Board {
     public Board() {
     }
 
+    public Board(Long id) {
+        this.id = id;
+    }
+
     public Board(String title) {
         this.title = title;
     }
@@ -29,6 +33,10 @@ public class Board {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {

@@ -3,11 +3,14 @@ package kanban.Controller;
 import kanban.Entity.CardEntity;
 import kanban.Entity.UserEntity;
 import kanban.Model.Card;
+import kanban.Model.User;
 import kanban.Service.CardService;
+import kanban.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -15,13 +18,15 @@ import java.util.List;
 public class CardController {
     @Autowired
     private CardService cardService;
+    @Autowired
+    private UserService userService;
 
     @PostMapping
     public ResponseEntity createCard(@RequestBody Card card){
         try{
             return ResponseEntity.ok(cardService.create(new CardEntity(card.getTitle(),card.getDescription())));
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("Error");
         }
     }
 
@@ -30,26 +35,30 @@ public class CardController {
         try{
             return ResponseEntity.ok(cardService.getOne(id));
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("Error");
         }
     }
 
     @PutMapping("/{id}/users")
-    public ResponseEntity changeUsers(@RequestBody List<UserEntity> users, @PathVariable Long id){
+    public ResponseEntity changeUsers(@RequestBody List<User> users, @PathVariable Long id){
         try{
-            return ResponseEntity.ok(cardService.changeUsers(users, id));
+            List<UserEntity> userEntities = new ArrayList<>();
+            for(int i = 0; i < users.toArray().length; i++){
+                userEntities.add(userService.getOne(users.get(i).getId()));
+            }
+            return ResponseEntity.ok(cardService.changeUsers(userEntities, id));
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("Error");
         }
     }
 
 
     @PutMapping("/{id}/desc")
-    public ResponseEntity changeDescription(@RequestParam String desc, @PathVariable Long id){
+    public ResponseEntity changeDescription(@RequestBody String desc, @PathVariable Long id){
         try{
             return ResponseEntity.ok(cardService.changeDescription(desc, id));
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("Error");
         }
     }
 
@@ -58,7 +67,7 @@ public class CardController {
         try {
             return ResponseEntity.ok(cardService.delete(id));
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("Error");
         }
     }
 }

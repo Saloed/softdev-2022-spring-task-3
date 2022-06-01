@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import kanban.ServerController;
 import org.controlsfx.control.CheckComboBox;
 
 import java.net.URL;
@@ -51,10 +52,17 @@ public class CardViewController implements Initializable {
 
     @FXML
     private void saveChanges(ActionEvent e){
+        ServerController server = new ServerController();
         String description = this.description.getText();
         List<User> users = usersList.getCheckModel().getCheckedItems();
-        if(!card.getDescription().equals(description)) card.setDescription(description);
-        if(!card.getUsers().equals(users)) card.setUsers(users);
+        if(!card.getDescription().equals(description)) {
+            card.setDescription(description);
+            server.putDescription(card.getId().intValue(), description);
+        }
+        if(!card.getUsers().equals(users)) {
+            card.setUsers(users);
+            server.changeUsersInCard(card.getId().intValue(), users);
+        }
     }
 
     public void setCard(Card card) {

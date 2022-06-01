@@ -1,9 +1,5 @@
 package javafx.Controllers;
 
-import kanban.Model.Board;
-import kanban.Model.Card;
-import kanban.Model.Column;
-import kanban.Model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +11,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import kanban.Model.Board;
+import kanban.Model.Card;
+import kanban.Model.Column;
+import kanban.Model.User;
 import kanban.ServerController;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,19 +46,22 @@ public class BoardsViewController implements Initializable {
     private void addNewBoard(ActionEvent e){
         String newBoardName = boardNameField.getText();
         if(!newBoardName.isBlank()){
-            Board newBoard = new Board(newBoardName);
-
-            List<Column> newColumns = new ArrayList<>();
-            newColumns.add(new Column("todo"));
-            newColumns.add(new Column("inProgress"));
-            newColumns.add(new Column("done"));
-            newBoard.setColumns(newColumns);
+            System.out.println(newBoardName);
 
             ServerController server = new ServerController();
-            server.post("boards", newBoard);
-            server.addBoard("users", mainUser.getId().intValue(), newBoard);
-            server.addObjectInBoard("user", newBoard.getId().intValue(),mainUser.getId().intValue());
-            listOfBoards.getItems().add(newBoard);
+            server.post("boards", newBoardName);
+            JSONObject newBoard = new JSONObject(server.getBoard(newBoardName));
+            server.post("lists", new Column("todo", newBoardName));
+            server.post("lists", new Column("inProgress", newBoardName));
+            server.post("lists", new Column("done", newBoardName));
+            JSONArray jsonColumns = new JSONArray(server.getColumn(newBoardName));
+            server.addBoard("users", mainUser.getId().intValue(), new Board(newBoard.getLong("id")));
+            server.addObjectInBoard("user",(int) newBoard.getLong("id"),mainUser.getId().intValue());
+            server.addObjectInBoard("column",(int) newBoard.getLong("id"),jsonColumns.getJSONObject(0).getInt("id"));
+            server.addObjectInBoard("column",(int) newBoard.getLong("id"),jsonColumns.getJSONObject(1).getInt("id"));
+            server.addObjectInBoard("column",(int) newBoard.getLong("id"),jsonColumns.getJSONObject(2).getInt("id"));
+            JSONObject board = new JSONObject(server.getBoard(newBoardName));
+            listOfBoards.getItems().add(new Board(board.getLong("id"), board.getString("title")));
         }
     }
 
@@ -118,7 +121,7 @@ public class BoardsViewController implements Initializable {
             for(int j = 0; j < jsonCards.length(); j++){
                 JSONObject jsonCard = jsonCards.getJSONObject(i);
                 List<User> usersOnCard = getUsersFromJSON(jsonCard);
-                cards.add(new Card(jsonCard.getString("title"), usersOnCard, jsonCard.getString("description")));
+                cards.add(new Card(jsonCard.getLong("id") ,jsonCard.getString("title"), usersOnCard, jsonCard.getString("description")));
             }
             columns.add(new Column(jsonColumn.getLong("id"), jsonColumn.getString("title"), cards));
         }
@@ -141,10 +144,6 @@ public class BoardsViewController implements Initializable {
 
     public void setUsernameLabel(String username) {
         this.usernameLabel.setText(username);
-    }
-
-    public User getMainUser() {
-        return mainUser;
     }
 
     public void setMainUser(User user) {

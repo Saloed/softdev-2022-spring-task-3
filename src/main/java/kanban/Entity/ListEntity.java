@@ -11,17 +11,21 @@ public class ListEntity {
     private Long id;
     private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "board_id")
-    private BoardEntity board;
+    private String boardTitle;
     @OneToMany(cascade = CascadeType.ALL)
     private List<CardEntity> cards;
 
     public ListEntity() {
     }
 
+
     public ListEntity(Long id) {
         this.id = id;
+    }
+
+    public ListEntity(String title, String boardTitle) {
+        this.title = title;
+        this.boardTitle = boardTitle;
     }
 
     public Long getId() {
@@ -40,16 +44,20 @@ public class ListEntity {
         this.title = title;
     }
 
-    public BoardEntity getBoard() {
-        return board;
+    public String getBoardTitle() {
+        return boardTitle;
     }
 
-    public void setBoard(BoardEntity board) {
-        this.board = board;
+    public void setBoardTitle(String boardTitle) {
+        this.boardTitle = boardTitle;
     }
 
     public List<CardEntity> getCards() {
         return cards;
+    }
+
+    public void setCards(List<CardEntity> cards) {
+        this.cards = cards;
     }
 
     public void addCard(CardEntity card) {

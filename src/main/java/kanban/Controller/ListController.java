@@ -2,6 +2,7 @@ package kanban.Controller;
 
 import kanban.Entity.CardEntity;
 import kanban.Entity.ListEntity;
+import kanban.Model.Column;
 import kanban.Service.ListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +15,11 @@ public class ListController {
     private ListService listService;
 
     @PostMapping
-    public ResponseEntity createList(@RequestBody ListEntity card){
+    public ResponseEntity createList(@RequestBody Column list){
         try{
-            return ResponseEntity.ok(listService.create(card));
+            return ResponseEntity.ok(listService.create(new ListEntity(list.getTitle(), list.getBoardTitle())));
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("Error");
         }
     }
 
@@ -27,7 +28,16 @@ public class ListController {
         try{
             return ResponseEntity.ok(listService.getOne(id));
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("Error");
+        }
+    }
+
+    @GetMapping("/find")
+    public ResponseEntity findByBoard(@RequestParam(name="boardTitle") String board){
+        try{
+            return ResponseEntity.ok(listService.findByTitle(board));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body("Error");
         }
     }
 
@@ -36,7 +46,7 @@ public class ListController {
         try{
             return ResponseEntity.ok(listService.addCard(card, id));
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("Error");
         }
     }
 
@@ -45,7 +55,7 @@ public class ListController {
         try{
             return ResponseEntity.ok(listService.deleteCard(card, id));
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("Error");
         }
     }
 
@@ -54,7 +64,7 @@ public class ListController {
         try {
             return ResponseEntity.ok(listService.delete(id));
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body("Error");
         }
     }
 }

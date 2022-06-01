@@ -22,25 +22,13 @@ javafx {
 	modules = ['javafx.controls', 'javafx.fxml']
 }
 
-//java {
-//	modularity.inferModulePath = true
-//
-//	tasks.withType(JavaCompile) {
-//		doFirst {
-//			options.compilerArgs = [
-//					'--module-path', classpath.asPath,
-//			]
-//			classpath = files()
-//		}
-//	}
-//}
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework:spring-webmvc'
-	runtimeOnly 'org.postgresql:postgresql'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter-web:2.6.7'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.7'
+	implementation 'org.springframework:spring-webmvc:5.3.20'
+	runtimeOnly 'org.postgresql:postgresql:42.3.4'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.7'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 	implementation 'org.json:json:20220320'

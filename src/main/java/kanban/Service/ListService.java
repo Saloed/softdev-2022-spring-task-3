@@ -20,10 +20,8 @@ public class ListService {
         return list;
     }
 
-    public ListEntity changeTitle(String title, Long id){
-        ListEntity list = listRepo.findById(id).get();
-        list.setTitle(title);
-        return listRepo.save(list);
+    public Iterable<ListEntity> findByTitle(String boardTitle) {
+        return listRepo.findByBoard(boardTitle);
     }
 
     public ListEntity addCard(CardEntity card, Long id){

@@ -45,10 +45,6 @@ public class CardEntity {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -59,5 +55,9 @@ public class CardEntity {
 
     public void setUsers(List<UserEntity> users) {
         this.users = users;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

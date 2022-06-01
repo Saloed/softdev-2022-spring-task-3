@@ -3,6 +3,7 @@ package kanban.Service;
 import kanban.Entity.BoardEntity;
 import kanban.Entity.ListEntity;
 import kanban.Entity.UserEntity;
+import kanban.Exception.BoardNotFoundException;
 import kanban.Repository.BoardRepo;
 import kanban.Repository.ListRepo;
 import kanban.Repository.UserRepo;
@@ -19,11 +20,24 @@ public class BoardService {
     private ListRepo listRepo;
 
     public BoardEntity create(BoardEntity board) {
+        System.out.println(board.getTitle()+" BoardService");
         return boardRepo.save(board);
     }
 
-    public BoardEntity getOne(Long id){
-        return boardRepo.findById(id).get();
+    public BoardEntity getOne(Long id) throws BoardNotFoundException {
+        BoardEntity board = boardRepo.findById(id).get();
+        if(board == null){
+            throw new BoardNotFoundException("Board not found");
+        }
+        return board;
+    }
+
+    public BoardEntity findByTitle(String title) throws BoardNotFoundException {
+        BoardEntity board = boardRepo.findByTitle(title);
+        if(board == null){
+            throw new BoardNotFoundException("Board not found");
+        }
+        return board;
     }
 
     public BoardEntity addUser(UserEntity user, Long id){

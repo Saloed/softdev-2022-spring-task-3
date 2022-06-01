@@ -76,7 +76,7 @@ public class LoginViewController implements Initializable {
         String username = usernameField.getText();
         if(!username.isBlank()) {
             ServerController server = new ServerController();
-            System.out.println(server.post("users", new User(username, passwordField.getText())));
+            server.post("users", new User(username, passwordField.getText()));
         }
     }
 

@@ -12,20 +12,10 @@ public class BoardEntity {
     private Long id;
     private String title;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "users_boards",
-            joinColumns = @JoinColumn(name = "board_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
+    @ManyToMany(mappedBy = "boards")
     private List<UserEntity> users;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "columns_boards",
-            joinColumns = @JoinColumn(name = "board_id"),
-            inverseJoinColumns = @JoinColumn(name = "column_id")
-    )
+    @OneToMany
     private List<ListEntity> columns;
 
     public BoardEntity() {
@@ -53,6 +43,18 @@ public class BoardEntity {
 
     public List<UserEntity> getUsers() {
         return users;
+    }
+
+    public void setUsers(List<UserEntity> users) {
+        this.users = users;
+    }
+
+    public List<ListEntity> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(List<ListEntity> columns) {
+        this.columns = columns;
     }
 
     public void addUser(UserEntity user) {
