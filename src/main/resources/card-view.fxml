@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.controlsfx.control.*?>
+
+<BorderPane maxHeight="200" maxWidth="300" minHeight="200" minWidth="300" prefHeight="200.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.Controllers.CardViewController">
+   <top>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <TextArea fx:id="description" layoutX="122.0" layoutY="31.0" prefHeight="158.0" prefWidth="170.0" />
+            <Button layoutX="246.0" layoutY="2.0" mnemonicParsing="false" onAction="#MoveTaskToNextColumn" prefHeight="25.0" prefWidth="46.0" text="Next" />
+            <Button layoutX="7.0" layoutY="2.0" mnemonicParsing="false" onAction="#MoveTaskToPreviousColumn" text="Back" />
+            <CheckComboBox layoutX="7.0" layoutY="31.0" prefHeight="25.0" prefWidth="109.0" />
+            <Button layoutX="105.0" layoutY="2.0" mnemonicParsing="false" onAction="#saveChanges" text="Save Changes" />
+         </children></AnchorPane>
+   </top>
+</BorderPane>

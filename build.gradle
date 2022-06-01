@@ -2,26 +2,51 @@ plugins {
 	id 'org.springframework.boot' version '2.6.6'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'application'
+	id 'org.openjfx.javafxplugin' version '0.0.10'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
 }
 
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+javafx {
+	version = '11.0.2'
+	modules = ['javafx.controls', 'javafx.fxml']
+}
+
+//java {
+//	modularity.inferModulePath = true
+//
+//	tasks.withType(JavaCompile) {
+//		doFirst {
+//			options.compilerArgs = [
+//					'--module-path', classpath.asPath,
+//			]
+//			classpath = files()
+//		}
+//	}
+//}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework:spring-webmvc'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	compileOnly 'org.projectlombok:lombok:1.18.24'
-	annotationProcessor 'org.projectlombok:lombok:1.18.24'
-	compileOnly 'javax.servlet:javax.servlet-api:3.0.1'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 	implementation 'org.json:json:20220320'
+	implementation 'org.controlsfx:controlsfx:11.1.1'
+	implementation 'org.junit.platform:junit-platform-engine:1.8.2'
+	testImplementation 'org.junit.platform:junit-platform-engine:1.8.2'
 }
 
 test{

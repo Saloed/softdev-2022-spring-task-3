@@ -1,5 +1,6 @@
 package kanban.Service;
 
+import kanban.Entity.BoardEntity;
 import kanban.Entity.UserEntity;
 import kanban.Exception.UserAlreadyExistException;
 import kanban.Exception.UserNotFoundException;
@@ -26,6 +27,23 @@ public class UserService {
             throw new UserNotFoundException("Пользователь не найден");
         }
         return user;
+    }
+
+    public UserEntity findByUsername(String username) throws UserNotFoundException {
+        UserEntity user = userRepo.findByUsername(username);
+        if(user == null){
+            throw new UserNotFoundException("Пользователь не найден");
+        }
+        return user;
+    }
+
+    public UserEntity addBoard(BoardEntity board, Long id) throws UserNotFoundException{
+        UserEntity user = userRepo.findById(id).get();
+        if(user == null){
+            throw new UserNotFoundException("Пользователь не найден");
+        }
+        user.addBoard(board);
+        return userRepo.save(user);
     }
 
     public Long deleteUser(Long id){

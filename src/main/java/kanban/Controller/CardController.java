@@ -2,6 +2,7 @@ package kanban.Controller;
 
 import kanban.Entity.CardEntity;
 import kanban.Entity.UserEntity;
+import kanban.Model.Card;
 import kanban.Service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,9 @@ public class CardController {
     private CardService cardService;
 
     @PostMapping
-    public ResponseEntity createCard(@RequestBody CardEntity card, @RequestParam Long boardId){
+    public ResponseEntity createCard(@RequestBody Card card){
         try{
-            return ResponseEntity.ok(cardService.create(card, boardId));
+            return ResponseEntity.ok(cardService.create(new CardEntity(card.getTitle(),card.getDescription())));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");
         }
@@ -33,15 +34,6 @@ public class CardController {
         }
     }
 
-    @GetMapping("/{id}/users")
-    public ResponseEntity getUsers(@PathVariable Long id){
-        try {
-            return ResponseEntity.ok(cardService.getUsers(id));
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
-        }
-    }
-
     @PutMapping("/{id}/users")
     public ResponseEntity changeUsers(@RequestBody List<UserEntity> users, @PathVariable Long id){
         try{
@@ -51,19 +43,11 @@ public class CardController {
         }
     }
 
-    @PutMapping("/{id}/title")
-    public ResponseEntity changeTitle(@RequestParam String title, @PathVariable Long id){
-        try{
-            return ResponseEntity.ok(cardService.changeTitle(title, id));
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
-        }
-    }
 
     @PutMapping("/{id}/desc")
     public ResponseEntity changeDescription(@RequestParam String desc, @PathVariable Long id){
         try{
-            return ResponseEntity.ok(cardService.changeTitle(desc, id));
+            return ResponseEntity.ok(cardService.changeDescription(desc, id));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");
         }

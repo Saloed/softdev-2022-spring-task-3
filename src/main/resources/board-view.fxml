@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="500.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.Controllers.BoardViewController">
+    <top>
+        <MenuBar fx:id="menuBar" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="New Project" />
+                        <MenuItem mnemonicParsing="false" text="Exit" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+   <left>
+        <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+            <children>
+                <Text layoutX="188.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kanban Board" textAlignment="CENTER" wrappingWidth="260.15234375">
+                    <font>
+                        <Font name="Century" size="36.0" />
+                    </font>
+                </Text>
+                <TextField fx:id="newTask" layoutX="338.0" layoutY="72.0" prefHeight="27.0" prefWidth="195.0" promptText="Add your task here..." />
+                <Button defaultButton="true" layoutX="551.0" layoutY="72.0" mnemonicParsing="false" onAction="#addNewTask" prefHeight="27.0" prefWidth="57.0" text="Add" textAlignment="CENTER" />
+
+                <Text layoutX="90.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TO DO" />
+                <Text layoutX="282.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="IN PROGRESS" />
+                <Text layoutX="512.0" layoutY="125.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DONE" />
+
+                <VBox fx:id="todo" layoutX="15.0" layoutY="139.0" prefHeight="279.0" prefWidth="187.0" style="-fx-border-color: black; -fx-background-color: silver;" />
+                <VBox fx:id="inProgress" layoutX="225.0" layoutY="139.0" prefHeight="279.0" prefWidth="187.0" style="-fx-border-color: black; -fx-background-color: silver;" />
+                <VBox fx:id="done" layoutX="435.0" layoutY="139.0" prefHeight="279.0" prefWidth="187.0" style="-fx-border-color: black; -fx-background-color: silver;" />
+            <TextField fx:id="newUserField" layoutX="16.0" layoutY="73.0" promptText="Add new user..." />
+            <Button layoutX="176.0" layoutY="73.0" mnemonicParsing="false" onAction="#addNewUser" text="Add" />
+
+            </children>
+        </AnchorPane>
+   </left>
+</BorderPane>

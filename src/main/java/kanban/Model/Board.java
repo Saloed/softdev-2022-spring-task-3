@@ -1,24 +1,42 @@
 package kanban.Model;
 
-import kanban.Entity.BoardEntity;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Board {
     private Long id;
     private String title;
     private List<User> users;
-
-    public static Board toModel(BoardEntity entity){
-        Board board = new Board();
-        board.setId(entity.getId());
-        board.setTitle(entity.getTitle());
-        board.setUsers(entity.getUsers().stream().map(User::toModel).collect(Collectors.toList()));
-        return board;
-    }
+    private List<Column> columns;
 
     public Board() {
+    }
+
+    public Board(String title) {
+        this.title = title;
+    }
+
+    public Board(Long id, String title) {
+        this.id = id;
+        this.title = title;
+    }
+
+    public Board(Long id, String title, List<User> users, List<Column> columns) {
+        this.id = id;
+        this.title = title;
+        this.users = users;
+        this.columns = columns;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public List<User> getUsers() {
@@ -29,19 +47,11 @@ public class Board {
         this.users = users;
     }
 
-    public Long getId() {
-        return id;
+    public List<Column> getColumns() {
+        return columns;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+    public void setColumns(List<Column> columns) {
+        this.columns = columns;
     }
 }

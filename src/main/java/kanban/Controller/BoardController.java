@@ -1,13 +1,16 @@
 package kanban.Controller;
 
 import kanban.Entity.BoardEntity;
+import kanban.Entity.ListEntity;
 import kanban.Entity.UserEntity;
-import kanban.Exception.BoardNotFoundException;
+import kanban.Model.Board;
+import kanban.Model.User;
 import kanban.Service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -17,9 +20,10 @@ public class BoardController {
     private BoardService boardService;
 
     @PostMapping
-    public ResponseEntity createBoard(@RequestBody BoardEntity board, @RequestParam Long userId){
+    public ResponseEntity createBoard(@RequestBody Board board){
         try{
-            return ResponseEntity.ok(boardService.create(board, userId));
+            List<ListEntity> lists = new ArrayList<>();
+            return ResponseEntity.ok(boardService.create(new BoardEntity(board.getTitle())));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");
         }
@@ -34,30 +38,19 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/{id}/users")
-    public ResponseEntity getUsers(@PathVariable Long id){
-        try {
-            return ResponseEntity.ok(boardService.getUsers(id));
-        }catch (BoardNotFoundException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+    @PutMapping("/{id}/user")
+    public ResponseEntity addUser(@RequestBody User user, @PathVariable Long id){
+        try{
+            return ResponseEntity.ok(boardService.addUser(new UserEntity(user.getId()), id));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");
         }
     }
 
-    @PutMapping("/{id}/users")
-    public ResponseEntity changeUsers(@RequestBody List<UserEntity> users, @PathVariable Long id){
+    @PutMapping("/{id}/list")
+    public ResponseEntity addColumn(@RequestBody ListEntity list, @PathVariable Long id){
         try{
-            return ResponseEntity.ok(boardService.changeUsers(users, id));
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
-        }
-    }
-
-    @PutMapping("/{id}/title")
-    public ResponseEntity changeTitle(@RequestParam String title, @PathVariable Long id){
-        try{
-            return ResponseEntity.ok(boardService.changeTitle(title, id));
+            return ResponseEntity.ok(boardService.addColumn(new ListEntity(list.getId()), id));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");
         }

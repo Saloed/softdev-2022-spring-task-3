@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.Controllers.BoardsViewController">
+   <top>
+      <AnchorPane prefHeight="150.0" prefWidth="320.0" BorderPane.alignment="CENTER">
+         <children>
+            <TextField fx:id="boardNameField" layoutX="107.0" layoutY="32.0" promptText="Add new board..." />
+            <Button layoutX="268.0" layoutY="32.0" mnemonicParsing="false" onAction="#addNewBoard" prefHeight="25.0" prefWidth="46.0" text="Add" />
+            <Label fx:id="usernameLabel" layoutX="14.0" layoutY="36.0" prefHeight="17.0" prefWidth="83.0" text="Username" />
+            <ComboBox fx:id="listOfBoards" layoutX="106.0" layoutY="63.0" prefWidth="150.0" />
+            <Button layoutX="268.0" layoutY="63.0" mnemonicParsing="false" onAction="#openBoard" text="Open" />
+         </children></AnchorPane>
+   </top>
+</BorderPane>

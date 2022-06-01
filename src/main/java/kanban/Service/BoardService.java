@@ -1,15 +1,13 @@
 package kanban.Service;
 
 import kanban.Entity.BoardEntity;
+import kanban.Entity.ListEntity;
 import kanban.Entity.UserEntity;
-import kanban.Exception.BoardNotFoundException;
 import kanban.Repository.BoardRepo;
+import kanban.Repository.ListRepo;
 import kanban.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class BoardService {
@@ -17,37 +15,26 @@ public class BoardService {
     private BoardRepo boardRepo;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private ListRepo listRepo;
 
-    public BoardEntity create(BoardEntity board, Long userId){
-        UserEntity user = userRepo.findById(userId).get();
-        List<UserEntity> users = new ArrayList<>();
-        users.add(user);
-        board.setUsers(users);
+    public BoardEntity create(BoardEntity board) {
         return boardRepo.save(board);
     }
 
     public BoardEntity getOne(Long id){
-        BoardEntity board = boardRepo.findById(id).get();
-        return board;
+        return boardRepo.findById(id).get();
     }
 
-    public List<UserEntity> getUsers(Long id) throws BoardNotFoundException {
+    public BoardEntity addUser(UserEntity user, Long id){
         BoardEntity board = boardRepo.findById(id).get();
-        if(board == null) {
-            throw new BoardNotFoundException("Доска не найдена");
-        }
-        return board.getUsers();
-    }
-
-    public BoardEntity changeUsers(List<UserEntity> users, Long id){
-        BoardEntity board = boardRepo.findById(id).get();
-        board.setUsers(users);
+        board.addUser(userRepo.findById(user.getId()).get());
         return boardRepo.save(board);
     }
 
-    public BoardEntity changeTitle(String title, Long id){
+    public BoardEntity addColumn(ListEntity list, Long id){
         BoardEntity board = boardRepo.findById(id).get();
-        board.setTitle(title);
+        board.addColumn(listRepo.findById(list.getId()).get());
         return boardRepo.save(board);
     }
 

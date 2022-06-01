@@ -1,12 +1,10 @@
-package server.Controller;
+package kanban;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import kanban.Model.Board;
+import kanban.Model.Card;
+import kanban.Model.User;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
-import server.Model.Card;
-import server.Model.User;
 
 import java.util.List;
 
@@ -25,7 +23,7 @@ public class ServerController {
 
     public String post(String url, Object obj){
         entity = new HttpEntity(obj, headers);
-        return restTemplate.exchange(BASE_URL + url, HttpMethod.POST, entity, String.class).getBody();
+        return restTemplate.postForObject(BASE_URL + url, entity, String.class);
     }
 
     public String getOne(String url,int id){
@@ -33,13 +31,21 @@ public class ServerController {
         return restTemplate.exchange(BASE_URL + url + "/" + id, HttpMethod.GET, entity, String.class).getBody();
     }
 
-    public String getUsers(String url, int id){
-        entity = new HttpEntity(headers);
-        return restTemplate.exchange(BASE_URL + url + "/" + id +"/users", HttpMethod.GET, entity, String.class).getBody();
+    public String getUser(String username){
+        entity = new HttpEntity(username, headers);
+        return restTemplate.exchange(BASE_URL + "users/find", HttpMethod.GET, entity, String.class).getBody();
     }
 
-    public void putUsers(String url, int id, List<User> users){
-        restTemplate.put(BASE_URL + url + "/" + id +"/users", users);
+    public void addBoard(String url, int id, Board board){
+        restTemplate.put(BASE_URL + url + "/" + id +"/board", board);
+    }
+
+    public void addObjectInBoard(String url, int boardId, int obgId){
+        restTemplate.put(BASE_URL + "boards/" + boardId + "/" + url, obgId);
+    }
+
+    public void changeUsersInCard(int id, List<User> users){
+        restTemplate.put(BASE_URL + "cards/" + id +"/user", users);
     }
 
     public void putTitle(String url, int id, String title){
@@ -50,9 +56,10 @@ public class ServerController {
         restTemplate.put(BASE_URL + "cards/" + id +"/desc", desc);
     }
 
-    public void putCards(int id, List<Card> cards){
-        restTemplate.put(BASE_URL + "lists/" + id +"/cards", cards);
+    public void moveCard(String url, int id, Card card){
+        restTemplate.put(BASE_URL + "lists/" + id +"/" + url, card);
     }
+
 
     public void delete(String url,int id){
         restTemplate.delete(BASE_URL + url + "/" + id);

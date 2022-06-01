@@ -1,9 +1,7 @@
 package kanban.Service;
 
-import kanban.Entity.BoardEntity;
 import kanban.Entity.CardEntity;
 import kanban.Entity.UserEntity;
-import kanban.Repository.BoardRepo;
 import kanban.Repository.CardRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,12 +12,8 @@ import java.util.List;
 public class CardService {
     @Autowired
     private CardRepo cardRepo;
-    @Autowired
-    private BoardRepo boardRepo;
 
-    public CardEntity create(CardEntity card, Long boardId){
-        BoardEntity board = boardRepo.findById(boardId).get();
-        card.setBoard(board);
+    public CardEntity create(CardEntity card){
         return cardRepo.save(card);
     }
 
@@ -27,20 +21,10 @@ public class CardService {
         CardEntity card = cardRepo.findById(id).get();
         return card;
     }
-    public List<UserEntity> getUsers(Long id) {
-        CardEntity card = cardRepo.findById(id).get();
-        return card.getUsers();
-    }
 
     public CardEntity changeUsers(List<UserEntity> users, Long id){
         CardEntity card = cardRepo.findById(id).get();
         card.setUsers(users);
-        return cardRepo.save(card);
-    }
-
-    public CardEntity changeTitle(String title, Long id){
-        CardEntity card = cardRepo.findById(id).get();
-        card.setTitle(title);
         return cardRepo.save(card);
     }
 

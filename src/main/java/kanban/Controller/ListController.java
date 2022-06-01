@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/lists")
 public class ListController {
@@ -16,9 +14,9 @@ public class ListController {
     private ListService listService;
 
     @PostMapping
-    public ResponseEntity createList(@RequestBody ListEntity card, @RequestParam Long boardId){
+    public ResponseEntity createList(@RequestBody ListEntity card){
         try{
-            return ResponseEntity.ok(listService.create(card, boardId));
+            return ResponseEntity.ok(listService.create(card));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");
         }
@@ -33,26 +31,26 @@ public class ListController {
         }
     }
 
-    @PutMapping("/{id}/title")
-    public ResponseEntity changeTitle(@RequestParam String title, @PathVariable Long id){
+    @PutMapping("/{id}/addcard")
+    public ResponseEntity addCard(@RequestParam CardEntity card, @PathVariable Long id){
         try{
-            return ResponseEntity.ok(listService.changeTitle(title, id));
+            return ResponseEntity.ok(listService.addCard(card, id));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");
         }
     }
 
-    @PutMapping("/{id}/cards")
-    public ResponseEntity changeCards(@RequestParam List<CardEntity> cards, @PathVariable Long id){
+    @PutMapping("/{id}/deletecard")
+    public ResponseEntity deleteCard(@RequestParam CardEntity card, @PathVariable Long id){
         try{
-            return ResponseEntity.ok(listService.changeCards(cards, id));
+            return ResponseEntity.ok(listService.deleteCard(card, id));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteUser(@PathVariable Long id){
+    public ResponseEntity deleteList(@PathVariable Long id){
         try {
             return ResponseEntity.ok(listService.delete(id));
         }catch (Exception e){
