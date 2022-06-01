@@ -227,6 +227,7 @@ class Logic {
         return list1
     }
 
+    private val listOfAllSteps = mutableListOf<Pair<Double, Double>>()
 
     fun queenStep1(initialCord: Pair<Double, Double>, white: Boolean, x: Double, y: Double): Set<Pair<Double, Double>> {
 
@@ -255,12 +256,21 @@ class Logic {
                 var index = list.indexOf(listCord[count])
                 if (listAnnotation[count] == "С") {
                     listResult.add(element)
-                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(12, 24)) return listResult
+                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(12, 24)) {
+                    listOfAllSteps.addAll(listResult)
+                    return listResult
+                }
 
                 if (count + 1 <= listAnnotation.size - 1) {
-                    if (listAnnotation[count] == "З" && listCord[count].first == 38.0 || listCord[count].second == 38.0) return listResult
+                    if (listAnnotation[count] == "З" && listCord[count].first == 38.0 || listCord[count].second == 38.0) {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
-                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") return listResult
+                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
                     if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "С") {
                         val newCount = count + 1
@@ -273,6 +283,7 @@ class Logic {
                                 if (x to y in listResult && x < listCord[count].first && y < listCord[count].second) {
                                     findDelete(index)
                                 }
+                                listOfAllSteps.addAll(listResult)
                                 return listResult
                             }
                         }
@@ -283,6 +294,7 @@ class Logic {
                 }
             }
         }
+        listOfAllSteps.addAll(listResult)
         return listResult
     }
 
@@ -314,12 +326,21 @@ class Logic {
                 var index = list.indexOf(listCord[count])
                 if (listAnnotation[count] == "С") {
                     listResult.add(element)
-                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(12, 24)) return listResult
+                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(12, 24)) {
+                    listOfAllSteps.addAll(listResult)
+                    return listResult
+                }
 
                 if (count + 1 <= listAnnotation.size - 1) {
-                    if (listAnnotation[count] == "З" && listCord[count].first == 808.0 || listCord[count].second == 38.0) return listResult
+                    if (listAnnotation[count] == "З" && listCord[count].first == 808.0 || listCord[count].second == 38.0) {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
-                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") return listResult
+                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
                     if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "С") {
                         val newCount = count + 1
@@ -332,6 +353,7 @@ class Logic {
                                 if (x to y in listResult && x > listCord[count].first && y < listCord[count].second) {
                                     findDelete(index)
                                 }
+                                listOfAllSteps.addAll(listResult)
                                 return listResult
                             }
                         }
@@ -342,6 +364,7 @@ class Logic {
                 }
             }
         }
+        listOfAllSteps.addAll(listResult)
         return listResult
     }
 
@@ -373,12 +396,21 @@ class Logic {
                 var index = list.indexOf(listCord[count])
                 if (listAnnotation[count] == "С") {
                     listResult.add(element)
-                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(12, 24)) return listResult
+                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(12, 24)) {
+                    listOfAllSteps.addAll(listResult)
+                    return listResult
+                }
 
                 if (count + 1 <= listAnnotation.size - 1) {
-                    if (listAnnotation[count] == "З" && listCord[count].first == 38.0 || listCord[count].second == 808.0) return listResult
+                    if (listAnnotation[count] == "З" && listCord[count].first == 38.0 || listCord[count].second == 808.0) {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
-                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") return listResult
+                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
                     if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "С") {
                         val newCount = count + 1
@@ -391,6 +423,7 @@ class Logic {
                                 if (x to y in listResult && x < listCord[count].first && y > listCord[count].second) {
                                     findDelete(index)
                                 }
+                                listOfAllSteps.addAll(listResult)
                                 return listResult
                             }
                         }
@@ -401,6 +434,7 @@ class Logic {
                 }
             }
         }
+        listOfAllSteps.addAll(listResult)
         return listResult
     }
 
@@ -432,12 +466,21 @@ class Logic {
                 var index = list.indexOf(listCord[count])
                 if (listAnnotation[count] == "С") {
                     listResult.add(element)
-                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(12, 24)) return listResult
+                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(12, 24)) {
+                    listOfAllSteps.addAll(listResult)
+                    return listResult
+                }
 
                 if (count + 1 <= listAnnotation.size - 1) {
-                    if (listAnnotation[count] == "З" && listCord[count].first == 38.0 || listCord[count].second == 808.0) return listResult
+                    if (listAnnotation[count] == "З" && listCord[count].first == 38.0 || listCord[count].second == 808.0) {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
-                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") return listResult
+                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
                     if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "С") {
                         val newCount = count + 1
@@ -450,6 +493,7 @@ class Logic {
                                 if (x to y in listResult && x > listCord[count].first && y > listCord[count].second) {
                                     findDelete(index)
                                 }
+                                listOfAllSteps.addAll(listResult)
                                 return listResult
                             }
                         }
@@ -460,6 +504,7 @@ class Logic {
                 }
             }
         }
+        listOfAllSteps.addAll(listResult)
         return listResult
     }
 
@@ -490,12 +535,21 @@ class Logic {
                 var index = list.indexOf(listCord[count])
                 if (listAnnotation[count] == "С") {
                     listResult.add(element)
-                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(0, 12)) return listResult
+                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(0, 12)) {
+                    listOfAllSteps.addAll(listResult)
+                    return listResult
+                }
 
                 if (count + 1 <= listAnnotation.size - 1) {
-                    if (listAnnotation[count] == "З" && listCord[count].first == 38.0 || listCord[count].second == 38.0) return listResult
+                    if (listAnnotation[count] == "З" && listCord[count].first == 38.0 || listCord[count].second == 38.0) {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
-                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") return listResult
+                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
                     if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "С") {
                         val newCount = count + 1
@@ -508,6 +562,7 @@ class Logic {
                                 if (x to y in listResult && x < listCord[count].first && y < listCord[count].second) {
                                     findDelete(index)
                                 }
+                                listOfAllSteps.addAll(listResult)
                                 return listResult
                             }
                         }
@@ -518,6 +573,7 @@ class Logic {
                 }
             }
         }
+        listOfAllSteps.addAll(listResult)
         return listResult
     }
 
@@ -548,12 +604,21 @@ class Logic {
                 var index = list.indexOf(listCord[count])
                 if (listAnnotation[count] == "С") {
                     listResult.add(element)
-                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(0, 12)) return listResult
+                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(0, 12)) {
+                    listOfAllSteps.addAll(listResult)
+                    return listResult
+                }
 
                 if (count + 1 <= listAnnotation.size - 1) {
-                    if (listAnnotation[count] == "З" && listCord[count].first == 808.0 || listCord[count].second == 38.0) return listResult
+                    if (listAnnotation[count] == "З" && listCord[count].first == 808.0 || listCord[count].second == 38.0) {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
-                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") return listResult
+                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
                     if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "С") {
                         val newCount = count + 1
@@ -566,6 +631,7 @@ class Logic {
                                 if (x to y in listResult && x > listCord[count].first && y < listCord[count].second) {
                                     findDelete(index)
                                 }
+                                listOfAllSteps.addAll(listResult)
                                 return listResult
                             }
                         }
@@ -576,6 +642,7 @@ class Logic {
                 }
             }
         }
+        listOfAllSteps.addAll(listResult)
         return listResult
     }
 
@@ -607,12 +674,21 @@ class Logic {
                 var index = list.indexOf(listCord[count])
                 if (listAnnotation[count] == "С") {
                     listResult.add(element)
-                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(0, 12)) return listResult
+                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(0, 12)) {
+                    listOfAllSteps.addAll(listResult)
+                    return listResult
+                }
 
                 if (count + 1 <= listAnnotation.size - 1) {
-                    if (listAnnotation[count] == "З" && listCord[count].first == 38.0 || listCord[count].second == 808.0) return listResult
+                    if (listAnnotation[count] == "З" && listCord[count].first == 38.0 || listCord[count].second == 808.0) {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
-                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") return listResult
+                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
                     if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "С") {
                         val newCount = count + 1
@@ -625,6 +701,7 @@ class Logic {
                                 if (x to y in listResult && x < listCord[count].first && y > listCord[count].second) {
                                     findDelete(index)
                                 }
+                                listOfAllSteps.addAll(listResult)
                                 return listResult
                             }
                         }
@@ -635,6 +712,7 @@ class Logic {
                 }
             }
         }
+        listOfAllSteps.addAll(listResult)
         return listResult
     }
 
@@ -666,12 +744,21 @@ class Logic {
                 var index = list.indexOf(listCord[count])
                 if (listAnnotation[count] == "С") {
                     listResult.add(element)
-                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(0, 12)) return listResult
+                } else if (listAnnotation[count] == "З" && list[index] !in list.subList(0, 12)) {
+                    listOfAllSteps.addAll(listResult)
+                    return listResult
+                }
 
                 if (count + 1 <= listAnnotation.size - 1) {
-                    if (listAnnotation[count] == "З" && listCord[count].first == 38.0 || listCord[count].second == 808.0) return listResult
+                    if (listAnnotation[count] == "З" && listCord[count].first == 38.0 || listCord[count].second == 808.0) {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
-                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") return listResult
+                    if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "З") {
+                        listOfAllSteps.addAll(listResult)
+                        return listResult
+                    }
 
                     if (listAnnotation[count] == "З" && listAnnotation[count + 1] == "С") {
                         val newCount = count + 1
@@ -684,6 +771,7 @@ class Logic {
                                 if (x to y in listResult && x > listCord[count].first && y > listCord[count].second) {
                                     findDelete(index)
                                 }
+                                listOfAllSteps.addAll(listResult)
                                 return listResult
                             }
                         }
@@ -694,15 +782,16 @@ class Logic {
                 }
             }
         }
+        listOfAllSteps.addAll(listResult)
         return listResult
     }
 
-    fun checkActiveQueen(initialCord: Pair<Double, Double>, futureSteps: Set<Pair<Double, Double>>, direction: Int): Boolean {
-        if (direction == 1 && futureSteps.first().first - initialCord.first > 110 && futureSteps.first().second > initialCord.second) return true
-        if (direction == 2 && futureSteps.first().first - initialCord.first < -110 && futureSteps.first().second > initialCord.second) return true
-        if (direction == 3 && futureSteps.first().first - initialCord.first > 110 && futureSteps.first().second < initialCord.second) return true
-        if (direction == 4 && futureSteps.first().first - initialCord.first < -110  && futureSteps.first().second < initialCord.second) return true
 
+    fun checkActiveQueen(initialCord: Pair<Double, Double>, futureSteps: Set<Pair<Double, Double>>, direction: Int): Boolean {
+        if (direction == 1 && futureSteps.isNotEmpty() && futureSteps.first().first - initialCord.first > 110 && futureSteps.first().second > initialCord.second) return true
+        if (direction == 2 && futureSteps.isNotEmpty() && futureSteps.first().first - initialCord.first < -110 && futureSteps.first().second > initialCord.second) return true
+        if (direction == 3 && futureSteps.isNotEmpty() && futureSteps.first().first - initialCord.first > 110 && futureSteps.first().second < initialCord.second) return true
+        if (direction == 4 && futureSteps.isNotEmpty() && futureSteps.first().first - initialCord.first < -110  && futureSteps.first().second < initialCord.second) return true
         return false
     }
 
@@ -718,36 +807,35 @@ class Logic {
                 activeCheckers.add(Logic().cell((Logic().coordinatesWhiteCheckers + Logic().coordinatesBlackCheckers)[index]))
             }
 
-            if (queenStep1(elem, white, 0.0, 0.0).isNotEmpty() && queen && checkActiveQueen(elem, queenStep1(elem, white, 0.0, 0.0), 4)) {
+            if (queenStep1(elem, white, 0.0, 0.0).isNotEmpty() && turn == white && queen && checkActiveQueen(elem, queenStep1(elem, white, 0.0, 0.0), 4)) {
                 val index = list.indexOf(elem)
                 activeCheckers.add(Logic().cell((Logic().coordinatesWhiteCheckers + Logic().coordinatesBlackCheckers)[index]))
             }
-            if (queenStep2(elem, white, 0.0, 0.0).isNotEmpty() && queen && checkActiveQueen(elem, queenStep2(elem, white, 0.0, 0.0), 3)) {
+            if (queenStep2(elem, white, 0.0, 0.0).isNotEmpty() && turn == white && queen && checkActiveQueen(elem, queenStep2(elem, white, 0.0, 0.0), 3)) {
                 val index = list.indexOf(elem)
                 activeCheckers.add(Logic().cell((Logic().coordinatesWhiteCheckers + Logic().coordinatesBlackCheckers)[index]))
             }
-            if (queenStep3(elem, white, 0.0, 0.0).isNotEmpty() && queen) println(queenStep3(elem, white, 0.0, 0.0))
-            if (queenStep3(elem, white, 0.0, 0.0).isNotEmpty() && queen && checkActiveQueen(elem, queenStep3(elem, white, 0.0, 0.0), 2)) {
+            if (queenStep3(elem, white, 0.0, 0.0).isNotEmpty() && turn == white && queen && checkActiveQueen(elem, queenStep3(elem, white, 0.0, 0.0), 2)) {
                 val index = list.indexOf(elem)
                 activeCheckers.add(Logic().cell((Logic().coordinatesWhiteCheckers + Logic().coordinatesBlackCheckers)[index]))
             }
-            if (queenStep4(elem, white, 0.0, 0.0).isNotEmpty() && queen && checkActiveQueen(elem, queenStep4(elem, white, 0.0, 0.0), 1)) {
+            if (queenStep4(elem, white, 0.0, 0.0).isNotEmpty() && turn == white && queen && checkActiveQueen(elem, queenStep4(elem, white, 0.0, 0.0), 1)) {
                 val index = list.indexOf(elem)
                 activeCheckers.add(Logic().cell((Logic().coordinatesWhiteCheckers + Logic().coordinatesBlackCheckers)[index]))
             }
-            if (queenStep5(elem, white, 0.0, 0.0).isNotEmpty() && queen && checkActiveQueen(elem, queenStep5(elem, white, 0.0, 0.0), 4)) {
+            if (queenStep5(elem, white, 0.0, 0.0).isNotEmpty() && turn == white && queen && checkActiveQueen(elem, queenStep5(elem, white, 0.0, 0.0), 4)) {
                 val index = list.indexOf(elem)
                 activeCheckers.add(Logic().cell((Logic().coordinatesWhiteCheckers + Logic().coordinatesBlackCheckers)[index])) // влево вверх
             }
-            if (queenStep6(elem, white, 0.0, 0.0).isNotEmpty() && queen && checkActiveQueen(elem, queenStep6(elem, white, 0.0, 0.0), 3)) {
+            if (queenStep6(elem, white, 0.0, 0.0).isNotEmpty() && turn == white && queen && checkActiveQueen(elem, queenStep6(elem, white, 0.0, 0.0), 3)) {
                 val index = list.indexOf(elem)
                 activeCheckers.add(Logic().cell((Logic().coordinatesWhiteCheckers + Logic().coordinatesBlackCheckers)[index])) // вправо вверх
             }
-            if (queenStep7(elem, white, 0.0, 0.0).isNotEmpty() && queen && checkActiveQueen(elem, queenStep7(elem, white, 0.0, 0.0), 2)) {
+            if (queenStep7(elem, white, 0.0, 0.0).isNotEmpty() && turn == white && queen && checkActiveQueen(elem, queenStep7(elem, white, 0.0, 0.0), 2)) {
                 val index = list.indexOf(elem)
                 activeCheckers.add(Logic().cell((Logic().coordinatesWhiteCheckers + Logic().coordinatesBlackCheckers)[index])) // влево вниз
             }
-            if (queenStep8(elem, white, 0.0, 0.0).isNotEmpty() && queen && checkActiveQueen(elem, queenStep8(elem, white, 0.0, 0.0), 1)) {
+            if (queenStep8(elem, white, 0.0, 0.0).isNotEmpty()&& turn == white && queen && checkActiveQueen(elem, queenStep8(elem, white, 0.0, 0.0), 1)) {
                 val index = list.indexOf(elem)
                 activeCheckers.add(Logic().cell((Logic().coordinatesWhiteCheckers + Logic().coordinatesBlackCheckers)[index])) // вправо вниз
             }
