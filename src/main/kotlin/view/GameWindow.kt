@@ -1,7 +1,6 @@
 package view
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,7 +22,7 @@ import model.Game
 
 
 @OptIn(ExperimentalMaterialApi::class)
-class GameWindow(private val game: Game, private val direction: MutableState<Direction?>) {
+class GameWindow(private val game: Game) {
     private val sizes = listOf(245.dp, 185.dp, 147.dp, 123.dp)
     private val isWinOpen = mutableStateOf(true)
     private val isLossOpen = mutableStateOf(true)
@@ -32,6 +31,7 @@ class GameWindow(private val game: Game, private val direction: MutableState<Dir
 
     @Composable
     fun Board() {
+
         if (direction.value == null) game.initialize()
         else if (!isWin.value && !game.hasLost() && game.canMove(direction.value!!)) {
             game.processMove(direction.value!!)
@@ -41,22 +41,35 @@ class GameWindow(private val game: Game, private val direction: MutableState<Dir
         if (game.hasWon() && isWinOpen.value) AlertDialog(
             onDismissRequest = { isWinOpen.value = false },
             title = { Text("THE WINNER!\n", fontSize = 50.sp, textAlign = TextAlign.Center) },
-            text = { Text("Congratulations!\nYou've won!", fontSize = 45.sp, textAlign = TextAlign.Center)},
+            text = { Text("Congratulations!\nYou've won!", fontSize = 45.sp, textAlign = TextAlign.Center) },
             buttons = {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                    FormattedAlertButton("CONTINUE", Color.Green, 1)
-                    FormattedAlertButton("THAT'S ENOUGH", Color.Red, 2)
+                    AllertButton("Continue", Color.Green) {
+                        isWin.value = false
+                        isWinOpen.value = false
+                    }
+                    AllertButton("THAT'S ENOUGH", Color.Red) {
+                        show.value = 0
+                        direction.value = null
+                    }
                 }
             }
         )
         if (game.hasLost() && isLossOpen.value) AlertDialog(
             onDismissRequest = { },
             title = { Text("GAME OVER!\n", fontSize = 50.sp, textAlign = TextAlign.Center) },
-            text = { Text("Meritoriously! Try again?", fontSize = 45.sp, textAlign = TextAlign.Center)},
+            text = { Text("Meritoriously! Try again?", fontSize = 45.sp, textAlign = TextAlign.Center) },
             buttons = {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                    FormattedAlertButton("RESTART", Color.Green, 3)
-                    FormattedAlertButton("  EXIT  ", Color.Red, 4)
+                    AllertButton("RESTART", Color.Green) {
+                        show.value = 0
+                        direction.value = null
+                        show.value = currentValue
+                    }
+                    AllertButton("  EXIT  ", Color.Red) {
+                        show.value = 0
+                        direction.value = null
+                    }
                 }
             }
         )
@@ -71,7 +84,8 @@ class GameWindow(private val game: Game, private val direction: MutableState<Dir
                         LazyRow {
                             items(show.value) { j ->
                                 Card(
-                                    modifier = Modifier.height(sizes[show.value - 3]).width(sizes[show.value - 3] + 9.dp),
+                                    modifier = Modifier.height(sizes[show.value - 3])
+                                        .width(sizes[show.value - 3] + 9.dp),
                                     backgroundColor = CellColor(game[i + 1, j + 1]),
                                     border = BorderStroke(3.dp, Color.DarkGray)
                                 ) { CellText(game[i + 1, j + 1]) }
@@ -126,32 +140,11 @@ class GameWindow(private val game: Game, private val direction: MutableState<Dir
         }
     }
 
-    private fun action(num: Int) {
-        when (num) {
-            1 -> {
-                isWin.value = false
-                isWinOpen.value = false
-            }
-            2 -> {
-                show.value = 0
-                direction.value = null
-            }
-            3 -> {
-                show.value = 0
-                direction.value = null
-                show.value = currentValue
-            }
-            4 -> {
-                show.value = 0
-                direction.value = null
-            }
-        }
-    }
 
     @Composable
-    fun FormattedAlertButton(text: String, color: Color, num: Int) {
+    fun AllertButton(text: String, color: Color, action: (Unit) -> Unit) =
         Button(
-            onClick = { action(num) },
+            onClick = { action(Unit) },
             shape = AbsoluteRoundedCornerShape(3.dp),
             border = BorderStroke(5.dp, Color.DarkGray),
             colors = ButtonDefaults.buttonColors(backgroundColor = color)
@@ -165,5 +158,7 @@ class GameWindow(private val game: Game, private val direction: MutableState<Dir
                 )
             )
         }
-    }
 }
+
+
+

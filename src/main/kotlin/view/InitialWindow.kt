@@ -25,7 +25,6 @@ import java.io.File
 
 class InitialWindow {
 
-
     @Composable
     fun InitialView() {
         if (show.value == 0) {
@@ -63,12 +62,12 @@ class InitialWindow {
                             )
                         )
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                            FormatButton("3x3")
-                            FormatButton("4x4")
+                            ModeButton("3x3") { show.value = 3 }
+                            ModeButton("4x4") { show.value = 4 }
                         }
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                            FormatButton("5x5")
-                            FormatButton("6x6")
+                            ModeButton("5x5") { show.value = 5 }
+                            ModeButton("6x6") { show.value = 6 }
                         }
                     }
                 }
@@ -77,17 +76,10 @@ class InitialWindow {
     }
 
     @Composable
-    private fun FormatButton(text: String) {
+    private fun ModeButton(text: String, action: (Unit) -> Unit) {
         Button(
             modifier = Modifier.size(180.dp),
-            onClick = {
-                when (text) {
-                    "3x3" -> show.value = 3
-                    "4x4" -> show.value = 4
-                    "5x5" -> show.value = 5
-                    "6x6" -> show.value = 6
-                }
-            },
+            onClick = { action(Unit) },
             shape = RoundedCornerShape(50.dp),
             border = BorderStroke(5.dp, Color.DarkGray),
             colors = ButtonDefaults.buttonColors(backgroundColor = Color(237, 197, 245))

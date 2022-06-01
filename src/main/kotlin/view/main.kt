@@ -12,7 +12,6 @@ val direction: MutableState<Direction?> = mutableStateOf(null)
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() = application {
-
     if (show.value == 0) Window(
         onCloseRequest = ::exitApplication,
         title = "2048 Compose",
@@ -83,6 +82,6 @@ fun main() = application {
                 })
             }
         }
-        GameWindow(GameLogic(show.value, Random), direction).Board()
+        GameWindow(GameLogic(show.value, Random)).Board()
     }
 }
