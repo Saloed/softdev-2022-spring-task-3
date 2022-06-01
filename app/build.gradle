@@ -59,7 +59,7 @@ tasks.test{
 
 application {
     // Define the main class for the application.
-    mainClass = 'MyAppKt'
+    mainClass = 'javafxTornado.MyAppKt'
 }
 
 

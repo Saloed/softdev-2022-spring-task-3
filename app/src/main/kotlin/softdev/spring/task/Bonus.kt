@@ -1,7 +1,7 @@
 package softdev.spring.task
 
 
-open class Bonus(private val x: Int, private  val y: Int) {
+sealed class Bonus(private val x: Int, private  val y: Int) {
     fun getX(): Int {
         return x
     }

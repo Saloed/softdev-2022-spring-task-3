@@ -8,10 +8,11 @@ import softdev.spring.task.CellS
 import softdev.spring.task.Snake
 import kotlin.concurrent.timer
 import softdev.spring.task.*
+import softdev.spring.task.Vector
 import tornadofx.*
 import java.util.*
 
-var twoPlayersCondition = true
+var twoPlayersCondition = false
 
 var eatToLiveCondition = false
 
@@ -24,8 +25,6 @@ val gameOver = Image("gameover.png")
 val bonusImage = Image("BonusSnake.png")
 
 val wasdSnakeImage = Image("naruto.png")
-
-object DeadEvent : FXEvent()
 
 object MoveSnakeEvent : FXEvent()
 
@@ -43,73 +42,17 @@ class MainView : View() {
 
     private lateinit var b: Timer
 
-    private fun checks(snake: Snake, cells: MutableList<CellS>, snake2: Snake) {
-        snake.move(cells)
-        alive = snake.checkBump(cells)
-        if (!alive) fire(DeadEvent)
-        if (food != null) snake.checkEaten(food!!, cells)
-        if (snake.checkEaten(food!!, cells)) food = createFood()
-        if (bonus != null) checkBonus(snake, cells, snake2)
-        if (!alive) fire(DeadEvent)
-        if (twoPlayersCondition && alive) alive = snake.checkEachBump(firstSnake, wasdSnake, cellsSnake, cellsSnake2)
-    }
-
-    private fun checkBonus(snake: Snake, list: MutableList<CellS>, snake2: Snake) {
-        if (list[0].getX() == bonus!!.getX() && list[0].getY() == bonus!!.getY()) {
-            if (bonus is Bonus.DecreaseSpeed) {
-                if (snake == firstSnake) {
-                    speed1 *= 2
-                    a.cancel()
-                    a = timer(period = speed1, daemon = true) {
-                        fire(MoveSnakeEvent)
-                    }
-                } else if (snake == wasdSnake && twoPlayersCondition) {
-                    speed2 *= 2
-                    b.cancel()
-                    b = timer(period = speed2, daemon = true) {
-                        fire(MoveSnakeEvent2)
-                    }
-                }
-            }
-            if (bonus is Bonus.DecreaseSize) {
-                snake.length -= 3
-                if (snake.length > 0) {
-                    var i = 3
-                    while (i > 0) {
-                        list.removeLast()
-                        i--
-                    }
-                } else {
-                    alive = false
-                }
-            }
-            if (bonus is Bonus.IncreaseSpeed) {
-                if (snake == firstSnake) {
-                    speed1 /= 2
-                    a.cancel()
-                    a = timer(period = speed1, daemon = true) {
-                        fire(MoveSnakeEvent)
-                    }
-                } else if (snake == wasdSnake && twoPlayersCondition) {
-                    speed2 /= 2
-                    b.cancel()
-                    b = timer(period = speed2, daemon = true) {
-                        fire(MoveSnakeEvent2)
-                    }
-                }
-            }
-            if (bonus is Bonus.IncreaseSize) snake.changeSize(3, list)
-
-            bonus = createBonus(snake, snake2)
+    private fun restartA() {
+        a.cancel()
+        a = timer(period = speed1, daemon = true) {
+            fire(MoveSnakeEvent)
         }
     }
 
-    private fun eatToLive(snake: Snake, mutableList: MutableList<CellS>) {
-        timer(period = 7000, daemon = true, initialDelay = 7000) {
-            snake.length -= 1
-            if (snake.length > 0) mutableList.removeLast() else {
-                fire(DeadEvent)
-            }
+    private fun restartB() {
+        b.cancel()
+        b = timer(period = speed2, daemon = true) {
+            fire(MoveSnakeEvent2)
         }
     }
 
@@ -140,18 +83,34 @@ class MainView : View() {
         }
     }
 
+    private fun dead() {
+        a.cancel()
+        a.purge()
+        if (twoPlayersCondition) {
+            b.cancel()
+            b.purge()
+        }
+        canvas.graphicsContext2D.clearRect(0.0, 0.0, canvas.width, canvas.height)
+        canvas.graphicsContext2D.drawImage(
+            gameOver,
+            (fieldSize / 2 - 16).toDouble(),
+            (fieldSize / 2 - 16).toDouble()
+        )
+    }
+
     init {
+
         if (twoPlayersCondition) {
             b = timer(period = speed2, daemon = true) {
                 fire(MoveSnakeEvent2)
             }
             for (i in 0 until wasdSnake.length) {
-                cellsSnake2 += CellS(48 - i * sizeOfOne, 96, 4)
+                cellsSnake2 += CellS(48 - i * sizeOfOne, 96, Vector.RIGHT)
             }
         }
 
         for (i in 0 until firstSnake.length) {
-            cellsSnake += CellS(48 - i * sizeOfOne, 48, 4)
+            cellsSnake += CellS(48 - i * sizeOfOne, 48, Vector.RIGHT)
         }
 
         for (i in 0 until 20) {
@@ -239,39 +198,29 @@ class MainView : View() {
             }
         }
 
-        fun dead() {
-            a.cancel()
-            a.purge()
-            if (twoPlayersCondition) {
-                b.cancel()
-                b.purge()
-            }
-            canvas.graphicsContext2D.clearRect(0.0, 0.0, canvas.width, canvas.height)
-            canvas.graphicsContext2D.drawImage(
-                gameOver,
-                (fieldSize / 2 - 16).toDouble(),
-                (fieldSize / 2 - 16).toDouble()
-            )
-        }
-
         subscribe<MoveSnakeEvent> {
+            val speed = speed1
             checks(firstSnake, cellsSnake, wasdSnake)
+            if (bonus != null) {
+                checkBonus(firstSnake, cellsSnake, wasdSnake)
+                if (speed != speed1) restartA()
+            }
             if (alive) {
                 canvas.graphicsContext2D.clearRect(0.0, 0.0, canvas.width, canvas.height)
                 mainPaint(firstSnake, wasdSnake)
-            } else fire(DeadEvent)
+            } else dead()
         }
 
         subscribe<MoveSnakeEvent2> {
-            checks(wasdSnake, cellsSnake2, wasdSnake)
+            val speed = speed2
+            checks(wasdSnake, cellsSnake2, firstSnake)
+            if (bonus != null) {
+                if (speed != speed2) restartB()
+            }
             if (alive) {
                 canvas.graphicsContext2D.clearRect(0.0, 0.0, canvas.width, canvas.height)
                 mainPaint(firstSnake, wasdSnake)
-            } else fire(DeadEvent)
-        }
-
-        subscribe<DeadEvent> {
-            dead()
+            } else dead()
         }
     }
 }

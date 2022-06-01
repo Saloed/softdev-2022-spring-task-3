@@ -31,10 +31,10 @@ class Snake(var length: Int, val number: Int) {
             val snakeY = list[length - 1].getY()
             val cellV = list[length - 1].getV()
             when {
-                cellV == 3 && snakeX + sizeOfOne < fieldSize -> list += CellS(snakeX + sizeOfOne, snakeY,3)
-                cellV == 4 && snakeX - sizeOfOne > 0 -> list += CellS(snakeX - sizeOfOne, snakeY,4)
-                cellV == 1 && snakeY - sizeOfOne < fieldSize -> list += CellS(snakeX, snakeY - sizeOfOne,1)
-                cellV == 2 && snakeY - sizeOfOne > 0 -> list += CellS(snakeX, snakeY + sizeOfOne,2)
+                cellV == Vector.LEFT && snakeX + sizeOfOne < fieldSize -> list += CellS(snakeX + sizeOfOne, snakeY,Vector.LEFT)
+                cellV == Vector.RIGHT && snakeX - sizeOfOne > 0 -> list += CellS(snakeX - sizeOfOne, snakeY,Vector.RIGHT)
+                cellV == Vector.UP && snakeY - sizeOfOne < fieldSize -> list += CellS(snakeX, snakeY - sizeOfOne,Vector.UP)
+                cellV == Vector.DOWN && snakeY - sizeOfOne > 0 -> list += CellS(snakeX, snakeY + sizeOfOne,Vector.DOWN)
                 else -> alive = false
             }
             length += 1
@@ -49,10 +49,10 @@ class Snake(var length: Int, val number: Int) {
             i--
         }
         when {
-            up -> a[0] = CellS(a[0].getX(), a[0].getY() - sizeOfOne, 1)
-            down -> a[0] = CellS(a[0].getX(), a[0].getY() + sizeOfOne, 2)
-            left -> a[0] = CellS(a[0].getX() - sizeOfOne, a[0].getY(), 3)
-            right -> a[0] = CellS(a[0].getX() + sizeOfOne, a[0].getY(), 4)
+            up -> a[0] = CellS(a[0].getX(), a[0].getY() - sizeOfOne, Vector.UP)
+            down -> a[0] = CellS(a[0].getX(), a[0].getY() + sizeOfOne, Vector.DOWN)
+            left -> a[0] = CellS(a[0].getX() - sizeOfOne, a[0].getY(), Vector.LEFT)
+            right -> a[0] = CellS(a[0].getX() + sizeOfOne, a[0].getY(), Vector.RIGHT)
         }
     }
 

@@ -13,7 +13,7 @@ class AppTest {
         val s = Snake(3, 1)
         val cellssnake: MutableList<CellS> = mutableListOf()
         for (i in 0 until s.length) {
-            cellssnake += CellS(96 - i * sizeOfOne, 48, 4)
+            cellssnake += CellS(96 - i * sizeOfOne, 48, Vector.RIGHT)
         }
         s.move(cellssnake)
         s.move(cellssnake)
@@ -30,7 +30,7 @@ class AppTest {
         val s = Snake(3, 1)
         val cellssnake: MutableList<CellS> = mutableListOf()
         for (i in 0 until s.length) {
-            cellssnake += CellS(96 - i * sizeOfOne, 48, 4)
+            cellssnake += CellS(96 - i * sizeOfOne, 48, Vector.RIGHT)
         }
         s.changeSize(3, cellssnake)
         assertEquals(s.length, 6)
@@ -45,10 +45,10 @@ class AppTest {
         val cellssnake: MutableList<CellS> = mutableListOf()
         val cellssnake2: MutableList<CellS> = mutableListOf()
         for (i in 0 until s.length) {
-            cellssnake += CellS(96 - i * sizeOfOne, 48, 4)
+            cellssnake += CellS(96 - i * sizeOfOne, 48, Vector.RIGHT)
         }
         for (i in 0 until s2.length) {
-            cellssnake2 += CellS(96 - i * sizeOfOne, 64, 4)
+            cellssnake2 += CellS(96 - i * sizeOfOne, 64, Vector.RIGHT)
         }
         s2.up = true
         s2.right = false
@@ -58,7 +58,7 @@ class AppTest {
         val s3 = Snake(3, 1)
         val cellssnake3: MutableList<CellS> = mutableListOf()
         for (i in 0 until s3.length) {
-            cellssnake3 += CellS(96 - i * sizeOfOne, 16, 4)
+            cellssnake3 += CellS(96 - i * sizeOfOne, 16, Vector.RIGHT)
         }
         s3.right = false
         s3.up = true
@@ -72,7 +72,7 @@ class AppTest {
         val s = Snake(3, 1)
         val cellssnake: MutableList<CellS> = mutableListOf()
         for (i in 0 until s.length) {
-            cellssnake += CellS(96 - i * sizeOfOne, 48, 4)
+            cellssnake += CellS(96 - i * sizeOfOne, 48, Vector.RIGHT)
         }
         s.move(cellssnake)
         val food = Food(112, 48)
