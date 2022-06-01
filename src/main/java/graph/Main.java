@@ -176,32 +176,32 @@ public class Main extends Application {
 
         final ToggleGroup images = new ToggleGroup();
         chosen.setToggleGroup(images);
+        setPics(images);
         Label name = new Label("Choose picture");
         name.setFont(new Font(18));
         RadioButton jpg1 = new RadioButton("");
         RadioButton jpg2 = new RadioButton("");
         RadioButton jpg3 = new RadioButton("");
         Image colors = new Image("file:res/colors.jpg");
-        setRadioButtonPic(colors, images, jpg1);
+        setRadioButtonPic(colors, jpg1);
         jpg1.setSelected(true);
         Image salo = new Image("file:res/salo.jpg");
-        setRadioButtonPic(salo, images, jpg2);
+        setRadioButtonPic(salo, jpg2);
         Image loli = new Image("file:res/loli.jpg");
-        setRadioButtonPic(loli, images, jpg3);
+        setRadioButtonPic(loli, jpg3);
         HBox pics = new HBox(jpg1, jpg2, jpg3);
         VBox pic = new VBox(name, pics, chosen);
         pic.setPadding(new Insets(225, 0, 0, 0));
         pic.setSpacing(20);
-        setPics(images);
         return pic;
     }
 
-    private void setRadioButtonPic(Image img, ToggleGroup images, RadioButton button) {
+    private void setRadioButtonPic(Image img, RadioButton button) {
         ImageView pic = new ImageView(img);
         pic.setFitHeight(55);
         pic.setFitWidth(55);
         button.setGraphic(pic);
-        button.setToggleGroup(images);
+        button.setToggleGroup(pics);
     }
 
 
