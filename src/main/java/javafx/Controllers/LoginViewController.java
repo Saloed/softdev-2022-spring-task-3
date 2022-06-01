@@ -46,7 +46,7 @@ public class LoginViewController implements Initializable {
                 List<Board> boards = new ArrayList<>();
                 for (int i = 0; i < jsonBoards.length(); i++) {
                     JSONObject jsonBoard = jsonBoards.getJSONObject(i);
-                    //boards.add(new Board(jsonBoard.getLong("id"), jsonBoard.getString("title")));
+                    boards.add(new Board(jsonBoard.getLong("id"), jsonBoard.getString("title")));
                 }
                 try {
                     Stage loginStage = (Stage) usernameField.getScene().getWindow();

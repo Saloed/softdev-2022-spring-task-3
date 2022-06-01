@@ -19,6 +19,12 @@ public class Column {
         this.cards = cards;
     }
 
+    public Column(Long id, String title, List<Card> cards) {
+        this.id = id;
+        this.title = title;
+        this.cards = cards;
+    }
+
     public Long getId() {
         return id;
     }

@@ -120,7 +120,7 @@ public class BoardsViewController implements Initializable {
                 List<User> usersOnCard = getUsersFromJSON(jsonCard);
                 cards.add(new Card(jsonCard.getString("title"), usersOnCard, jsonCard.getString("description")));
             }
-            //columns.add(new Column(jsonColumn.getLong("id"), jsonColumn.getString("title"), cards));
+            columns.add(new Column(jsonColumn.getLong("id"), jsonColumn.getString("title"), cards));
         }
         return columns;
     }
