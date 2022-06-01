@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Test;
 import softdev.spring.task.core.Board;
 import softdev.spring.task.core.Cell;
+import softdev.spring.task.core.StateOfGame;
 import softdev.spring.task.view.BoardPanel;
 
 import java.util.ArrayList;
@@ -11,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ReversiTests {
 
     Board board1 = new Board(750, 550, 8, 8);
-    BoardPanel boardPanel1 = new BoardPanel(new Cell(0, 0), board1);
+    BoardPanel boardPanel1 = new BoardPanel(board1);
 
     Board board2 = new Board(1000, 1350, 15, 15);
-    BoardPanel boardPanel2 = new BoardPanel(new Cell(0, 0), board2);
+    BoardPanel boardPanel2 = new BoardPanel(board2);
 
     @Test
     public void correctMovesTest1() {
@@ -74,8 +75,8 @@ public class ReversiTests {
     @Test
     public void resultOfGameTest() {
 
-        assertEquals(3, boardPanel1.getWinner(false));
-        assertEquals(2, boardPanel1.getWinner(true));
+        assertEquals(StateOfGame.DRAW, boardPanel1.getWinner(false));
+        assertEquals(StateOfGame.CONTINUE, boardPanel1.getWinner(true));
 
     }
 

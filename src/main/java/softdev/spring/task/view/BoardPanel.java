@@ -2,14 +2,14 @@ package softdev.spring.task.view;
 
 import softdev.spring.task.core.Board;
 import softdev.spring.task.core.Cell;
+import softdev.spring.task.core.CellOwner;
+import softdev.spring.task.core.StateOfGame;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BoardPanel {
-
-    private final Cell cell;
 
     private final CellPanel[][] cells;
 
@@ -23,8 +23,7 @@ public class BoardPanel {
 
     private final Board board;
 
-    public BoardPanel(Cell cell, Board board) {
-        this.cell = cell;
+    public BoardPanel(Board board) {
         this.board = board;
         int fieldWidth = board.getCellNumberX();
         int fieldHeight = board.getCellNumberY();
@@ -42,7 +41,7 @@ public class BoardPanel {
 
         firstFourMovesIndicator = 0;
         correctMoves = new ArrayList<>();
-        updateCorrectMoves(0);
+        updateCorrectMoves(CellOwner.BLACK);
     }
 
     public void reset() {
@@ -52,22 +51,22 @@ public class BoardPanel {
             }
         }
         firstFourMovesIndicator = 0;
-        updateCorrectMoves(0);
+        updateCorrectMoves(CellOwner.BLACK);
     }
 
-    public void playMove(Cell cell, int player) {
+    public void playMove(Cell cell, CellOwner player) {
         firstFourMovesIndicator++;
         cells[cell.x][cell.y].setCellState(player);
         List<Cell> changeCellPositions = getChangedPositionsForMove(cell, player);
         for (Cell swapPosition : changeCellPositions) {
             cells[swapPosition.x][swapPosition.y].setCellState(player);
         }
-        updateCorrectMoves(player == 0 ? 1 : 0);
+        updateCorrectMoves(player == CellOwner.BLACK ? CellOwner.WHITE : CellOwner.BLACK);
     }
 
     public Cell convertMouseToCell(Cell mousePosition) {
-        int fieldX = (mousePosition.x - cell.x)/cellWidth;
-        int fieldY = (mousePosition.y - cell.y)/cellHeight;
+        int fieldX = mousePosition.x/cellWidth;
+        int fieldY = mousePosition.y/cellHeight;
         if (fieldX >= cells.length || fieldX < 0 || fieldY >= cells[0].length || fieldY < 0) {
             return new Cell(-1,-1);
         }
@@ -82,7 +81,8 @@ public class BoardPanel {
         int[] counts = new int[3];
         for (int y = 0; y < cells[0].length; y++) {
             for (int x = 0; x < cells.length; x++) {
-                counts[cells[x][y].getCellState()]++;
+                int i = cells[x][y].getCellState() == CellOwner.BLACK ? 0 : 1;
+                counts[i]++;
             }
         }
 
@@ -93,24 +93,31 @@ public class BoardPanel {
         int[] counts = new int[3];
         for (int y = 0; y < cells[0].length; y++) {
             for (int x = 0; x < cells.length; x++) {
-                counts[cells[x][y].getCellState()]++;
+                int i = cells[x][y].getCellState() == CellOwner.WHITE ? 1 : 0;
+                counts[i]++;
             }
         }
 
         return counts[1];
     }
 
-    public int getWinner(boolean currentCorrectMoves) {
+    public StateOfGame getWinner(boolean currentCorrectMoves) {
         int[] counts = new int[3];
         for (int y = 0; y < cells[0].length; y++) {
             for (int x = 0; x < cells.length; x++) {
-                counts[cells[x][y].getCellState()]++;
+                int i;
+                if (cells[x][y].getCellState() == CellOwner.BLACK) {
+                    i = 0;
+                } else if (cells[x][y].getCellState() == CellOwner.WHITE) {
+                    i = 1;
+                } else i = 2;
+                counts[i]++;
             }
         }
 
-        if (currentCorrectMoves && counts[2] > 0) return 2;
-        else if (counts[0] == counts[1]) return 3;
-        else return counts[0] > counts[1] ? 0 : 1;
+        if (currentCorrectMoves && counts[2] > 0) return StateOfGame.CONTINUE;
+        else if (counts[0] == counts[1]) return StateOfGame.DRAW;
+        else return counts[0] > counts[1] ? StateOfGame.BLACK_WINS : StateOfGame.WHITE_WINS;
     }
 
     public void paint(Graphics g) {
@@ -125,18 +132,18 @@ public class BoardPanel {
     private void drawBoard(Graphics g) {
         g.setColor(Color.BLACK);
 
-        int y2 = cell.y + board.getHeight();
-        int y1 = cell.y;
+        int y2 = board.getHeight();
+        int y1 = 0;
         for (int x = 0; x < cells.length+1; x++)
-            g.drawLine(cell.x + x * cellWidth, y1, cell.x + x * cellWidth, y2);
+            g.drawLine(x * cellWidth, y1, x * cellWidth, y2);
 
-        int x2 = cell.x + board.getWidth();
-        int x1 = cell.x;
+        int x2 = board.getWidth();
+        int x1 = 0;
         for (int y = 0; y < cells[0].length+1; y++)
-            g.drawLine(x1, cell.y + y * cellHeight, x2, cell.y + y * cellHeight);
+            g.drawLine(x1, y * cellHeight, x2, y * cellHeight);
     }
 
-    public void updateCorrectMoves(int playerID) {
+    public void updateCorrectMoves(CellOwner playerID) {
         correctMoves.clear();
 
         if (firstFourMovesIndicator < 4) {
@@ -144,7 +151,7 @@ public class BoardPanel {
             int midY = cells[0].length/2 - 1;
             for (int x = midX; x < midX + 2; x++) {
                 for (int y = midY; y < midY+2; y++) {
-                    if (cells[x][y].getCellState() == 2) {
+                    if (cells[x][y].getCellState() == CellOwner.NONE) {
                         correctMoves.add(new Cell(x, y));
                     }
                 }
@@ -152,7 +159,7 @@ public class BoardPanel {
         } else {
             for (int x = 0; x < cells.length; x++) {
                 for (int y = 0; y < cells[0].length; y++) {
-                    if (cells[x][y].getCellState() == 2 && getChangedPositionsForMove(new Cell(x,y),playerID).size()>0) {
+                    if (cells[x][y].getCellState() == CellOwner.NONE && getChangedPositionsForMove(new Cell(x,y),playerID).size()>0) {
                         correctMoves.add(new Cell(x, y));
                     }
                 }
@@ -160,7 +167,7 @@ public class BoardPanel {
         }
     }
 
-    public List<Cell> getChangedPositionsForMove(Cell cell, int playerID) {
+    public List<Cell> getChangedPositionsForMove(Cell cell, CellOwner playerID) {
         List<Cell> result = new ArrayList<>();
         result.addAll(getChangedPositionsForMoveInDirection(cell, playerID, softdev.spring.task.core.Cell.DOWN));
         result.addAll(getChangedPositionsForMoveInDirection(cell, playerID, softdev.spring.task.core.Cell.LEFT));
@@ -173,10 +180,10 @@ public class BoardPanel {
         return result;
     }
 
-    private List<Cell> getChangedPositionsForMoveInDirection(Cell cell, int playerID, Cell direction) {
+    private List<Cell> getChangedPositionsForMoveInDirection(Cell cell, CellOwner playerID, Cell direction) {
         List<Cell> result = new ArrayList<>();
         Cell movingCell = new Cell(cell);
-        int otherPlayer = playerID == 0 ? 1 : 0;
+        CellOwner otherPlayer = playerID == CellOwner.BLACK ? CellOwner.WHITE : CellOwner.BLACK;
         movingCell.add(direction);
 
         while (isInBounds(movingCell) && cells[movingCell.x][movingCell.y].getCellState() == otherPlayer) {

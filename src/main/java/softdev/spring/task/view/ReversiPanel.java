@@ -2,6 +2,7 @@ package softdev.spring.task.view;
 
 import softdev.spring.task.core.Board;
 import softdev.spring.task.core.Cell;
+import softdev.spring.task.core.CellOwner;
 import softdev.spring.task.core.StateOfGame;
 
 import javax.swing.*;
@@ -32,7 +33,7 @@ public class ReversiPanel extends JPanel implements MouseListener {
         setBackground(new Color(30, 150, 50, 150));
 
         Board board = new Board(PANEL_WIDTH, PANEL_HEIGHT - 100, 8, 8);
-        boardPanel = new BoardPanel(new Cell(0,0), board);
+        boardPanel = new BoardPanel(board);
         setGameState(StateOfGame.BLACK_TURN);
         addMouseListener(this);
 
@@ -63,10 +64,10 @@ public class ReversiPanel extends JPanel implements MouseListener {
         if(!boardPanel.isCorrectMove(cell)) {
             return;
         } else if(stateOfGame == StateOfGame.BLACK_TURN) {
-            boardPanel.playMove(cell, 0);
+            boardPanel.playMove(cell, CellOwner.BLACK);
             setGameState(StateOfGame.WHITE_TURN);
         } else if(stateOfGame == StateOfGame.WHITE_TURN) {
-            boardPanel.playMove(cell, 1);
+            boardPanel.playMove(cell, CellOwner.WHITE);
             setGameState(StateOfGame.BLACK_TURN);
         }
     }
@@ -78,7 +79,7 @@ public class ReversiPanel extends JPanel implements MouseListener {
                 if(boardPanel.getAllCorrectMoves().size() > 0) {
                     stateOfGameStr = "White turn";
                 } else {
-                    boardPanel.updateCorrectMoves(0);
+                    boardPanel.updateCorrectMoves(CellOwner.BLACK);
                     if(boardPanel.getAllCorrectMoves().size() > 0) {
                         setGameState(StateOfGame.BLACK_TURN);
                     } else {
@@ -90,7 +91,7 @@ public class ReversiPanel extends JPanel implements MouseListener {
                 if(boardPanel.getAllCorrectMoves().size() > 0) {
                     stateOfGameStr = "Black turn";
                 } else {
-                    boardPanel.updateCorrectMoves(1);
+                    boardPanel.updateCorrectMoves(CellOwner.WHITE);
                     if(boardPanel.getAllCorrectMoves().size() > 0) {
                         setGameState(StateOfGame.WHITE_TURN);
                     } else {
@@ -108,14 +109,10 @@ public class ReversiPanel extends JPanel implements MouseListener {
     }
 
     private void hasGameEnded(boolean currentCorrectMoves) {
-        int gameResult = boardPanel.getWinner(currentCorrectMoves);
+        StateOfGame gameResult = boardPanel.getWinner(currentCorrectMoves);
 
-        if(gameResult == 0) {
-            setGameState(StateOfGame.BLACK_WINS);
-        } else if(gameResult == 1) {
-            setGameState(StateOfGame.WHITE_WINS);
-        } else if(gameResult == 3) {
-            setGameState(StateOfGame.DRAW);
+        if (gameResult != StateOfGame.CONTINUE) {
+            setGameState(gameResult);
         }
     }
 
