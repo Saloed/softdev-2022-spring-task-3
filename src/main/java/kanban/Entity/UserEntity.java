@@ -12,8 +12,15 @@ public class UserEntity {
     private String username;
     private String password;
 
-    @OneToMany
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "users")
     private List<BoardEntity> boards;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "users")
+    private List<CardEntity> cards;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "list_id")
+    private ListEntity list;
 
     public UserEntity(){
     }

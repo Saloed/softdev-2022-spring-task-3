@@ -35,8 +35,6 @@ public class UserController {
     public ResponseEntity getOneUser(@PathVariable Long id){
         try{
             return ResponseEntity.ok(userService.getOne(id));
-        }catch (UserNotFoundException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Error");
         }
@@ -56,7 +54,7 @@ public class UserController {
     @PutMapping("/{id}/board")
     public ResponseEntity addBoard(@RequestBody Board board, @PathVariable Long id){
         try{
-            return ResponseEntity.ok(userService.addBoard(boardService.getOne(board.getId()), id));
+            return ResponseEntity.ok(userService.addBoard(board, id));
         }catch (UserNotFoundException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }catch (Exception e){

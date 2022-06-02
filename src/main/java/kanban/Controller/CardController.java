@@ -1,7 +1,6 @@
 package kanban.Controller;
 
 import kanban.Entity.CardEntity;
-import kanban.Entity.UserEntity;
 import kanban.Model.Card;
 import kanban.Model.User;
 import kanban.Service.CardService;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -42,11 +40,7 @@ public class CardController {
     @PutMapping("/{id}/users")
     public ResponseEntity changeUsers(@RequestBody List<User> users, @PathVariable Long id){
         try{
-            List<UserEntity> userEntities = new ArrayList<>();
-            for(int i = 0; i < users.toArray().length; i++){
-                userEntities.add(userService.getOne(users.get(i).getId()));
-            }
-            return ResponseEntity.ok(cardService.changeUsers(userEntities, id));
+            return ResponseEntity.ok(cardService.changeUsers(users, id));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Error");
         }

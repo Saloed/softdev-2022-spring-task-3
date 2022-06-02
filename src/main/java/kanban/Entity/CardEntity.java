@@ -12,13 +12,17 @@ public class CardEntity {
     private String title;
     private String description;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-            name = "users_cards",
-            joinColumns = @JoinColumn(name = "card_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            name = "cards_users",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "card_id")
     )
     private List<UserEntity> users;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "list_id")
+    private ListEntity column;
 
 
     public CardEntity() {
@@ -59,5 +63,13 @@ public class CardEntity {
 
     public String getDescription() {
         return description;
+    }
+
+    public ListEntity getColumn() {
+        return column;
+    }
+
+    public void setColumn(ListEntity column) {
+        this.column = column;
     }
 }

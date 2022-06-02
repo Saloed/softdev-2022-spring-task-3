@@ -10,10 +10,12 @@ public class ListEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String title;
-
-    private String boardTitle;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "column")
     private List<CardEntity> cards;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "board_id")
+    private BoardEntity board;
 
     public ListEntity() {
     }
@@ -23,9 +25,8 @@ public class ListEntity {
         this.id = id;
     }
 
-    public ListEntity(String title, String boardTitle) {
+    public ListEntity(String title) {
         this.title = title;
-        this.boardTitle = boardTitle;
     }
 
     public Long getId() {
@@ -44,23 +45,11 @@ public class ListEntity {
         this.title = title;
     }
 
-    public String getBoardTitle() {
-        return boardTitle;
-    }
-
-    public void setBoardTitle(String boardTitle) {
-        this.boardTitle = boardTitle;
-    }
-
     public List<CardEntity> getCards() {
         return cards;
     }
 
     public void setCards(List<CardEntity> cards) {
         this.cards = cards;
-    }
-
-    public void addCard(CardEntity card) {
-        this.cards.add(card);
     }
 }

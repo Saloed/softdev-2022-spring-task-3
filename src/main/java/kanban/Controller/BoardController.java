@@ -1,9 +1,6 @@
 package kanban.Controller;
 
 import kanban.Entity.BoardEntity;
-import kanban.Entity.ListEntity;
-import kanban.Entity.UserEntity;
-import kanban.Exception.BoardNotFoundException;
 import kanban.Model.Board;
 import kanban.Model.Column;
 import kanban.Model.User;
@@ -13,16 +10,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/boards")
+@RequestMapping(value = "/boards", consumes = {"*/*"})
 public class BoardController {
     @Autowired
     private BoardService boardService;
 
-    @PostMapping
+    @PostMapping(consumes = {"*/*"})
     public ResponseEntity createBoard(@RequestBody Board board){
         try{
-            System.out.println(board.getTitle()+" BoardController");
-            return ResponseEntity.ok(boardService.create(new BoardEntity(board.getTitle())));
+            return ResponseEntity.ok(boardService.create(new BoardEntity(board.getTitle()), board.getUsers().get(0).getId()));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Error");
         }
@@ -37,21 +33,10 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/find")
-    public ResponseEntity findByTitle(@RequestParam(name="title") String title){
-        try{
-            return ResponseEntity.ok(boardService.findByTitle(title));
-        }catch (BoardNotFoundException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Error");
-        }
-    }
-
     @PutMapping("/{id}/user")
     public ResponseEntity addUser(@RequestBody User user, @PathVariable Long id){
         try{
-            return ResponseEntity.ok(boardService.addUser(new UserEntity(user.getId()), id));
+            return ResponseEntity.ok(boardService.addUser(user.getId(), id));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Error");
         }
@@ -60,7 +45,7 @@ public class BoardController {
     @PutMapping("/{id}/list")
     public ResponseEntity addColumn(@RequestBody Column list, @PathVariable Long id){
         try{
-            return ResponseEntity.ok(boardService.addColumn(new ListEntity(list.getId()), id));
+            return ResponseEntity.ok(boardService.addColumn(list.getId(), id));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Error");
         }

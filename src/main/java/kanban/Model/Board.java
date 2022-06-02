@@ -19,6 +19,11 @@ public class Board {
         this.title = title;
     }
 
+    public Board(String title, List<User> users) {
+        this.title = title;
+        this.users = users;
+    }
+
     public Board(Long id, String title) {
         this.id = id;
         this.title = title;

@@ -1,13 +1,12 @@
 package javafx.Controllers;
 
-import kanban.Model.Card;
-import kanban.Model.User;
+import javafx.Model.Note;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import kanban.ServerController;
+import kanban.Model.User;
 import org.controlsfx.control.CheckComboBox;
 
 import java.net.URL;
@@ -18,7 +17,7 @@ public class CardViewController implements Initializable {
 
     private BoardViewController controller;
 
-    private Card card;
+    private Note note;
 
     @FXML
     private CheckComboBox<User> usersList;
@@ -35,7 +34,7 @@ public class CardViewController implements Initializable {
     @FXML
     private void MoveTaskToNextColumn(ActionEvent e){
         try {
-            controller.toNextColumn(card);
+            controller.toNextColumn(note);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -44,7 +43,7 @@ public class CardViewController implements Initializable {
     @FXML
     private void MoveTaskToPreviousColumn(ActionEvent e){
         try {
-            controller.toPrevColumn(card);
+            controller.toPrevColumn(note);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -55,18 +54,18 @@ public class CardViewController implements Initializable {
         ServerController server = new ServerController();
         String description = this.description.getText();
         List<User> users = usersList.getCheckModel().getCheckedItems();
-        if(!card.getDescription().equals(description)) {
-            card.setDescription(description);
-            server.putDescription(card.getId().intValue(), description);
+        if(!note.getCard().getDescription().equals(description)) {
+            note.getCard().setDescription(description);
+            server.putDescription(note.getCard().getId().intValue(), description);
         }
-        if(!card.getUsers().equals(users)) {
-            card.setUsers(users);
-            server.changeUsersInCard(card.getId().intValue(), users);
+        if(!note.getCard().getUsers().equals(users)) {
+            note.getCard().setUsers(users);
+            server.changeUsersInCard(note.getCard().getId().intValue(), users);
         }
     }
 
-    public void setCard(Card card) {
-        this.card = card;
+    public void setNote(Note note) {
+        this.note = note;
     }
 
     public void setParent (BoardViewController controller){

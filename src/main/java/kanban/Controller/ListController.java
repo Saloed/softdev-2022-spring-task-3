@@ -17,7 +17,7 @@ public class ListController {
     @PostMapping
     public ResponseEntity createList(@RequestBody Column list){
         try{
-            return ResponseEntity.ok(listService.create(new ListEntity(list.getTitle(), list.getBoardTitle())));
+            return ResponseEntity.ok(listService.create(new ListEntity(list.getTitle())));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Error");
         }
@@ -27,15 +27,6 @@ public class ListController {
     public ResponseEntity getOneList(@PathVariable Long id){
         try{
             return ResponseEntity.ok(listService.getOne(id));
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body("Error");
-        }
-    }
-
-    @GetMapping("/find")
-    public ResponseEntity findByBoard(@RequestParam(name="boardTitle") String board){
-        try{
-            return ResponseEntity.ok(listService.findByTitle(board));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Error");
         }

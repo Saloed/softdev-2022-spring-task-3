@@ -1,9 +1,12 @@
 package kanban.Model;
 
+import java.util.List;
+
 public class User {
     private Long id;
     private String username;
     private String password;
+    private List<Board> boards;
 
     public User() {
     }
@@ -22,6 +25,13 @@ public class User {
         this.id = id;
         this.username = username;
         this.password = password;
+    }
+
+    public User(Long id, String username, String password, List<Board> boards) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.boards = boards;
     }
 
     public Long getId() {
@@ -46,5 +56,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Board> getBoards() {
+        return boards;
+    }
+
+    public void setBoards(List<Board> boards) {
+        this.boards = boards;
     }
 }

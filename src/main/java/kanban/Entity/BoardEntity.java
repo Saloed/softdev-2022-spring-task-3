@@ -12,10 +12,15 @@ public class BoardEntity {
     private Long id;
     private String title;
 
-    @ManyToMany(mappedBy = "boards")
+    @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "boards_users",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "board_id")
+    )
     private List<UserEntity> users;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "board")
     private List<ListEntity> columns;
 
     public BoardEntity() {
@@ -24,7 +29,6 @@ public class BoardEntity {
     public BoardEntity(String title) {
         this.title = title;
     }
-
     public Long getId() {
         return id;
     }
@@ -55,13 +59,5 @@ public class BoardEntity {
 
     public void setColumns(List<ListEntity> columns) {
         this.columns = columns;
-    }
-
-    public void addUser(UserEntity user) {
-        this.users.add(user);
-    }
-
-    public void addColumn(ListEntity column) {
-        this.columns.add(column);
     }
 }

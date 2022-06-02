@@ -1,5 +1,6 @@
 package javafx.Controllers;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,17 +13,11 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import kanban.Model.Board;
-import kanban.Model.Card;
 import kanban.Model.Column;
 import kanban.Model.User;
-import kanban.ServerController;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class BoardsViewController implements Initializable {
 
@@ -30,6 +25,7 @@ public class BoardsViewController implements Initializable {
 
     private LoginViewController controller;
 
+    private Map<String, Integer> titleWithIDBoard;
 
     private User mainUser;
 
@@ -37,7 +33,7 @@ public class BoardsViewController implements Initializable {
     private TextField boardNameField;
 
     @FXML
-    private ComboBox<Board> listOfBoards;
+    public ComboBox<String> listOfBoards;
 
     @FXML
     private Label usernameLabel;
@@ -46,36 +42,30 @@ public class BoardsViewController implements Initializable {
     private void addNewBoard(ActionEvent e){
         String newBoardName = boardNameField.getText();
         if(!newBoardName.isBlank()){
-            System.out.println(newBoardName);
 
             ServerController server = new ServerController();
-            server.post("boards", newBoardName);
-            JSONObject newBoard = new JSONObject(server.getBoard(newBoardName));
-            server.post("lists", new Column("todo", newBoardName));
-            server.post("lists", new Column("inProgress", newBoardName));
-            server.post("lists", new Column("done", newBoardName));
-            JSONArray jsonColumns = new JSONArray(server.getColumn(newBoardName));
-            server.addBoard("users", mainUser.getId().intValue(), new Board(newBoard.getLong("id")));
-            server.addObjectInBoard("user",(int) newBoard.getLong("id"),mainUser.getId().intValue());
-            server.addObjectInBoard("column",(int) newBoard.getLong("id"),jsonColumns.getJSONObject(0).getInt("id"));
-            server.addObjectInBoard("column",(int) newBoard.getLong("id"),jsonColumns.getJSONObject(1).getInt("id"));
-            server.addObjectInBoard("column",(int) newBoard.getLong("id"),jsonColumns.getJSONObject(2).getInt("id"));
-            JSONObject board = new JSONObject(server.getBoard(newBoardName));
-            listOfBoards.getItems().add(new Board(board.getLong("id"), board.getString("title")));
+            List<User> users = new ArrayList<>();
+            users.add(mainUser);
+            Board board = server.post("boards", new Board(newBoardName, users), Board.class);
+
+            Column todo = server.post("lists", new Column("todo"), Column.class);
+            Column inProgress = server.post("lists", new Column("inProgress"), Column.class);
+            Column done = server.post("lists", new Column("done"), Column.class);
+
+            server.addBoard("users", mainUser.getId().intValue(), board);
+            server.addObjectInBoard("list", todo, board.getId().intValue());
+            server.addObjectInBoard("list", inProgress, board.getId().intValue());
+            server.addObjectInBoard("list", done, board.getId().intValue());
+            addBoardAtListOfBoards(new Board(board.getId(), board.getTitle()));
         }
     }
 
     @FXML
     private void openBoard(ActionEvent e){
-        Board selectedBoard = listOfBoards.getSelectionModel().getSelectedItem();
-        if(selectedBoard != null){
+        int id = titleWithIDBoard.get(listOfBoards.getSelectionModel().getSelectedItem());
+        if(listOfBoards.getSelectionModel().getSelectedItem() != null){
             ServerController server = new ServerController();
-            JSONObject jsonBoard = new JSONObject(server.getOne("boards", selectedBoard.getId().intValue()));
-
-            List<User> users = getUsersFromJSON(jsonBoard);
-            List<Column> columns =  getColumnFromJSON(jsonBoard);
-            Board board = new Board(jsonBoard.getLong("id"), jsonBoard.getString("title"), users, columns);
-
+            Board board = server.getOne("boards", id, Board.class);
             openBoardWindow(board);
         }
 
@@ -111,35 +101,21 @@ public class BoardsViewController implements Initializable {
         }
     }
 
-    private List<Column> getColumnFromJSON(JSONObject jsonBoard) {
-        List<Column> columns = new ArrayList<>();
-        JSONArray jsonColumns = jsonBoard.getJSONArray("lists");
-        for(int i = 0; i < jsonColumns.length(); i++){
-            JSONObject jsonColumn = jsonColumns.getJSONObject(i);
-            List<Card> cards = new ArrayList<>();
-            JSONArray jsonCards = jsonBoard.getJSONArray("cards");
-            for(int j = 0; j < jsonCards.length(); j++){
-                JSONObject jsonCard = jsonCards.getJSONObject(i);
-                List<User> usersOnCard = getUsersFromJSON(jsonCard);
-                cards.add(new Card(jsonCard.getLong("id") ,jsonCard.getString("title"), usersOnCard, jsonCard.getString("description")));
-            }
-            columns.add(new Column(jsonColumn.getLong("id"), jsonColumn.getString("title"), cards));
-        }
-        return columns;
-    }
-
-    private List<User> getUsersFromJSON(JSONObject jsonObj) {
-        List<User> users = new ArrayList<>();
-        JSONArray jsonUsers = jsonObj.getJSONArray("users");
-        for(int i = 0; i < jsonUsers.length(); i++){
-            JSONObject jsonUser = jsonUsers.getJSONObject(i);
-            users.add(new User(jsonUser.getLong("id"), jsonUser.getString("username")));
-        }
-        return users;
-    }
-
     public void setListOfBoards(List<Board> listOfBoards) {
-        this.listOfBoards.getItems().addAll(listOfBoards);
+        titleWithIDBoard = new HashMap<>();
+        List<String> titles = new ArrayList<>();
+        for(int i = 0; i < listOfBoards.toArray().length; i++){
+            titles.add(listOfBoards.get(i).getTitle());
+            titleWithIDBoard.put(listOfBoards.get(i).getTitle(), listOfBoards.get(i).getId().intValue());
+        }
+        this.listOfBoards.getItems().setAll(titles);
+    }
+
+    public void addBoardAtListOfBoards(Board board) {
+        ObservableList<String> titles = listOfBoards.getItems();
+        titleWithIDBoard.put(board.getTitle(), board.getId().intValue());
+        titles.add(board.getTitle());
+        this.listOfBoards = new ComboBox<String>(titles);
     }
 
     public void setUsernameLabel(String username) {
