@@ -70,7 +70,7 @@ class BoardCondition(override val size: Int, override val cells: MutableList<Mut
 
     override fun addNewValue(init: BoardInit) {
         val nextValue = init.nextValue(this)
-        nextValue?.let { this.getAllCells().filter { it == nextValue.first }.forEach { this[it] = nextValue.second } }
+        nextValue?.let { this.getAllCells().filter { it == nextValue.first }.map { this[it] = nextValue.second } }
     }
 
     companion object {

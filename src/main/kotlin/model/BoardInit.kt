@@ -2,7 +2,7 @@ package model
 
 
 interface BoardInit {
-    fun nextValue(board: Board): Pair<Cell,Int?>?
+    fun nextValue(board: Board): Pair<Cell, Int?>?
 }
 
 object Random: BoardInit {

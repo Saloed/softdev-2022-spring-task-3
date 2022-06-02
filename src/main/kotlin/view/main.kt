@@ -39,7 +39,7 @@ import model.Random
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 fun main() = application {
-    var show by remember { mutableStateOf(0) }
+    var  show by remember { mutableStateOf(0) }
     var direction: Direction? by remember {  mutableStateOf(null) }
     var showInitialWindow by remember { mutableStateOf(true) }
     var showGameWindow by remember { mutableStateOf(false) }
@@ -48,6 +48,7 @@ fun main() = application {
     val currentValue = show
     val sizes = listOf(245.dp, 185.dp, 147.dp, 123.dp)
     val game = GameLogic(show, Random)
+    var isWin by remember { mutableStateOf(game.hasWon()) }
 
     if (showInitialWindow) Window(
         onCloseRequest = ::exitApplication,
@@ -141,14 +142,18 @@ fun main() = application {
             }
         }
     ) {
+        fun reOpen() {
+            showGameWindow = false
+            showGameWindow = true
+        }
         MenuBar {
             Menu("Game") {
                 Item("Restart",
                     onClick = {
-                        showGameWindow = false
-                        showGameWindow = true
+                        reOpen()
                         show = currentValue
                         direction = null
+                        isWinOpen = true
                     },
                     shortcut = KeyShortcut(Key.R, ctrl = true)
                 )
@@ -156,37 +161,38 @@ fun main() = application {
                     showGameWindow = false
                     showInitialWindow = true
                     direction = null
+                    isWinOpen = true
                 })
                 Item("Exit application", onClick = { exitApplication() })
             }
             Menu("Game Mode") {
                 Item("3 x 3", onClick = {
-                    showGameWindow = false
-                    showGameWindow = true
+                    reOpen()
                     show = 3
                     direction = null
+                    isWinOpen = true
                 })
                 Item("4 x 4", onClick = {
-                    showGameWindow = false
-                    showGameWindow = true
+                    reOpen()
                     show = 4
                     direction = null
+                    isWinOpen = true
                 })
                 Item("5 x 5", onClick = {
-                    showGameWindow = false
-                    showGameWindow = true
+                    reOpen()
                     show = 5
                     direction = null
+                    isWinOpen = true
                 })
                 Item("6 x 6", onClick = {
-                    showGameWindow = false
-                    showGameWindow = true
+                    reOpen()
                     show = 6
                     direction = null
+                    isWinOpen = true
                 })
             }
         }
-        var isWin by remember { mutableStateOf(game.hasWon()) }
+
         if (direction == null) game.initialize()
         else if (!isWin && !game.hasLost() && game.canMove(direction!!)) {
             game.processMove(direction!!)
@@ -221,11 +227,14 @@ fun main() = application {
                         showGameWindow = true
                         direction = null
                         show = currentValue
+                        isWinOpen = true
                     }
                     AlertButton("  EXIT  ", Color.Red) {
+                        isWin = false
                         showGameWindow = false
                         showInitialWindow = true
                         direction = null
+                        isWinOpen = true
                     }
                 }
             }

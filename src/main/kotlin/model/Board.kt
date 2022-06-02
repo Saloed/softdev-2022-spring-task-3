@@ -17,14 +17,14 @@ interface Board {
 
    operator fun set(cell: Cell, value: Int?)
 
-    fun getCellOrNull(i: Int, j: Int): Cell?
+   fun getCellOrNull(i: Int, j: Int): Cell?
 
-    fun getAllCells(): List<Cell>
+   fun getAllCells(): List<Cell>
 
-    fun addNewValue(init: BoardInit)
+   fun addNewValue(init: BoardInit)
 
-    fun moveRowOrColumn(rowOrColumn: List<Cell>): Boolean
+   fun moveRowOrColumn(rowOrColumn: List<Cell>): Boolean
 
-    fun moveBoard(direction: Direction): Boolean
+   fun moveBoard(direction: Direction): Boolean
 }
 
