@@ -14,26 +14,14 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 public class Main extends Application {
 
     private Integer size;
-    private File file;
     private Button button;
     private ToggleGroup pics;
     private ToggleGroup field;
     private ImageView img;
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
 
     public Button getButton() {
         return button;
@@ -85,11 +73,6 @@ public class Main extends Application {
 
 
         getButton().setOnAction((final ActionEvent e) -> {
-            try {
-                if (getFile() != null) {
-                    setImg(new ImageView(new Image(new FileInputStream(getFile()))));
-                    proceedToTheGame(stage);
-                } else {
                     RadioButton button1 = (RadioButton) pics.getSelectedToggle();
                     if (button1.getGraphic() == null) {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -102,10 +85,6 @@ public class Main extends Application {
                         setImg((ImageView) button1.getGraphic());
                         proceedToTheGame(stage);
                     }
-                }
-            } catch (FileNotFoundException fileNotFoundException) {
-                fileNotFoundException.printStackTrace();
-            }
         });
     }
 
@@ -171,7 +150,13 @@ public class Main extends Application {
         fileChooser.getExtensionFilters()
                 .add(extFilterJPG);
         chosen.setOnAction(
-                (final ActionEvent e) -> setFile(fileChooser.showOpenDialog(stage)));
+                (final ActionEvent e) -> {
+                    ImageView pic = new ImageView(new Image(String.valueOf(fileChooser.showOpenDialog(stage))));
+                    pic.setFitHeight(55);
+                    pic.setFitWidth(55);
+                    chosen.setGraphic(pic);
+                }
+        );
 
 
         final ToggleGroup images = new ToggleGroup();
