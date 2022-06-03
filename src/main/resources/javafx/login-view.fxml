@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="170.0" prefWidth="230.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.Controllers.LoginViewController">
+   <top>
+      <AnchorPane prefHeight="170.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <PasswordField fx:id="passwordField" layoutX="41.0" layoutY="88.0" promptText="password" />
+            <TextField fx:id="usernameField" layoutX="41.0" layoutY="48.0" promptText="username" />
+            <Button layoutX="137.0" layoutY="128.0" mnemonicParsing="false" text="Sign in" onAction="#signIn" />
+            <Button layoutX="41.0" layoutY="128.0" mnemonicParsing="false" text="Sign up" onAction="#signUp" />
+            <Label layoutX="88.0" layoutY="6.0" text="Kanban">
+               <font>
+                  <Font name="Century" size="16.0" />
+               </font></Label>
+         </children></AnchorPane>
+   </top>
+</BorderPane>
