@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import kanban.Model.Board;
@@ -28,6 +29,9 @@ public class BoardViewController implements Initializable {
     private BoardsViewController controller;
 
     private Board board;
+
+    @FXML
+    private Text title;
 
     @FXML
     private TextField newTask;
@@ -50,7 +54,7 @@ public class BoardViewController implements Initializable {
         if(!username.isBlank()){
             ServerController server = new ServerController();
             User user = server.getUser(username);
-            server.addObjectInBoard("user", board.getId().intValue(), user.getId().intValue());
+            server.addObjectInBoard("user", user, board.getId().intValue());
             server.addBoard("users", user.getId().intValue(), board);
         }
     }
@@ -99,16 +103,21 @@ public class BoardViewController implements Initializable {
                 fxmlLoader.setLocation(getClass().getResource("/card-view.fxml"));
                 Parent root = fxmlLoader.load();
 
+                Card card = new ServerController().getOne("cards", note.getCard().getId().intValue(), Card.class);
+                note.setCard(card);
+
                 cardViewController = fxmlLoader.getController();
                 cardViewController.setParent(this);
                 cardViewController.setNote(note);
                 cardViewController.setDescriptionText(note.getCard().getDescription());
+                cardViewController.setUsersList(board.getUsers());
+                if(note.getCard().getUsers() != null) cardViewController.setCheckedUsersList(note.getCard().getUsers());
 
                 Stage stage = new Stage();
                 stage.setTitle(note.getCard().getTitle());
                 stage.setResizable(false);
                 stage.initModality(Modality.APPLICATION_MODAL);
-                stage.initOwner(((Node)event.getSource()).getScene().getWindow() );
+                stage.initOwner(((Node)event.getSource()).getScene().getWindow());
                 stage.setScene(new Scene(root));
                 stage.show();
             } catch (Exception ex) {
@@ -124,16 +133,16 @@ public class BoardViewController implements Initializable {
             inProgress.getChildren().addAll(n.getTextField());
             n.getCard().setColumn(board.getColumns().get(1));
 
-            server.moveCard("addcard", board.getColumns().get(1).getId().intValue(), n.getCard());
             server.moveCard("deletecard", board.getColumns().get(0).getId().intValue(), n.getCard());
+            server.moveCard("addcard", board.getColumns().get(1).getId().intValue(), n.getCard());
         }
         else if(n.getCard().getColumn().getTitle().equals(inProgress.getId())){
             inProgress.getChildren().removeAll(n.getTextField());
             done.getChildren().addAll(n.getTextField());
             n.getCard().setColumn(board.getColumns().get(2));
 
-            server.moveCard("addcard", board.getColumns().get(2).getId().intValue(), n.getCard());
             server.moveCard("deletecard", board.getColumns().get(1).getId().intValue(), n.getCard());
+            server.moveCard("addcard", board.getColumns().get(2).getId().intValue(), n.getCard());
         }
     }
 
@@ -145,17 +154,21 @@ public class BoardViewController implements Initializable {
             todo.getChildren().addAll(n.getTextField());
             n.getCard().setColumn(board.getColumns().get(0));
 
-            server.moveCard("addcard", board.getColumns().get(0).getId().intValue(), n.getCard());
             server.moveCard("deletecard", board.getColumns().get(1).getId().intValue(), n.getCard());
+            server.moveCard("addcard", board.getColumns().get(0).getId().intValue(), n.getCard());
         }
         else if(n.getCard().getColumn().getTitle().equals(done.getId())){
             done.getChildren().removeAll(n.getTextField());
             inProgress.getChildren().addAll(n.getTextField());
             n.getCard().setColumn(board.getColumns().get(1));
 
-            server.moveCard("addcard", board.getColumns().get(1).getId().intValue(), n.getCard());
             server.moveCard("deletecard", board.getColumns().get(2).getId().intValue(), n.getCard());
+            server.moveCard("addcard", board.getColumns().get(1).getId().intValue(), n.getCard());
         }
+    }
+
+    public void setTitle(String title) {
+        this.title.setText(title);
     }
 
     public void setBoard(Board board) {

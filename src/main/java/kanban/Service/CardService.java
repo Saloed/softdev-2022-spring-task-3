@@ -3,8 +3,10 @@ package kanban.Service;
 import kanban.Entity.CardEntity;
 import kanban.Entity.UserEntity;
 import kanban.Model.Card;
+import kanban.Model.Column;
 import kanban.Model.User;
 import kanban.Repository.CardRepo;
+import kanban.Repository.ListRepo;
 import kanban.Repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,20 +20,25 @@ public class CardService {
     private CardRepo cardRepo;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private ListRepo listRepo;
 
-    public Card create(CardEntity card){
+    public Card create(CardEntity card, Long ColumnID){
+        card.setColumn(listRepo.findById(ColumnID).get());
         CardEntity entity = cardRepo.save(card);
-        return new Card(entity.getId(),entity.getTitle(),entity.getDescription(), new ListService().getOne(card.getColumn().getId()));
+        return new Card(entity.getId(),entity.getTitle(),entity.getDescription());
     }
 
     public Card getOne(Long id){
         CardEntity card = cardRepo.findById(id).get();
         List<User> users = new ArrayList<>();
-        for(int i = 0; i < card.getUsers().toArray().length; i++){
-            UserEntity user = card.getUsers().get(i);
-            users.add(new User(user.getId(), user.getUsername()));
+        if(card.getUsers() != null) {
+            for (int i = 0; i < card.getUsers().toArray().length; i++) {
+                UserEntity entity = card.getUsers().get(i);
+                users.add(new User(entity.getId(), entity.getUsername()));
+            }
         }
-        return new Card(card.getId(), card.getTitle(), users, card.getDescription(),new ListService().getOne(card.getColumn().getId()));
+        return new Card(card.getId(), card.getTitle(), users, card.getDescription(),new Column(card.getColumn().getId(), card.getColumn().getTitle()));
     }
 
     public CardEntity changeUsers(List<User> users, Long id){

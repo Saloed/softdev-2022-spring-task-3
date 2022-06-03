@@ -56,7 +56,7 @@ public class ServerController {
     }
 
     public void changeUsersInCard(int id, List<User> users){
-        restTemplate.put(BASE_URL + "cards/" + id +"/user", users);
+        restTemplate.put(BASE_URL + "cards/" + id +"/users", users);
     }
 
     public void putDescription(int id, String desc){

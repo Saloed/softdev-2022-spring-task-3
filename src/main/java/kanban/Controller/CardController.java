@@ -22,7 +22,7 @@ public class CardController {
     @PostMapping
     public ResponseEntity createCard(@RequestBody Card card){
         try{
-            return ResponseEntity.ok(cardService.create(new CardEntity(card.getTitle(),card.getDescription())));
+            return ResponseEntity.ok(cardService.create(new CardEntity(card.getTitle(),card.getDescription()), card.getColumn().getId()));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Error");
         }

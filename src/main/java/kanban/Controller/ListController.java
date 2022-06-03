@@ -1,7 +1,7 @@
 package kanban.Controller;
 
-import kanban.Entity.CardEntity;
 import kanban.Entity.ListEntity;
+import kanban.Model.Card;
 import kanban.Model.Column;
 import kanban.Service.ListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class ListController {
     @PostMapping
     public ResponseEntity createList(@RequestBody Column list){
         try{
-            return ResponseEntity.ok(listService.create(new ListEntity(list.getTitle())));
+            return ResponseEntity.ok(listService.create(new ListEntity(list.getTitle()), list.getBoard().getId()));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Error");
         }
@@ -33,18 +33,18 @@ public class ListController {
     }
 
     @PutMapping("/{id}/addcard")
-    public ResponseEntity addCard(@RequestParam CardEntity card, @PathVariable Long id){
+    public ResponseEntity addCard(@RequestBody Card card, @PathVariable Long id){
         try{
-            return ResponseEntity.ok(listService.addCard(card, id));
+            return ResponseEntity.ok(listService.addCard(card.getId(), id));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Error");
         }
     }
 
     @PutMapping("/{id}/deletecard")
-    public ResponseEntity deleteCard(@RequestParam CardEntity card, @PathVariable Long id){
+    public ResponseEntity deleteCard(@RequestBody Card card, @PathVariable Long id){
         try{
-            return ResponseEntity.ok(listService.deleteCard(card, id));
+            return ResponseEntity.ok(listService.deleteCard(card.getId(), id));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Error");
         }

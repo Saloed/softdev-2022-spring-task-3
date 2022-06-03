@@ -11,6 +11,10 @@ public class User {
     public User() {
     }
 
+    public User(Long id) {
+        this.id = id;
+    }
+
     public User(String username, String password) {
         this.username = username;
         this.password = password;
@@ -64,5 +68,10 @@ public class User {
 
     public void setBoards(List<Board> boards) {
         this.boards = boards;
+    }
+
+    @Override
+    public String toString() {
+        return username;
     }
 }

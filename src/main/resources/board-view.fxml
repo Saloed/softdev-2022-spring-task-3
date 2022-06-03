@@ -20,7 +20,7 @@
    <left>
         <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
             <children>
-                <Text layoutX="188.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kanban Board" textAlignment="CENTER" wrappingWidth="260.15234375">
+                <Text fx:id="title" layoutX="188.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kanban Board" textAlignment="CENTER" wrappingWidth="260.15234375">
                     <font>
                         <Font name="Century" size="36.0" />
                     </font>

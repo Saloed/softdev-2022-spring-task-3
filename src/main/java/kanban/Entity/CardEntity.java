@@ -1,6 +1,7 @@
 package kanban.Entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,6 +32,7 @@ public class CardEntity {
     public CardEntity(String title, String description) {
         this.title = title;
         this.description = description;
+        this.users = new ArrayList<>();
     }
 
     public Long getId() {

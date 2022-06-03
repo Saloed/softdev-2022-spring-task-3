@@ -61,8 +61,7 @@ public class BoardService {
         ListEntity listEntity = listRepo.findById(listID).get();
         BoardEntity board = boardRepo.findById(id).get();
         List<ListEntity> lists = board.getColumns();
-        if(lists.toArray().length == 0)
-            lists = new ArrayList<>();
+        if(lists == null) lists = new ArrayList<>();
         lists.add(listEntity);
         board.setColumns(lists);
         return boardRepo.save(board);

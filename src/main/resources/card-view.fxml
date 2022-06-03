@@ -11,7 +11,7 @@
             <TextArea fx:id="description" layoutX="122.0" layoutY="31.0" prefHeight="158.0" prefWidth="170.0" />
             <Button layoutX="246.0" layoutY="2.0" mnemonicParsing="false" onAction="#MoveTaskToNextColumn" prefHeight="25.0" prefWidth="46.0" text="Next" />
             <Button layoutX="7.0" layoutY="2.0" mnemonicParsing="false" onAction="#MoveTaskToPreviousColumn" text="Back" />
-            <CheckComboBox layoutX="7.0" layoutY="31.0" prefHeight="25.0" prefWidth="109.0" />
+            <CheckComboBox fx:id="usersList" layoutX="7.0" layoutY="31.0" prefHeight="25.0" prefWidth="109.0" />
             <Button layoutX="105.0" layoutY="2.0" mnemonicParsing="false" onAction="#saveChanges" text="Save Changes" />
          </children></AnchorPane>
    </top>

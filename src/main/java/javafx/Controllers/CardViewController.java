@@ -1,6 +1,8 @@
 package javafx.Controllers;
 
 import javafx.Model.Note;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,8 +12,7 @@ import kanban.Model.User;
 import org.controlsfx.control.CheckComboBox;
 
 import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class CardViewController implements Initializable {
 
@@ -19,8 +20,10 @@ public class CardViewController implements Initializable {
 
     private Note note;
 
+    private Map<String, Integer> usernameWithID;
+
     @FXML
-    private CheckComboBox<User> usersList;
+    private CheckComboBox<String> usersList;
 
     @FXML
     private TextArea description;
@@ -53,13 +56,19 @@ public class CardViewController implements Initializable {
     private void saveChanges(ActionEvent e){
         ServerController server = new ServerController();
         String description = this.description.getText();
-        List<User> users = usersList.getCheckModel().getCheckedItems();
+        List<User> users = new ArrayList<>();
+        if(note.getCard().getUsers() != null) {
+            ObservableList<String> u = usersList.getCheckModel().getCheckedItems();
+            for(int i = 0; i < u.toArray().length; i++){
+                users.add(new User(usernameWithID.get(u.get(i)).longValue()));
+            }
+        }
         if(!note.getCard().getDescription().equals(description)) {
             note.getCard().setDescription(description);
             server.putDescription(note.getCard().getId().intValue(), description);
         }
         if(!note.getCard().getUsers().equals(users)) {
-            note.getCard().setUsers(users);
+            note.getCard().setUsers(null);
             server.changeUsersInCard(note.getCard().getId().intValue(), users);
         }
     }
@@ -76,11 +85,24 @@ public class CardViewController implements Initializable {
         this.description.setText(descriptionText);
     }
 
+    public void setUsersList(List<User> users){
+        usernameWithID = new HashMap<>();
+        ObservableList<String> strings = FXCollections.observableArrayList();
+        for(int i = 0; i < users.toArray().length; i++){
+            strings.add(users.get(i).getUsername());
+            usernameWithID.put(users.get(i).getUsername(), users.get(i).getId().intValue());
+        }
+        usersList.getItems().addAll(strings);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
     }
 
-
-
+    public void setCheckedUsersList(List<User> users) {
+        for(int i = 0; i < users.toArray().length; i++){
+            usersList.getCheckModel().check(users.get(i).getUsername());
+        }
+    }
 }

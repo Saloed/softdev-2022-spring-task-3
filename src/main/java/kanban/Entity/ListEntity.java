@@ -20,11 +20,6 @@ public class ListEntity {
     public ListEntity() {
     }
 
-
-    public ListEntity(Long id) {
-        this.id = id;
-    }
-
     public ListEntity(String title) {
         this.title = title;
     }
@@ -51,5 +46,13 @@ public class ListEntity {
 
     public void setCards(List<CardEntity> cards) {
         this.cards = cards;
+    }
+
+    public BoardEntity getBoard() {
+        return board;
+    }
+
+    public void setBoard(BoardEntity board) {
+        this.board = board;
     }
 }

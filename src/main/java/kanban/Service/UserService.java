@@ -59,7 +59,10 @@ public class UserService {
         if(user == null){
             throw new UserNotFoundException("User not found");
         }
-        user.addBoard(boardRepo.findById(board.getId()).get());
+        List<BoardEntity> boards = user.getBoards();
+        if(boards == null) boards = new ArrayList<>();
+        boards.add(boardRepo.findById(board.getId()).get());
+        user.setBoards(boards);
         return userRepo.save(user);
     }
 

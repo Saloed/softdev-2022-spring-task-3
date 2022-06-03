@@ -6,12 +6,14 @@ public class Column {
     private Long id;
     private String title;
     private List<Card> cards;
+    private Board board;
 
     public Column() {
     }
 
-    public Column(String title) {
+    public Column(String title, Board board) {
         this.title = title;
+        this.board = board;
     }
 
     public Column(Long id, String title) {
@@ -46,6 +48,14 @@ public class Column {
 
     public void setCards(List<Card> cards) {
         this.cards = cards;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     @Override

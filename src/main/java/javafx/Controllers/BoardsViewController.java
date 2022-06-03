@@ -48,9 +48,9 @@ public class BoardsViewController implements Initializable {
             users.add(mainUser);
             Board board = server.post("boards", new Board(newBoardName, users), Board.class);
 
-            Column todo = server.post("lists", new Column("todo"), Column.class);
-            Column inProgress = server.post("lists", new Column("inProgress"), Column.class);
-            Column done = server.post("lists", new Column("done"), Column.class);
+            Column todo = server.post("lists", new Column("todo", board), Column.class);
+            Column inProgress = server.post("lists", new Column("inProgress", board), Column.class);
+            Column done = server.post("lists", new Column("done", board), Column.class);
 
             server.addBoard("users", mainUser.getId().intValue(), board);
             server.addObjectInBoard("list", todo, board.getId().intValue());
@@ -62,10 +62,9 @@ public class BoardsViewController implements Initializable {
 
     @FXML
     private void openBoard(ActionEvent e){
-        int id = titleWithIDBoard.get(listOfBoards.getSelectionModel().getSelectedItem());
         if(listOfBoards.getSelectionModel().getSelectedItem() != null){
             ServerController server = new ServerController();
-            Board board = server.getOne("boards", id, Board.class);
+            Board board = server.getOne("boards", titleWithIDBoard.get(listOfBoards.getSelectionModel().getSelectedItem()), Board.class);
             openBoardWindow(board);
         }
 
@@ -79,13 +78,17 @@ public class BoardsViewController implements Initializable {
             fxmlLoader.setLocation(getClass().getResource("/board-view.fxml"));
             Parent root = fxmlLoader.load();
 
+            ServerController server = new ServerController();
             boardViewController = fxmlLoader.getController();
             boardViewController.setParent(this);
             boardViewController.setBoard(board);
-            List<Column> columns = board.getColumns();
-            boardViewController.addTasksAtToDoColumn(columns.get(0).getCards());
-            boardViewController.addTasksAtInProgressColumn(columns.get(1).getCards());
-            boardViewController.addTasksAtDoneColumn(columns.get(2).getCards());
+            Column todo = server.getOne("lists", board.getColumns().get(0).getId().intValue(), Column.class);
+            Column inProgress = server.getOne("lists", board.getColumns().get(1).getId().intValue(), Column.class);
+            Column done = server.getOne("lists", board.getColumns().get(2).getId().intValue(), Column.class);
+            boardViewController.addTasksAtToDoColumn(todo.getCards());
+            boardViewController.addTasksAtInProgressColumn(inProgress.getCards());
+            boardViewController.addTasksAtDoneColumn(done.getCards());
+            boardViewController.setTitle(board.getTitle());
 
             Stage stage = new Stage();
             MenuBar menuBar = (MenuBar)fxmlLoader.getNamespace().get("menuBar");
@@ -115,7 +118,7 @@ public class BoardsViewController implements Initializable {
         ObservableList<String> titles = listOfBoards.getItems();
         titleWithIDBoard.put(board.getTitle(), board.getId().intValue());
         titles.add(board.getTitle());
-        this.listOfBoards = new ComboBox<String>(titles);
+        this.listOfBoards.getItems().setAll(titles);
     }
 
     public void setUsernameLabel(String username) {

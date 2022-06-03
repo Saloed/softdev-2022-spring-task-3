@@ -12,14 +12,18 @@ public class Card {
     public Card() {
     }
 
-    public Card(String title, String description, Column column) {
+    public Card(Long id, String title) {
+        this.id = id;
         this.title = title;
-        this.description = description;
-        this.column = column;
     }
 
-    public Card(Long id, String title, String description, Column column) {
+    public Card(Long id, String title, String description) {
         this.id = id;
+        this.title = title;
+        this.description = description;
+    }
+
+    public Card(String title, String description, Column column) {
         this.title = title;
         this.description = description;
         this.column = column;
