@@ -4,26 +4,29 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Polygon;
+import minesweep.logic.Tile;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Tile extends Polygon {
+public class TileView extends Polygon {
     private final static double r = 20; // the inner radius from hexagon center to outer corner
     private final static double innerRadius = Math.sqrt(r * r * 0.75); // the inner radius from hexagon center to middle of the axis
     private final static double TILE_WIDTH = 2 * innerRadius;
     private final static double TILE_HEIGHT = 2 * r;
     private final String EXTENSION = ".png";
     private Coordinates coordinates;
-    private boolean isFlagged;
-    private boolean isBomb;
-    private boolean isEmpty;
-    private int bombsAround = -1;
     int xStartOffset = 40; // offsets the entire field to the right
     int yStartOffset = 40; // offsets the entire fields downwards
 
-    public Tile(int row, int col) {
-        coordinates = new Coordinates(col, row);
+    Tile tile;
+
+    public TileView(Tile tile) {
+        this.tile = tile;
+        coordinates = tile.getCoordinates();
+        int row = coordinates.getY();
+        int col = coordinates.getX();
+
         double x = col * TILE_WIDTH + (row % 2) * innerRadius + xStartOffset;
         double y = row * TILE_HEIGHT * 0.75 + yStartOffset;
         // creates the polygon using the corner coordinates
@@ -49,61 +52,37 @@ public class Tile extends Polygon {
     }
 
     public boolean isFlagged() {
-        return isFlagged;
+        return tile.isFlagged();
     }
 
     public void setFlagged(boolean flagged) {
-        isFlagged = flagged;
+        tile.setFlagged(flagged);
+        if (flagged) setImage("flag");
+        else setImage("cover");
     }
 
     public boolean isBomb() {
-        return isBomb;
+        return tile.isBomb();
     }
 
     public void setBomb(boolean bomb) {
-        isBomb = bomb;
+        tile.setBomb(bomb);
     }
 
     public boolean isEmpty() {
-        return isEmpty;
+        return tile.isEmpty();
     }
 
     public void setEmpty(boolean empty) {
-        isEmpty = empty;
+        tile.setEmpty(empty);
     }
 
     public int getBombsAround() {
-        return bombsAround;
+        return tile.getBombsAround();
     }
 
     public void setBombsAround(int bombsAround) {
-        this.bombsAround = bombsAround;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Tile)) return false;
-
-        Tile tile = (Tile) o;
-
-        return getCoordinates().equals(tile.getCoordinates());
-    }
-
-    @Override
-    public int hashCode() {
-        return getCoordinates().hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Cell{" +
-                "coordinates=" + coordinates +
-                ", isFlagged=" + isFlagged +
-                ", hasBomb=" + isBomb +
-                ", isEmpty=" + isEmpty +
-                ", bombsAround=" + bombsAround +
-                '}';
+        tile.setBombsAround(bombsAround);
     }
 
     public void setImage(String name) {
@@ -119,4 +98,6 @@ public class Tile extends Polygon {
     }
 
     private Map<String, ImagePattern> images = new HashMap<>();
+
+
 }

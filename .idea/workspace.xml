@@ -4,71 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="be6821c8-1464-4ebb-a47b-bfd5e7042688" name="Changes" comment=".">
-      <change afterPath="$PROJECT_DIR$/.gradle/7.4/checksums/checksums.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.4/checksums/md5-checksums.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.4/checksums/sha1-checksums.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.4/dependencies-accessors/dependencies-accessors.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.4/dependencies-accessors/gc.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.4/fileChanges/last-build.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/7.4/gc.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gradle/vcs-1/gc.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/minesweep/Coordinates.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/minesweep/MinesweeperApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/minesweep/Tile.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/minesweep/cover.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/minesweep/empty.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/minesweep/fiveMinesAround.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/minesweep/flag.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/minesweep/fourMinesAround.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/minesweep/incorrectFlag.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/minesweep/mine.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/minesweep/oneMineAround.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/minesweep/sixMinesAround.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/minesweep/threeMinesAround.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/minesweep/twoMinesAround.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/logicTest/LogicTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/mineswep/cover.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/mineswep/empty.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/mineswep/fiveMinesAround.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/mineswep/flag.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/mineswep/fourMinesAround.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/mineswep/incorrectFlag.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/mineswep/mine.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/mineswep/oneMineAround.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/mineswep/sixMinesAround.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/mineswep/threeMinesAround.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/mineswep/twoMinesAround.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+    <list default="true" id="be6821c8-1464-4ebb-a47b-bfd5e7042688" name="Changes" comment="initial commit">
+      <change afterPath="$PROJECT_DIR$/src/main/java/minesweep/logic/Logic.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/minesweep/logic/Tile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/minesweep/MinesweeperApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/minesweep/MinesweeperApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/minesweep/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/minesweep/TileView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/logicTest/LogicTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/logicTest/LogicTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -135,26 +83,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/leragromozdova/IdeaProjects/softdev-2022-spring-task-3/src/main/resources/minesweep&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.54137933&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.tools&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/Users/leragromozdova/IdeaProjects/softdev-2022-spring-task-3",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.54137933",
+    "settings.editor.selected.configurable": "configurable.group.tools"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="mineswep" />
@@ -168,7 +116,7 @@
       <recent name="$PROJECT_DIR$/hex-minesweeper/src" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.LogicTest.bombTest">
+  <component name="RunManager" selected="Gradle.LogicTest.emptyTest">
     <configuration name="MinesweeperApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="battleship.MinesweeperApplication" />
       <module name="softdev-2022-spring-task-3.main" />
@@ -231,34 +179,36 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="softdev-2022-spring-task-3 [dependencies]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="LogicTest.emptyTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--stacktrace" />
+        <option name="scriptParameters" value="" />
         <option name="taskDescriptions">
           <list />
         </option>
         <option name="taskNames">
           <list>
-            <option value="dependencies" />
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;logicTest.LogicTest.emptyTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.LogicTest.emptyTest" />
         <item itemvalue="Gradle.LogicTest.bombTest" />
         <item itemvalue="Application.minesweep.MinesweeperApplication" />
         <item itemvalue="Application.com.example.battleship.MinesweeperApplication" />
         <item itemvalue="Application.MinesweeperApplication" />
-        <item itemvalue="Gradle.softdev-2022-spring-task-3 [dependencies]" />
       </list>
     </recent_temporary>
   </component>
@@ -275,8 +225,18 @@
       <workItem from="1663827041422" duration="3607000" />
       <workItem from="1663851987007" duration="885000" />
       <workItem from="1663853153231" duration="2449000" />
-      <workItem from="1663932062376" duration="713000" />
+      <workItem from="1663932062376" duration="885000" />
+      <workItem from="1664046194827" duration="24000" />
+      <workItem from="1664046253153" duration="502000" />
     </task>
+    <task id="LOCAL-00001" summary="initial commit">
+      <created>1663932892628</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1663932892628</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -296,7 +256,8 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="." />
-    <option name="LAST_COMMIT_MESSAGE" value="." />
+    <MESSAGE value="initial commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="initial commit" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

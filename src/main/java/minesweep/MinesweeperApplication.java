@@ -8,11 +8,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import minesweep.logic.Logic;
+import minesweep.logic.Tile;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  Пулы потоков бывают:
@@ -30,23 +31,80 @@ public class MinesweeperApplication extends Application {
     private final static int WINDOW_WIDTH = ROWS * 50;
     private final static int WINDOW_HEIGHT = COLUMNS * 40;
     private final int BOMBS = ROWS * COLUMNS / 10;
-    private final ExecutorService threadPool = Executors.newCachedThreadPool();
-    private AnchorPane board = new AnchorPane();
-    private Map<Coordinates, Tile> tileMap;
-    private Set<Tile> bombs;
-    private Set<Tile> openTiles;
+    private AnchorPane boardView = new AnchorPane();
+    private Map<Coordinates, TileView> tileViewMap;
+    private Logic logic;
     private Scene content;
     private Stage root;
-    private BorderPane borderPane = new BorderPane(board);
+    private BorderPane borderPane = new BorderPane(boardView);
+
+    public Logic.Listener logicListener = new Logic.Listener() {
+        @Override
+        public void onLost() {
+            lose();
+        }
+
+        @Override
+        public void onWon() {
+            win();
+        }
+
+        @Override
+        public void onTileFlagged(Tile tile, boolean flagged) {
+            //tileViewMap.get(tile.getCoordinates()).setFlagged(flagged);
+        }
+
+        @Override
+        public void onTileEmpty(Tile tile, boolean empty) {
+
+        }
+
+        @Override
+        public void onTileBomb(Tile tile, boolean bomb) {
+
+        }
+
+        @Override
+        public void onTileSetBombsAround(Tile tile, int bombsAround) {
+            TileView tileView = tileViewMap.get(tile.getCoordinates());
+            switch (bombsAround) {
+                case 0:
+                    tileView.setImage("empty");
+                    break;
+                case 1:
+                    tileView.setImage("oneMineAround");
+                    break;
+                case 2:
+                    tileView.setImage("twoMinesAround");
+                    break;
+                case 3:
+                    tileView.setImage("threeMinesAround");
+                    break;
+                case 4:
+                    tileView.setImage("fourMinesAround");
+                    break;
+                case 5:
+                    tileView.setImage("fiveMinesAround");
+                    break;
+                case 6:
+                    tileView.setImage("sixMinesAround");
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        @Override
+        public void onTileOpen(Tile tile) {
+        }
+    };
 
     public static void main(String[] args) {
         launch(args);
     }
 
     public void start(Stage root) {
-        tileMap = new HashMap<>(ROWS * COLUMNS);
-        bombs = new HashSet<>();
-        openTiles = new HashSet<>();
+        tileViewMap = new HashMap<>(ROWS * COLUMNS);
         this.root = root;
         newGame();
     }
@@ -55,8 +113,9 @@ public class MinesweeperApplication extends Application {
         content = new Scene(borderPane, WINDOW_WIDTH, WINDOW_HEIGHT);
         root.setScene(content);
         root.setTitle("hex-minesweeper");
+        logic = new Logic(ROWS, COLUMNS, BOMBS);
+        logic.setListener(logicListener);
         fillBoardWithTiles();
-        plantBombs();
         root.show();
     }
 
@@ -64,94 +123,17 @@ public class MinesweeperApplication extends Application {
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
 
-                Tile tile = new Tile(row, col);
                 Coordinates coordinates = new Coordinates(col, row);
-                tileMap.put(coordinates, tile);
-                tile.setOnMouseClicked(new TileMouseClickHandler(tile));
-                board.getChildren().add(tile);
+                TileView tileView = new TileView(logic.tileMap.get(coordinates));
+                tileViewMap.put(coordinates, tileView);
+                tileView.setOnMouseClicked(new TileMouseClickHandler(tileView));
+                boardView.getChildren().add(tileView);
             }
-        }
-    }
-
-    private void plantBombs() {
-        for (int i = 0; i < BOMBS; i++) {
-            int col = ThreadLocalRandom.current().nextInt(0, COLUMNS - 1);
-            int row = ThreadLocalRandom.current().nextInt(0, ROWS - 1);
-            Coordinates coordinates = new Coordinates(col, row);
-            Tile tile = tileMap.get(coordinates);
-            if (tile == null || bombs.contains(tile)) i -= 1;
-            else tileToBomb(tile);
-        }
-    }
-
-    public void tileToBomb(Tile tile) {
-        tile.setBomb(true);
-        bombs.add(tile);
-    }
-
-    public int countBombsAround(Tile tile) {
-        if (tile.getBombsAround() == -1) {
-            int bombsAround = (int) getNeighboursOf(tile).stream().filter(Optional::isPresent).map(Optional::get).filter(Tile::isBomb).count();
-            tile.setBombsAround(bombsAround);
-            return bombsAround;
-        } else {
-            return tile.getBombsAround();
-        }
-    }
-
-    public void setFlag(Tile tile) {
-        tile.setFlagged(true);
-        tile.setImage("flag");
-    }
-
-    public void removeFlag(Tile tile) {
-        tile.setFlagged(false);
-        tile.setImage("cover");
-    }
-
-    private void openTile(Tile tile) {
-        if (openTiles.contains(tile)) {
-            return;
-        }
-        if (tile.isBomb()) {
-            lose();
-        } else {
-
-            switch (countBombsAround(tile)) {
-                case 0:
-                    tile.setImage("empty");
-                    openTilesAroundOf(tile);
-                    break;
-                case 1:
-                    tile.setImage("oneMineAround");
-                    break;
-                case 2:
-                    tile.setImage("twoMinesAround");
-                    break;
-                case 3:
-                    tile.setImage("threeMinesAround");
-                    break;
-                case 4:
-                    tile.setImage("fourMinesAround");
-                    break;
-                case 5:
-                    tile.setImage("fiveMinesAround");
-                    break;
-                case 6:
-                    tile.setImage("sixMinesAround");
-                    break;
-                default:
-                    break;
-            }
-        }
-        openTiles.add(tile);
-        if (openTiles.size() == ROWS * COLUMNS - BOMBS) {
-            win();
         }
     }
 
     private void lose() {
-        bombs.forEach(bomb -> bomb.setImage("mine"));
+        logic.bombs.forEach(bomb -> tileViewMap.get(bomb.getCoordinates()).setImage("mine"));
         System.out.println("oh no you have died!");
         endGame();
     }
@@ -162,53 +144,50 @@ public class MinesweeperApplication extends Application {
     }
 
     private void endGame() {
-        tileMap.values().stream().filter(tile -> tile.isFlagged() && !tile.isBomb()).forEach(tile -> tile.setImage("incorrectFlag"));
-        tileMap.values().forEach(tile -> tile.setOnMouseClicked(null));
+        logic.tileMap.values().stream()
+                .filter(tile -> tile.isFlagged() && !tile.isBomb())
+                .forEach(tile -> tileViewMap.get(tile.getCoordinates()).setImage("incorrectFlag"));
+        tileViewMap.values().forEach(tileView -> tileView.setOnMouseClicked(null));
     }
 
-    private void openTilesAroundOf(Tile tile) {
-        getNeighboursOf(tile).stream().filter(Optional::isPresent).map(Optional::get).forEach(neighbour -> threadPool.submit(() -> openTile(neighbour)));
-    }
-
-    private Set<Optional<Tile>> getNeighboursOf(Tile tile) {
-        Set<Optional<Tile>> neighbours = new HashSet<>();
-        int col = tile.getCoordinates().getX();
-        int row = tile.getCoordinates().getY();
+    private Set<Optional<TileView>> getNeighboursOf(TileView tileView) {
+        Set<Optional<TileView>> neighbours = new HashSet<>();
+        int col = tileView.getCoordinates().getX();
+        int row = tileView.getCoordinates().getY();
 
 
-        neighbours.add(getTile(row + 1, col));
-        neighbours.add(getTile(row - 1, col));
-        neighbours.add(getTile(row, col + 1));
-        neighbours.add(getTile(row, col - 1));
+        neighbours.add(getTileView(row + 1, col));
+        neighbours.add(getTileView(row - 1, col));
+        neighbours.add(getTileView(row, col + 1));
+        neighbours.add(getTileView(row, col - 1));
 
         if (row % 2 == 0) {
-            neighbours.add(getTile(row - 1, col - 1));
-            neighbours.add(getTile(row + 1, col - 1));
+            neighbours.add(getTileView(row - 1, col - 1));
+            neighbours.add(getTileView(row + 1, col - 1));
         } else {
-            neighbours.add(getTile(row - 1, col + 1));
-            neighbours.add(getTile(row + 1, col + 1));
+            neighbours.add(getTileView(row - 1, col + 1));
+            neighbours.add(getTileView(row + 1, col + 1));
         }
         return neighbours;
     }
 
-    private Optional<Tile> getTile(int row, int col) {
-        return Optional.ofNullable(tileMap.get(Coordinates.getCoordinates(col, row)));
+    private Optional<TileView> getTileView(int row, int col) {
+        return Optional.ofNullable(tileViewMap.get(Coordinates.getCoordinates(col, row)));
     }
 
     private class TileMouseClickHandler implements EventHandler<MouseEvent> {
-        private Tile tile;
+        private final TileView tileView;
 
-        public TileMouseClickHandler(Tile tile) {
-            this.tile = tile;
+        public TileMouseClickHandler(TileView tileView) {
+            this.tileView = tileView;
         }
 
         @Override
         public void handle(MouseEvent mouseEvent) {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                openTile(tile);
+                logic.openTile(tileView.tile);
             } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                if (tile.isFlagged()) removeFlag(tile);
-                else setFlag(tile);
+                tileView.setFlagged(!tileView.isFlagged());
             }
         }
     }
