@@ -38,8 +38,7 @@ public class LogicTest {
                 logic.tileMap.get(new Coordinates(1, 0))
         );
         assertEquals(set, logic.getNeighboursOf(tile).stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .filter(t-> t!=null)
                 .collect(Collectors.toSet())
         );
     }

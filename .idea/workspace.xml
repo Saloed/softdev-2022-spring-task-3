@@ -5,18 +5,35 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="be6821c8-1464-4ebb-a47b-bfd5e7042688" name="Changes" comment="initial commit">
-      <change afterPath="$PROJECT_DIR$/src/main/java/minesweep/logic/Logic.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/minesweep/logic/Tile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.4/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.4/checksums/md5-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/checksums/md5-checksums.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.4/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/checksums/sha1-checksums.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.4/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/minesweep/Coordinates.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/minesweep/Coordinates.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/minesweep/MinesweeperApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/minesweep/MinesweeperApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/minesweep/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/minesweep/TileView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/minesweep/logic/Logic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/minesweep/logic/Logic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/minesweep/logic/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/minesweep/logic/Tile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/logicTest/LogicTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/logicTest/LogicTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineswep/cover.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineswep/empty.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineswep/fiveMinesAround.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineswep/flag.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineswep/fourMinesAround.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineswep/incorrectFlag.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineswep/mine.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineswep/oneMineAround.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineswep/sixMinesAround.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineswep/threeMinesAround.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/mineswep/twoMinesAround.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,6 +80,12 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/main/java/minesweep/MinesweeperApplication.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/minesweep/logic/Logic.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/test/java/logicTest/LogicTest.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/target/classes/module-info.class" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -97,10 +120,10 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.54137933",
-    "settings.editor.selected.configurable": "configurable.group.tools"
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -116,7 +139,7 @@
       <recent name="$PROJECT_DIR$/hex-minesweeper/src" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.LogicTest.emptyTest">
+  <component name="RunManager" selected="Application.minesweep.MinesweeperApplication">
     <configuration name="MinesweeperApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="battleship.MinesweeperApplication" />
       <module name="softdev-2022-spring-task-3.main" />
@@ -144,8 +167,8 @@
       </method>
     </configuration>
     <configuration name="minesweep.MinesweeperApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="corretto-17" />
       <option name="MAIN_CLASS_NAME" value="minesweep.MinesweeperApplication" />
-      <module name="softdev-2022-spring-task-3.main" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="minesweep.*" />
@@ -204,9 +227,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.minesweep.MinesweeperApplication" />
         <item itemvalue="Gradle.LogicTest.emptyTest" />
         <item itemvalue="Gradle.LogicTest.bombTest" />
-        <item itemvalue="Application.minesweep.MinesweeperApplication" />
         <item itemvalue="Application.com.example.battleship.MinesweeperApplication" />
         <item itemvalue="Application.MinesweeperApplication" />
       </list>
@@ -228,6 +251,14 @@
       <workItem from="1663932062376" duration="885000" />
       <workItem from="1664046194827" duration="24000" />
       <workItem from="1664046253153" duration="502000" />
+      <workItem from="1670088961025" duration="6120000" />
+      <workItem from="1670203954184" duration="649000" />
+      <workItem from="1670247190689" duration="1375000" />
+      <workItem from="1670249110083" duration="404000" />
+      <workItem from="1670249613821" duration="75000" />
+      <workItem from="1670254341483" duration="410000" />
+      <workItem from="1670254789577" duration="2000" />
+      <workItem from="1670254891135" duration="1687000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1663932892628</created>

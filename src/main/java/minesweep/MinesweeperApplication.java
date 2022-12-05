@@ -15,11 +15,11 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
+/*
  Пулы потоков бывают:
  FixedThreadPool - при создании задается конкретное число потоков в этом пуле. При передачи задачи в пул - берется любой свободный поток оттуда.
  CachedThreadPool - его размер определяется автоматически JVM в зависимости от количества свободных ресурсов процессора и памяти.
- **/
+ */
 
 
 public class MinesweeperApplication extends Application {
@@ -94,10 +94,11 @@ public class MinesweeperApplication extends Application {
             }
         }
 
-        @Override
-        public void onTileOpen(Tile tile) {
-        }
+
+
     };
+
+
 
     public static void main(String[] args) {
         launch(args);
@@ -150,30 +151,6 @@ public class MinesweeperApplication extends Application {
         tileViewMap.values().forEach(tileView -> tileView.setOnMouseClicked(null));
     }
 
-    private Set<Optional<TileView>> getNeighboursOf(TileView tileView) {
-        Set<Optional<TileView>> neighbours = new HashSet<>();
-        int col = tileView.getCoordinates().getX();
-        int row = tileView.getCoordinates().getY();
-
-
-        neighbours.add(getTileView(row + 1, col));
-        neighbours.add(getTileView(row - 1, col));
-        neighbours.add(getTileView(row, col + 1));
-        neighbours.add(getTileView(row, col - 1));
-
-        if (row % 2 == 0) {
-            neighbours.add(getTileView(row - 1, col - 1));
-            neighbours.add(getTileView(row + 1, col - 1));
-        } else {
-            neighbours.add(getTileView(row - 1, col + 1));
-            neighbours.add(getTileView(row + 1, col + 1));
-        }
-        return neighbours;
-    }
-
-    private Optional<TileView> getTileView(int row, int col) {
-        return Optional.ofNullable(tileViewMap.get(Coordinates.getCoordinates(col, row)));
-    }
 
     private class TileMouseClickHandler implements EventHandler<MouseEvent> {
         private final TileView tileView;

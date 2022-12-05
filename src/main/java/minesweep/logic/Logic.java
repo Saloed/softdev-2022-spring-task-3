@@ -9,12 +9,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Logic {
 
-    public static final int DEFAULT_SIZE = 10;
-
     private final ExecutorService threadPool = Executors.newCachedThreadPool();
-
-    public final int height;
-    public final int width;
+//кэширующий пул потоков, который создает потоки по мере необходимости,
+// но переиспользует неактивные потоки (и подчищает потоки, которые были неактивные некоторое время)
+    public final int height; //высота
+    public final int width;//ширина
 
     public final Set<Tile> bombs;
     public Set<Tile> openTileViews;
@@ -24,10 +23,12 @@ public class Logic {
     public final int bombsQuantity;
 
     private Listener listener;
-    private Tile.Listener tileListener = new Tile.Listener() {
+    private final Tile.Listener tileListener = new Tile.Listener() {
         @Override
         public void onTileFlagged(Tile tile, boolean flagged) {
-            if (listener != null) listener.onTileFlagged(tile, flagged);
+            if (listener != null) {
+                listener.onTileFlagged(tile, flagged);
+            }
         }
 
         @Override
@@ -45,11 +46,6 @@ public class Logic {
             if (listener != null) listener.onTileSetBombsAround(tile, bombsAround);
         }
 
-        @Override
-        public void onTileOpen(Tile tile) {
-            if (listener != null) listener.onTileOpen(tile);
-            tile.setBombsAround(countBombsAroundForTile(tile));
-        }
     };
 
     public Logic(
@@ -73,13 +69,6 @@ public class Logic {
         }
     }
 
-    public Logic(int size, int bombsQuantity) {
-        this(size, size, bombsQuantity);
-    }
-
-    public Logic(int bombsQuantity) {
-        this(DEFAULT_SIZE, bombsQuantity);
-    }
 
     public void plantBombs(int bombQuantity, Coordinates exceptOf) {
         for (int i = 0; i < bombQuantity; i++) {
@@ -87,18 +76,23 @@ public class Logic {
             int row = ThreadLocalRandom.current().nextInt(0, height - 1);
             Coordinates coordinates = new Coordinates(col, row);
             Tile tile = tileMap.get(coordinates);
-            if (tile == null || bombs.contains(tile) || coordinates.equals(exceptOf)) i -= 1;
-            else tileToBomb(tile);
+            if (tile == null || bombs.contains(tile) || coordinates.equals(exceptOf)) {
+                i -= 1;
+            } else tileToBomb(tile);
         }
     }
 
     public int countBombsAroundForTile(Tile tile) {
         if (tile.getBombsAround() == -1) {
-            int bombsAround = (int) getNeighboursOf(tile).stream()
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .filter(Tile::isBomb)
-                    .count();
+            long count = 0L;
+            for (Tile t : getNeighboursOf(tile)) {
+                if (t != null) {
+                    if (t.isBomb()) {
+                        count++;
+                    }
+                }
+            }
+            int bombsAround = (int) count;
             tile.setBombsAround(bombsAround);
         }
         return tile.getBombsAround();
@@ -128,15 +122,15 @@ public class Logic {
     }
 
     private void openTilesAroundOf(Tile tile) {
-        getNeighboursOf(tile)
-                .stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .forEach(neighbour -> threadPool.submit(() -> openTile(neighbour)));
+        for (Tile t : getNeighboursOf(tile)) {
+            if (t != null) {
+                threadPool.submit(() -> openTile(t));
+            }
+        }
     }
 
-    public Set<Optional<Tile>> getNeighboursOf(Tile tile) {
-        Set<Optional<Tile>> neighbours = new HashSet<>();
+    public Set<Tile> getNeighboursOf(Tile tile) {
+        Set<Tile> neighbours = new HashSet<>();
         int col = tile.getCoordinates().getX();
         int row = tile.getCoordinates().getY();
 
@@ -156,8 +150,8 @@ public class Logic {
         return neighbours;
     }
 
-    private Optional<Tile> getTile(int row, int col) {
-        return Optional.ofNullable(tileMap.get(Coordinates.getCoordinates(col, row)));
+    private Tile getTile(int row, int col) {
+        return (tileMap.get(Coordinates.getCoordinates(col, row)));
     }
 
     private void lose() {
@@ -179,7 +173,6 @@ public class Logic {
         void onTileEmpty(Tile tile, boolean empty);
         void onTileBomb(Tile tile, boolean bomb);
         void onTileSetBombsAround(Tile tile, int bombsAround);
-        void onTileOpen(Tile tile);
     }
 
 }

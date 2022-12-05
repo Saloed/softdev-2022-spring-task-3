@@ -96,6 +96,5 @@ public class Tile {
         void onTileEmpty(Tile tile, boolean empty);
         void onTileBomb(Tile tile, boolean bomb);
         void onTileSetBombsAround(Tile tile, int bombsAround);
-        void onTileOpen(Tile tile);
     }
 }
