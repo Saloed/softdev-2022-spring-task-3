@@ -1,6 +1,5 @@
 package javafx.Controllers;
 
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -115,10 +114,8 @@ public class BoardsViewController implements Initializable {
     }
 
     public void addBoardAtListOfBoards(Board board) {
-        ObservableList<String> titles = listOfBoards.getItems();
         titleWithIDBoard.put(board.getTitle(), board.getId().intValue());
-        titles.add(board.getTitle());
-        this.listOfBoards.getItems().setAll(titles);
+        this.listOfBoards.getItems().add(board.getTitle());
     }
 
     public void setUsernameLabel(String username) {
